@@ -75,6 +75,9 @@ const placeholders = (
   theme: Theme,
   target: TmuxTarget,
 ): Record<string, string> => ({
+  // status_right must come first so its {{placeholder}} references are resolved
+  // by the subsequent color key passes
+  status_right: buildStatusRight(target),
   accent: theme.ui.accent,
   accent_fg: theme.ui.accentFg,
   bg: theme.ui.bg,
@@ -85,7 +88,6 @@ const placeholders = (
   muted: target.muted,
   purple: target.searchCurrent,
   red: theme.ui.error,
-  status_right: buildStatusRight(target),
   theme_name: theme.name,
 });
 
