@@ -471,6 +471,26 @@
                       "pattern": "^#[0-9A-Fa-f]{6}$"
                     }
                   ]
+                },
+                "sessionFormatter": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "statusRight": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               },
               "required": [

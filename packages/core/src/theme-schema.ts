@@ -62,6 +62,8 @@ export const TmuxTarget = Schema.Struct({
   muted: HexColor,
   searchCurrent: HexColor,
   searchMatch: HexColor,
+  sessionFormatter: Schema.optional(Schema.String),
+  statusRight: Schema.optional(Schema.String),
 });
 
 const GhosttyFontFields = {

@@ -52,11 +52,24 @@ set -g window-style 'fg={{inactive_fg}},bg=default'
 set -g window-active-style 'fg={{fg}},bg=default'
 
 # Status bar formats with prefix indicator
-set-option -g status-right "#[fg={{muted}}]#{?client_prefix,,#(~/.config/tmux/tools/format-session/target/release/format-session '#{session_name}') }#[bg={{accent}},fg={{accent_fg}},bold]#{?client_prefix,#(~/.config/tmux/tools/format-session/target/release/format-session '#{session_name}') ,}"
+set-option -g status-right "{{status_right}}"
 
 set-option -g window-status-format " #I:#W #{?window_zoomed_flag,󰊓,}"
 set-option -g window-status-current-format "#[fg={{accent}}] #W #[fg={{accent}}]#{?window_zoomed_flag,󰊓 ,}#[fg={{accent}},bg=default]"
 `;
+
+const buildStatusRight = (target: TmuxTarget): string => {
+  if (target.statusRight !== undefined) {
+    return target.statusRight;
+  }
+
+  const sessionDisplay =
+    target.sessionFormatter !== undefined
+      ? `#(${target.sessionFormatter} '#{session_name}')`
+      : '#{session_name}';
+
+  return `#[fg={{muted}}]#{?client_prefix,,${sessionDisplay} }#[bg={{accent}},fg={{accent_fg}},bold]#{?client_prefix,${sessionDisplay} ,}`;
+};
 
 const placeholders = (
   theme: Theme,
@@ -72,6 +85,7 @@ const placeholders = (
   muted: target.muted,
   purple: target.searchCurrent,
   red: theme.ui.error,
+  status_right: buildStatusRight(target),
   theme_name: theme.name,
 });
 
