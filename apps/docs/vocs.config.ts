@@ -22,6 +22,7 @@ export default defineConfig({
         { text: 'tmux', link: '/targets/tmux' },
         { text: 'ghostty', link: '/targets/ghostty' },
         { text: 'claude-code', link: '/targets/claude-code' },
+        { text: 'macos', link: '/targets/macos' },
       ],
     },
   ],
