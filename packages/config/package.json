@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "dependencies": {
-    "@total-typescript/tsconfig": "^1.0.4"
+    "@total-typescript/tsconfig": "^1.0.4",
+    "typescript": "^5.8.3"
   }
 }
