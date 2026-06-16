@@ -1,0 +1,11 @@
+{
+  "extends": "@repo/config/tsconfig-server",
+  "compilerOptions": {
+    "paths": {
+      "#/*": ["./src/*"]
+    },
+    "rootDir": ".",
+    "types": ["bun"]
+  },
+  "include": ["vocs.config.ts", "scripts/**/*.ts", "src/**/*.ts"]
+}

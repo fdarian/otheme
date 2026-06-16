@@ -13,6 +13,8 @@
     "check:type": "turbo run check:type",
     "ci:release": "changeset publish",
     "ci:version": "changeset version",
+    "docs:build": "bun --cwd apps/docs run build",
+    "docs:dev": "bun --cwd apps/docs run dev",
     "format": "biome check --write ."
   },
   "devDependencies": {

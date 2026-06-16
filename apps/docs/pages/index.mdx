@@ -1,0 +1,22 @@
+---
+title: What is otheme
+description: What otheme does and why it exists.
+---
+
+# What is otheme
+
+otheme applies one theme across the tools you use every day.
+
+Today, each app has its own theme files. nvim, tmux, Ghostty, and Claude Code all have different places where colors or appearance settings live. The theme you want may not exist in every app, and even when it does, the colors are not guaranteed to match.
+
+otheme solves that by treating a theme as one shared definition, then applying the right target-specific changes for each app. For some targets, otheme writes a generated theme file. For others, it points the app at an existing named theme or appearance setting.
+
+The practical goal is simple: run one command and get the same theme everywhere otheme supports.
+
+## What it changes
+
+otheme is intentionally explicit about what it does. `otheme set --dry-run` prints every file write and every shell command before anything is applied. The target pages in this documentation are generated from the same adapter plans that power dry run output.
+
+## Where this is going
+
+The shared theme format is the foundation for shareable themes: define once, apply to all supported targets. Later, otheme can also support automation such as switching themes when your operating system appearance changes.

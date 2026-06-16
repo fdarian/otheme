@@ -1,0 +1,27 @@
+---
+title: tmux
+description: Files and commands used by the tmux target.
+---
+
+# tmux
+
+The tmux target writes a generated tmux theme file, updates the active source line, and reloads tmux.
+
+This page is generated from the adapter plan used by `otheme set vesper --dry-run`. Paths are shown exactly as otheme prints them; `~` means your home directory.
+
+## Compatibility
+
+Author mode. otheme generates a tmux theme file from the shared theme palette and points tmux at it.
+
+## Files
+
+| Order | File | What otheme writes |
+| --- | --- | --- |
+| 1 | `~/.config/tmux/themes/vesper.conf` | write generated tmux theme for Vesper |
+| 2 | `~/.config/tmux/tmux.conf` | ensure active tmux source-file line points to ~/.config/tmux/themes/vesper.conf |
+
+## Commands
+
+| Order | Command | Why it runs |
+| --- | --- | --- |
+| 1 | `tmux source-file ~/.config/tmux/tmux.conf` | reload tmux so the active theme changes immediately |

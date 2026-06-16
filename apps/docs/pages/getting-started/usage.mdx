@@ -1,0 +1,70 @@
+---
+title: Usage
+description: The otheme commands and built-in themes.
+---
+
+# Usage
+
+otheme has three user-facing command shapes.
+
+## Apply a theme
+
+```sh
+otheme set <theme-or-alias>
+```
+
+`<theme-or-alias>` can be a built-in theme id or an alias.
+
+Built-in themes:
+
+- `vesper`
+- `atom-one-light`
+- `claude`
+
+Examples:
+
+```sh
+otheme set vesper
+otheme set dark
+otheme set light
+```
+
+## Preview before applying
+
+```sh
+otheme set <theme-or-alias> --dry-run
+```
+
+Dry run prints the target plans and exits without writing files or running reload commands. This is the safest way to see what otheme will do on your machine.
+
+## List aliases
+
+```sh
+otheme alias
+```
+
+The default aliases are:
+
+- `dark -> vesper`
+- `light -> atom-one-light`
+
+Aliases are stored in:
+
+```text
+~/.config/otheme/config.json
+```
+
+## Set an alias
+
+```sh
+otheme alias set <dark|light> <theme>
+```
+
+Examples:
+
+```sh
+otheme alias set dark vesper
+otheme alias set light claude
+```
+
+After changing an alias, `otheme set dark` or `otheme set light` resolves to the theme you chose.

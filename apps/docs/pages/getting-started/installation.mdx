@@ -1,0 +1,51 @@
+---
+title: Installation
+description: How to run otheme from the current source tree.
+---
+
+# Installation
+
+otheme is packaged as a Bun-built CLI binary. The CLI package declares an `otheme` executable, but this repository does not yet include a published npm release. For now, build it from source.
+
+## Build from source
+
+```sh
+bun install
+cd apps/cli
+bun run build
+```
+
+That creates the CLI entrypoint at:
+
+```text
+apps/cli/dist/cli.js
+```
+
+You can run it directly from the repository:
+
+```sh
+bun apps/cli/dist/cli.js --help
+```
+
+For a local command named `otheme`, link the built file somewhere on your `PATH`:
+
+```sh
+mkdir -p ~/.local/bin
+ln -sf "$PWD/apps/cli/dist/cli.js" ~/.local/bin/otheme
+```
+
+Then verify the command:
+
+```sh
+otheme --help
+```
+
+## Before applying
+
+Use dry run first:
+
+```sh
+otheme set vesper --dry-run
+```
+
+Dry run previews every file otheme would write and every command it would run. It does not apply the theme.

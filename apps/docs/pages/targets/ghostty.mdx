@@ -1,0 +1,27 @@
+---
+title: ghostty
+description: Files and commands used by the ghostty target.
+---
+
+# ghostty
+
+The ghostty target updates Ghostty config and reloads running Ghostty processes. For built-in themes, it maps to existing Ghostty theme names.
+
+This page is generated from the adapter plan used by `otheme set vesper --dry-run`. Paths are shown exactly as otheme prints them; `~` means your home directory.
+
+## Compatibility
+
+Author and map modes. In author mode, otheme writes a Ghostty theme file and sets `theme = otheme-<theme-id>`. In map mode, it sets `theme = <mapTo>` to use an existing Ghostty theme name. The built-in themes currently use map mode.
+
+## Files
+
+| Order | File | What otheme writes |
+| --- | --- | --- |
+| 1 | `~/.config/ghostty/config` | set theme = Vesper |
+
+## Commands
+
+| Order | Command | Why it runs |
+| --- | --- | --- |
+| 1 | `ps -axo pid=,comm=` | find running Ghostty processes without requiring jc |
+| 2 | `kill -USR2 '<ghostty-pid>'` | reload each running Ghostty process after config changes |
