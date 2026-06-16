@@ -3,7 +3,7 @@ import { ChildProcess, ChildProcessSpawner } from 'effect/unstable/process';
 import { CommandExecutionError } from './errors.ts';
 
 const quoteCommandArg = (arg: string): string => {
-  if (/^[A-Za-z0-9_/:=.+,-]+$/.test(arg)) {
+  if (/^[A-Za-z0-9_~/:=.+,-]+$/.test(arg)) {
     return arg;
   }
 
