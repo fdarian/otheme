@@ -36,7 +36,6 @@ const MONO_FONT =
 
 type HoverTarget = {
   field: PaletteField;
-  hex: string;
   rect: DOMRect;
 };
 
@@ -120,7 +119,6 @@ function InspectableSpan(props: {
   function reportHover(event: React.MouseEvent<HTMLSpanElement>) {
     props.inspect.onHover({
       field: props.field,
-      hex: props.color,
       rect: event.currentTarget.getBoundingClientRect(),
     });
   }
@@ -136,7 +134,6 @@ function InspectableSpan(props: {
       onFocus={(event) =>
         props.inspect.onHover({
           field: props.field,
-          hex: props.color,
           rect: event.currentTarget.getBoundingClientRect(),
         })
       }
@@ -156,7 +153,14 @@ function InspectableSpan(props: {
   );
 }
 
-function InspectTooltip(props: { target: HoverTarget }) {
+/** The palette color a field points at — what click-to-focus will edit. */
+function fieldColor(theme: Theme, field: PaletteField) {
+  const palette = field.group === 'ui' ? theme.ui : theme.syntax;
+  return (palette as Record<string, string>)[field.key];
+}
+
+function InspectTooltip(props: { target: HoverTarget; theme: Theme }) {
+  const hex = fieldColor(props.theme, props.target.field);
   return (
     <div
       className="fixed z-50 flex items-center gap-2 rounded-md border bg-popover px-2.5 py-1.5 font-mono text-[11px] text-popover-foreground shadow-md"
@@ -169,9 +173,9 @@ function InspectTooltip(props: { target: HoverTarget }) {
       <span>{`${props.target.field.group}.${props.target.field.key}`}</span>
       <span
         className="size-3 rounded-[3px] border"
-        style={{ background: props.target.hex }}
+        style={{ background: hex }}
       />
-      <span className="text-muted-foreground">{props.target.hex}</span>
+      <span className="text-muted-foreground">{hex}</span>
     </div>
   );
 }
@@ -898,7 +902,7 @@ export function PreviewPane(props: PreviewPaneProps) {
       </div>
 
       {props.inspectMode && hovered !== null && (
-        <InspectTooltip target={hovered} />
+        <InspectTooltip target={hovered} theme={props.theme} />
       )}
     </div>
   );
