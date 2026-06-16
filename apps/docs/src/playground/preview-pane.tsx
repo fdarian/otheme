@@ -70,6 +70,27 @@ const INSPECTABLE_STYLE = `
 }
 `;
 
+const TOGGLE_CLASS = 'otheme-toggle';
+
+/**
+ * Suppress the browser's default (often white) focus ring on the toggles in
+ * favor of the same subtle surface + muted-border treatment as the active
+ * state, so nothing reads as a harsh accent ring in the dark docs theme.
+ */
+const TOGGLE_STYLE = `
+.${TOGGLE_CLASS}:focus-visible {
+  outline: none;
+  background: var(--vocs-background-color-surface);
+  box-shadow: inset 0 0 0 1px var(--vocs-border-color-primary);
+}
+`;
+
+/**
+ * A colored token. Always renders the SAME inline <span> with identical box
+ * metrics so toggling inspect mode never reflows the monospace text — when
+ * active it only layers on non-flow-affecting interactivity (cursor, hover
+ * background, outline) plus button semantics.
+ */
 function InspectableSpan(props: {
   color: string;
   field: PaletteField;
@@ -77,15 +98,13 @@ function InspectableSpan(props: {
   children: React.ReactNode;
   style?: React.CSSProperties;
 }) {
+  const baseStyle: React.CSSProperties = { color: props.color, ...props.style };
+
   if (!props.inspect.active) {
-    return (
-      <span style={{ color: props.color, ...props.style }}>
-        {props.children}
-      </span>
-    );
+    return <span style={baseStyle}>{props.children}</span>;
   }
 
-  function reportHover(e: React.MouseEvent<HTMLButtonElement>) {
+  function reportHover(e: React.MouseEvent<HTMLSpanElement>) {
     props.inspect.onHover({
       field: props.field,
       hex: props.color,
@@ -94,10 +113,18 @@ function InspectableSpan(props: {
   }
 
   return (
-    <button
-      type="button"
+    // biome-ignore lint/a11y/useSemanticElements: a real <button> changes the inline box metrics and reflows the monospace text on toggle; the span keeps layout identical between modes
+    <span
       className={INSPECTABLE_CLASS}
+      role="button"
+      tabIndex={0}
       onClick={() => props.inspect.onInspect(props.field)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          props.inspect.onInspect(props.field);
+        }
+      }}
       onMouseEnter={reportHover}
       onMouseMove={reportHover}
       onMouseLeave={() => props.inspect.onHover(null)}
@@ -109,14 +136,10 @@ function InspectableSpan(props: {
         })
       }
       onBlur={() => props.inspect.onHover(null)}
-      style={{
-        all: 'unset',
-        color: props.color,
-        ...props.style,
-      }}
+      style={baseStyle}
     >
       {props.children}
-    </button>
+    </span>
   );
 }
 
@@ -630,6 +653,7 @@ function ToggleButton(props: {
   return (
     <button
       type="button"
+      className={TOGGLE_CLASS}
       onClick={props.onClick}
       aria-pressed={props.active}
       style={{
@@ -676,7 +700,7 @@ export function PreviewPane(props: PreviewPaneProps) {
         flexDirection: 'column',
       }}
     >
-      <style>{INSPECTABLE_STYLE}</style>
+      <style>{`${INSPECTABLE_STYLE}${TOGGLE_STYLE}`}</style>
       <div style={{ marginBottom: '0.5rem', display: 'flex', gap: '0.5rem' }}>
         <ToggleButton
           active={prefixActive}
