@@ -306,7 +306,7 @@ function DiffRegion(props: {
   onInspect: (field: PaletteField) => void;
 }) {
   return (
-    <div style={{ fontSize: '0.8rem', lineHeight: 1.6 }}>
+    <div>
       {DIFF_SAMPLE.map((line, index) => (
         <DiffRow
           // biome-ignore lint/suspicious/noArrayIndexKey: static sample, index is stable
@@ -327,7 +327,7 @@ function OutputLines(props: {
   onInspect: (field: PaletteField) => void;
 }) {
   return (
-    <div style={{ fontSize: '0.8rem', lineHeight: 1.6 }}>
+    <div>
       {props.lines.map((line, index) => (
         <div
           // biome-ignore lint/suspicious/noArrayIndexKey: static sample, index is stable
@@ -363,8 +363,6 @@ function SuccessLine(props: {
       onInspect={props.onInspect}
       style={{
         display: 'block',
-        fontSize: '0.8rem',
-        lineHeight: 1.6,
         whiteSpace: 'pre',
       }}
     >
@@ -424,7 +422,15 @@ function Session(props: {
   onInspect: (field: PaletteField) => void;
 }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.6rem',
+        fontSize: '0.8rem',
+        lineHeight: 1.6,
+      }}
+    >
       <div>
         <Prompt
           theme={props.theme}
