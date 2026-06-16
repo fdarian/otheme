@@ -83,12 +83,12 @@ function ColorField(props: {
         margin: '0 -0.35rem 0.4rem',
         borderRadius: 'var(--vocs-radius-sm)',
         outline: props.flashing
-          ? '2px solid var(--vocs-color-accent)'
-          : '2px solid transparent',
+          ? '1px solid var(--vocs-border-color-primary)'
+          : '1px solid transparent',
         background: props.flashing
-          ? 'var(--vocs-background-color-surface)'
+          ? 'rgba(128, 128, 128, 0.22)'
           : 'transparent',
-        transition: 'outline-color 0.2s ease, background 0.2s ease',
+        transition: 'outline-color 0.25s ease, background 0.25s ease',
       }}
     >
       <button

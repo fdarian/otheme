@@ -28,6 +28,7 @@ export function PlaygroundApp() {
   const [activePreset, setActivePreset] = useState<PresetId>(DEFAULT_PRESET);
   const [theme, setTheme] = useState<ThemeValue>(PRESETS[DEFAULT_PRESET]);
   const [focusField, setFocusField] = useState<PaletteField | null>(null);
+  const [inspectMode, setInspectMode] = useState(false);
 
   function handlePresetChange(preset: PresetId) {
     setActivePreset(preset);
@@ -159,7 +160,12 @@ export function PlaygroundApp() {
             background: 'var(--vocs-background-color-surface)',
           }}
         >
-          <PreviewPane theme={theme} onInspect={setFocusField} />
+          <PreviewPane
+            theme={theme}
+            inspectMode={inspectMode}
+            onInspect={setFocusField}
+            onToggleInspect={() => setInspectMode((prev) => !prev)}
+          />
         </div>
       </div>
     </div>

@@ -6,7 +6,9 @@ export type PaletteField = { group: 'ui' | 'syntax'; key: string };
 
 export type PreviewPaneProps = {
   theme: ThemeValue;
+  inspectMode: boolean;
   onInspect: (field: PaletteField) => void;
+  onToggleInspect: () => void;
 };
 
 export type EditorPaneProps = {

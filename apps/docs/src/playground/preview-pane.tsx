@@ -39,27 +39,78 @@ function tokenField(token: TokenKind): PaletteField {
   return { group: 'syntax', key: token };
 }
 
-const INSPECTABLE_SPAN_STYLE: React.CSSProperties = {
-  cursor: 'pointer',
-  borderRadius: '0.1rem',
+/** A token the user is hovering: which field it maps to, its hex, and its on-screen rect. */
+type HoverTarget = { field: PaletteField; hex: string; rect: DOMRect };
+
+/**
+ * Shared inspect context threaded to every span. When `active` is false the
+ * spans render as plain text — no pointer, no hover fill, no tooltip, no click.
+ */
+type InspectContext = {
+  active: boolean;
+  onInspect: (field: PaletteField) => void;
+  onHover: (target: HoverTarget | null) => void;
 };
+
+const INSPECTABLE_CLASS = 'otheme-inspectable';
+
+/**
+ * Class-based hover fill so the whole token region lights up like a
+ * Chrome devtools highlight box; the neutral overlay reads on both
+ * light and dark canvases.
+ */
+const INSPECTABLE_STYLE = `
+.${INSPECTABLE_CLASS} {
+  cursor: pointer;
+  border-radius: 0.2rem;
+  transition: background 0.08s ease;
+}
+.${INSPECTABLE_CLASS}:hover {
+  background: rgba(128, 128, 128, 0.22);
+}
+`;
 
 function InspectableSpan(props: {
   color: string;
   field: PaletteField;
-  onInspect: (field: PaletteField) => void;
+  inspect: InspectContext;
   children: React.ReactNode;
   style?: React.CSSProperties;
 }) {
-  const label = `${props.field.group}.${props.field.key}`;
+  if (!props.inspect.active) {
+    return (
+      <span style={{ color: props.color, ...props.style }}>
+        {props.children}
+      </span>
+    );
+  }
+
+  function reportHover(e: React.MouseEvent<HTMLButtonElement>) {
+    props.inspect.onHover({
+      field: props.field,
+      hex: props.color,
+      rect: e.currentTarget.getBoundingClientRect(),
+    });
+  }
+
   return (
     <button
       type="button"
-      title={label}
-      onClick={() => props.onInspect(props.field)}
+      className={INSPECTABLE_CLASS}
+      onClick={() => props.inspect.onInspect(props.field)}
+      onMouseEnter={reportHover}
+      onMouseMove={reportHover}
+      onMouseLeave={() => props.inspect.onHover(null)}
+      onFocus={(e) =>
+        props.inspect.onHover({
+          field: props.field,
+          hex: props.color,
+          rect: e.currentTarget.getBoundingClientRect(),
+        })
+      }
+      onBlur={() => props.inspect.onHover(null)}
       style={{
         all: 'unset',
-        ...INSPECTABLE_SPAN_STYLE,
         color: props.color,
         ...props.style,
       }}
@@ -69,11 +120,54 @@ function InspectableSpan(props: {
   );
 }
 
+/** The single floating tooltip; rendered once per pane, driven by hover state. */
+function InspectTooltip(props: { target: HoverTarget }) {
+  const label = `${props.target.field.group}.${props.target.field.key}`;
+  const top = props.target.rect.bottom + 6;
+  const left = props.target.rect.left;
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        top,
+        left,
+        zIndex: 1000,
+        pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        padding: '0.2rem 0.45rem',
+        background: 'var(--vocs-background-color-surface)',
+        border: '1px solid var(--vocs-border-color-primary)',
+        borderRadius: 'var(--vocs-radius-sm)',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.18)',
+        fontFamily: 'var(--vocs-font-mono)',
+        fontSize: '0.7rem',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      <span style={{ color: 'var(--vocs-text-color-primary)' }}>{label}</span>
+      <span
+        style={{
+          width: '0.7rem',
+          height: '0.7rem',
+          borderRadius: '0.15rem',
+          background: props.target.hex,
+          border: '1px solid var(--vocs-border-color-primary)',
+        }}
+      />
+      <span style={{ color: 'var(--vocs-text-color-secondary)' }}>
+        {props.target.hex}
+      </span>
+    </div>
+  );
+}
+
 function CodeLines(props: {
   theme: Theme;
   lines: SampleLine[];
   startLine: number;
-  onInspect: (field: PaletteField) => void;
+  inspect: InspectContext;
 }) {
   return (
     <>
@@ -86,7 +180,7 @@ function CodeLines(props: {
           <InspectableSpan
             color={props.theme.ui.lineNr}
             field={{ group: 'ui', key: 'lineNr' }}
-            onInspect={props.onInspect}
+            inspect={props.inspect}
             style={{
               minWidth: '2.5rem',
               textAlign: 'right',
@@ -103,7 +197,7 @@ function CodeLines(props: {
                 key={spanIndex}
                 color={tokenColor(props.theme, span.token)}
                 field={tokenField(span.token)}
-                onInspect={props.onInspect}
+                inspect={props.inspect}
               >
                 {span.text}
               </InspectableSpan>
@@ -119,35 +213,35 @@ function CodeLines(props: {
 function Prompt(props: {
   theme: Theme;
   prompt: PromptLine;
-  onInspect: (field: PaletteField) => void;
+  inspect: InspectContext;
 }) {
   return (
     <div style={{ display: 'flex', gap: '0.5rem', whiteSpace: 'pre' }}>
       <InspectableSpan
         color={props.theme.ui.accent}
         field={{ group: 'ui', key: 'accent' }}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
       >
         {props.prompt.dir}
       </InspectableSpan>
       <InspectableSpan
         color={props.theme.ui.fgMuted}
         field={{ group: 'ui', key: 'fgMuted' }}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
       >
         {props.prompt.branch}
       </InspectableSpan>
       <InspectableSpan
         color={props.theme.ui.success}
         field={{ group: 'ui', key: 'success' }}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
       >
         ❯
       </InspectableSpan>
       <InspectableSpan
         color={props.theme.ui.fg}
         field={{ group: 'ui', key: 'fg' }}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
       >
         {props.prompt.command}
       </InspectableSpan>
@@ -190,24 +284,25 @@ function gutterColorField(type: DiffLine['type']): PaletteField {
   return { group: 'ui', key: 'lineNr' };
 }
 
+/** PaletteField for an emphasized diff word. */
+function emphasisField(type: DiffLine['type']): PaletteField {
+  if (type === 'removed') return { group: 'ui', key: 'error' };
+  if (type === 'added') return { group: 'ui', key: 'success' };
+  return { group: 'ui', key: 'fg' };
+}
+
 function DiffSpanText(props: {
   theme: Theme;
   span: DiffSpan;
   type: DiffLine['type'];
-  onInspect: (field: PaletteField) => void;
+  inspect: InspectContext;
 }) {
   if (props.span.kind === 'emphasis') {
-    const field: PaletteField =
-      props.type === 'removed'
-        ? { group: 'ui', key: 'error' }
-        : props.type === 'added'
-          ? { group: 'ui', key: 'success' }
-          : { group: 'ui', key: 'fg' };
     return (
       <InspectableSpan
         color={props.theme.ui.bg}
-        field={field}
-        onInspect={props.onInspect}
+        field={emphasisField(props.type)}
+        inspect={props.inspect}
         style={{
           background: emphasisBackground(props.theme, props.type),
           borderRadius: '0.15rem',
@@ -223,7 +318,7 @@ function DiffSpanText(props: {
 function DiffRow(props: {
   theme: Theme;
   line: DiffLine;
-  onInspect: (field: PaletteField) => void;
+  inspect: InspectContext;
 }) {
   if (props.line.type === 'hunk') {
     return (
@@ -258,7 +353,7 @@ function DiffRow(props: {
       <InspectableSpan
         color={gutterColor(props.theme, props.line.type)}
         field={gutterField}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
         style={{
           minWidth: '2.25rem',
           textAlign: 'right',
@@ -271,7 +366,7 @@ function DiffRow(props: {
       <InspectableSpan
         color={gutterColor(props.theme, props.line.type)}
         field={gutterField}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
         style={{
           minWidth: '2.25rem',
           textAlign: 'right',
@@ -284,7 +379,7 @@ function DiffRow(props: {
       <InspectableSpan
         color={props.theme.ui.fg}
         field={bgField}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
       >
         {props.line.spans.map((span, index) => (
           <DiffSpanText
@@ -293,7 +388,7 @@ function DiffRow(props: {
             theme={props.theme}
             span={span}
             type={props.line.type}
-            onInspect={props.onInspect}
+            inspect={props.inspect}
           />
         ))}
       </InspectableSpan>
@@ -301,10 +396,7 @@ function DiffRow(props: {
   );
 }
 
-function DiffRegion(props: {
-  theme: Theme;
-  onInspect: (field: PaletteField) => void;
-}) {
+function DiffRegion(props: { theme: Theme; inspect: InspectContext }) {
   return (
     <div>
       {DIFF_SAMPLE.map((line, index) => (
@@ -313,7 +405,7 @@ function DiffRegion(props: {
           key={index}
           theme={props.theme}
           line={line}
-          onInspect={props.onInspect}
+          inspect={props.inspect}
         />
       ))}
     </div>
@@ -324,7 +416,7 @@ function DiffRegion(props: {
 function OutputLines(props: {
   theme: Theme;
   lines: SampleLine[];
-  onInspect: (field: PaletteField) => void;
+  inspect: InspectContext;
 }) {
   return (
     <div>
@@ -340,7 +432,7 @@ function OutputLines(props: {
               key={spanIndex}
               color={tokenColor(props.theme, span.token)}
               field={tokenField(span.token)}
-              onInspect={props.onInspect}
+              inspect={props.inspect}
             >
               {span.text}
             </InspectableSpan>
@@ -352,15 +444,12 @@ function OutputLines(props: {
 }
 
 /** The success line printed by `otheme set`, colored with ui.success. */
-function SuccessLine(props: {
-  theme: Theme;
-  onInspect: (field: PaletteField) => void;
-}) {
+function SuccessLine(props: { theme: Theme; inspect: InspectContext }) {
   return (
     <InspectableSpan
       color={props.theme.ui.success}
       field={{ group: 'ui', key: 'success' }}
-      onInspect={props.onInspect}
+      inspect={props.inspect}
       style={{
         display: 'block',
         whiteSpace: 'pre',
@@ -372,37 +461,34 @@ function SuccessLine(props: {
 }
 
 /** A blinking-style block cursor after the final prompt. */
-function PromptCursor(props: {
-  theme: Theme;
-  onInspect: (field: PaletteField) => void;
-}) {
+function PromptCursor(props: { theme: Theme; inspect: InspectContext }) {
   return (
     <div style={{ display: 'flex', gap: '0.5rem', whiteSpace: 'pre' }}>
       <InspectableSpan
         color={props.theme.ui.accent}
         field={{ group: 'ui', key: 'accent' }}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
       >
         {PROMPT_README.dir}
       </InspectableSpan>
       <InspectableSpan
         color={props.theme.ui.fgMuted}
         field={{ group: 'ui', key: 'fgMuted' }}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
       >
         {PROMPT_README.branch}
       </InspectableSpan>
       <InspectableSpan
         color={props.theme.ui.success}
         field={{ group: 'ui', key: 'success' }}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
       >
         ❯
       </InspectableSpan>
       <InspectableSpan
         color={props.theme.ui.accent}
         field={{ group: 'ui', key: 'accent' }}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
         style={{
           display: 'inline-block',
           width: '0.55rem',
@@ -417,10 +503,7 @@ function PromptCursor(props: {
 }
 
 /** The scrollback: prompts whose output is the existing sample data. */
-function Session(props: {
-  theme: Theme;
-  onInspect: (field: PaletteField) => void;
-}) {
+function Session(props: { theme: Theme; inspect: InspectContext }) {
   return (
     <div
       style={{
@@ -435,44 +518,44 @@ function Session(props: {
         <Prompt
           theme={props.theme}
           prompt={PROMPT_README}
-          onInspect={props.onInspect}
+          inspect={props.inspect}
         />
         <OutputLines
           theme={props.theme}
           lines={MARKDOWN_SAMPLE}
-          onInspect={props.onInspect}
+          inspect={props.inspect}
         />
       </div>
       <div>
         <Prompt
           theme={props.theme}
           prompt={PROMPT_CODE}
-          onInspect={props.onInspect}
+          inspect={props.inspect}
         />
         <CodeLines
           theme={props.theme}
           lines={CODE_SAMPLE}
           startLine={1}
-          onInspect={props.onInspect}
+          inspect={props.inspect}
         />
       </div>
       <div>
         <Prompt
           theme={props.theme}
           prompt={PROMPT_DIFF}
-          onInspect={props.onInspect}
+          inspect={props.inspect}
         />
-        <DiffRegion theme={props.theme} onInspect={props.onInspect} />
+        <DiffRegion theme={props.theme} inspect={props.inspect} />
       </div>
       <div>
         <Prompt
           theme={props.theme}
           prompt={PROMPT_APPLY}
-          onInspect={props.onInspect}
+          inspect={props.inspect}
         />
-        <SuccessLine theme={props.theme} onInspect={props.onInspect} />
+        <SuccessLine theme={props.theme} inspect={props.inspect} />
       </div>
-      <PromptCursor theme={props.theme} onInspect={props.onInspect} />
+      <PromptCursor theme={props.theme} inspect={props.inspect} />
     </div>
   );
 }
@@ -487,7 +570,7 @@ function tmuxMuted(theme: Theme) {
 function TmuxBar(props: {
   theme: Theme;
   prefixActive: boolean;
-  onInspect: (field: PaletteField) => void;
+  inspect: InspectContext;
 }) {
   const muted = tmuxMuted(props.theme);
   const mutedField: PaletteField = { group: 'ui', key: 'fgMuted' };
@@ -503,24 +586,16 @@ function TmuxBar(props: {
         borderBottom: `1px solid ${props.theme.ui.border}`,
       }}
     >
-      <InspectableSpan
-        color={muted}
-        field={mutedField}
-        onInspect={props.onInspect}
-      >
+      <InspectableSpan color={muted} field={mutedField} inspect={props.inspect}>
         1:zsh
       </InspectableSpan>
-      <InspectableSpan
-        color={muted}
-        field={mutedField}
-        onInspect={props.onInspect}
-      >
+      <InspectableSpan color={muted} field={mutedField} inspect={props.inspect}>
         2:logs
       </InspectableSpan>
       <InspectableSpan
         color={props.theme.ui.accent}
         field={{ group: 'ui', key: 'accent' }}
-        onInspect={props.onInspect}
+        inspect={props.inspect}
         style={{ fontWeight: 700 }}
       >
         3:editor
@@ -530,7 +605,7 @@ function TmuxBar(props: {
         field={
           props.prefixActive ? { group: 'ui', key: 'accentFg' } : mutedField
         }
-        onInspect={props.onInspect}
+        inspect={props.inspect}
         style={{
           marginLeft: 'auto',
           padding: '0.1rem 0.6rem',
@@ -547,8 +622,49 @@ function TmuxBar(props: {
   );
 }
 
+function ToggleButton(props: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={props.onClick}
+      aria-pressed={props.active}
+      style={{
+        padding: '0.2rem 0.7rem',
+        borderRadius: 'var(--vocs-radius-sm)',
+        border: '1px solid var(--vocs-border-color-primary)',
+        background: props.active
+          ? 'var(--vocs-background-color-surface)'
+          : 'var(--vocs-background-color-primary)',
+        color: props.active
+          ? 'var(--vocs-text-color-primary)'
+          : 'var(--vocs-text-color-secondary)',
+        boxShadow: props.active
+          ? 'inset 0 0 0 1px var(--vocs-border-color-primary)'
+          : 'none',
+        cursor: 'pointer',
+        fontSize: '0.75rem',
+        fontWeight: props.active ? 600 : 500,
+        fontFamily: 'var(--vocs-font-sans)',
+      }}
+    >
+      {props.children}
+    </button>
+  );
+}
+
 export function PreviewPane(props: PreviewPaneProps) {
   const [prefixActive, setPrefixActive] = useState(false);
+  const [hovered, setHovered] = useState<HoverTarget | null>(null);
+
+  const inspect: InspectContext = {
+    active: props.inspectMode,
+    onInspect: props.onInspect,
+    onHover: setHovered,
+  };
 
   return (
     <div
@@ -560,28 +676,20 @@ export function PreviewPane(props: PreviewPaneProps) {
         flexDirection: 'column',
       }}
     >
-      <div style={{ marginBottom: '0.5rem' }}>
-        <button
-          type="button"
+      <style>{INSPECTABLE_STYLE}</style>
+      <div style={{ marginBottom: '0.5rem', display: 'flex', gap: '0.5rem' }}>
+        <ToggleButton
+          active={prefixActive}
           onClick={() => setPrefixActive((prev) => !prev)}
-          style={{
-            padding: '0.2rem 0.7rem',
-            borderRadius: 'var(--vocs-radius-sm)',
-            border: '1px solid var(--vocs-border-color-primary)',
-            background: prefixActive
-              ? 'var(--vocs-color-accent)'
-              : 'var(--vocs-background-color-primary)',
-            color: prefixActive
-              ? 'var(--vocs-color-accentInvert)'
-              : 'var(--vocs-text-color-primary)',
-            cursor: 'pointer',
-            fontSize: '0.75rem',
-            fontWeight: 500,
-            fontFamily: 'var(--vocs-font-sans)',
-          }}
         >
           prefix active
-        </button>
+        </ToggleButton>
+        <ToggleButton
+          active={props.inspectMode}
+          onClick={props.onToggleInspect}
+        >
+          Inspect
+        </ToggleButton>
       </div>
       <div
         style={{
@@ -595,6 +703,7 @@ export function PreviewPane(props: PreviewPaneProps) {
           border: `1px solid ${props.theme.ui.border}`,
           overflow: 'hidden',
           boxShadow: '0 8px 28px rgba(0,0,0,0.25)',
+          cursor: props.inspectMode ? 'cell' : 'auto',
         }}
       >
         <div
@@ -610,7 +719,7 @@ export function PreviewPane(props: PreviewPaneProps) {
           <InspectableSpan
             color={props.theme.ui.error}
             field={{ group: 'ui', key: 'error' }}
-            onInspect={props.onInspect}
+            inspect={inspect}
             style={{
               display: 'inline-block',
               width: '0.7rem',
@@ -624,7 +733,7 @@ export function PreviewPane(props: PreviewPaneProps) {
           <InspectableSpan
             color={props.theme.ui.warning}
             field={{ group: 'ui', key: 'warning' }}
-            onInspect={props.onInspect}
+            inspect={inspect}
             style={{
               display: 'inline-block',
               width: '0.7rem',
@@ -638,7 +747,7 @@ export function PreviewPane(props: PreviewPaneProps) {
           <InspectableSpan
             color={props.theme.ui.success}
             field={{ group: 'ui', key: 'success' }}
-            onInspect={props.onInspect}
+            inspect={inspect}
             style={{
               display: 'inline-block',
               width: '0.7rem',
@@ -652,7 +761,7 @@ export function PreviewPane(props: PreviewPaneProps) {
           <InspectableSpan
             color={props.theme.ui.fgMuted}
             field={{ group: 'ui', key: 'fgMuted' }}
-            onInspect={props.onInspect}
+            inspect={inspect}
             style={{ marginLeft: '0.5rem', fontSize: '0.75rem' }}
           >
             {props.theme.name}
@@ -661,7 +770,7 @@ export function PreviewPane(props: PreviewPaneProps) {
         <TmuxBar
           theme={props.theme}
           prefixActive={prefixActive}
-          onInspect={props.onInspect}
+          inspect={inspect}
         />
         <div
           style={{
@@ -672,9 +781,12 @@ export function PreviewPane(props: PreviewPaneProps) {
             overflow: 'auto',
           }}
         >
-          <Session theme={props.theme} onInspect={props.onInspect} />
+          <Session theme={props.theme} inspect={inspect} />
         </div>
       </div>
+      {props.inspectMode && hovered !== null && (
+        <InspectTooltip target={hovered} />
+      )}
     </div>
   );
 }
