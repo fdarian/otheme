@@ -6,7 +6,7 @@ import {
   CommandExecutor,
   isThemeId,
   loadTheme,
-  m1Adapters,
+  targetAdapters,
 } from '@otheme/core';
 import { Console, Effect, Layer } from 'effect';
 import { Argument, Command, Flag } from 'effect/unstable/cli';
@@ -50,7 +50,7 @@ const loadThemeOrAlias = (value: string) =>
 
 const printAdapterPlan = (adapterIndex: number, themeId: string) =>
   Effect.gen(function* () {
-    const adapter = m1Adapters[adapterIndex];
+    const adapter = targetAdapters[adapterIndex];
 
     if (adapter === undefined) {
       return;
@@ -86,7 +86,7 @@ const printDryRun = (themeId: string) =>
 
     yield* Console.log(`theme: ${theme.id} (${theme.name})`);
 
-    for (let index = 0; index < m1Adapters.length; index += 1) {
+    for (let index = 0; index < targetAdapters.length; index += 1) {
       if (index > 0) {
         yield* Console.log('');
       }
@@ -99,7 +99,7 @@ const applyTheme = (themeId: string) =>
   Effect.gen(function* () {
     const theme = yield* loadTheme(themeId);
 
-    for (const adapter of m1Adapters) {
+    for (const adapter of targetAdapters) {
       yield* adapter.apply(theme);
     }
   });

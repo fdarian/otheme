@@ -111,6 +111,7 @@ export const Theme = Schema.Struct({
 export type ClaudeCodeTarget = typeof ClaudeCodeTarget.Type;
 export type GhosttyAuthorTarget = typeof GhosttyAuthorTarget.Type;
 export type GhosttyMapTarget = typeof GhosttyMapTarget.Type;
+export type GhosttyTarget = GhosttyAuthorTarget | GhosttyMapTarget;
 export type NvimTarget = typeof NvimTarget.Type;
 export type SyntaxColors = typeof SyntaxColors.Type;
 export type Target = typeof Target.Type;
