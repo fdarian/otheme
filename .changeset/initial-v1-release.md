@@ -1,5 +1,5 @@
 ---
-"otheme": major
+"otheme": minor
 ---
 
 Initial release of otheme v1.
