@@ -7,6 +7,7 @@ import {
   Path,
   Schema,
 } from 'effect';
+import { ConfigInvalidError } from './errors.ts';
 
 const TargetsConfig = Schema.Struct({
   'claude-code': Schema.optional(Schema.Boolean),
@@ -59,7 +60,15 @@ const readConfigFromDisk = Effect.gen(function* () {
   }
 
   const content = yield* fs.readFileString(configPath);
-  return yield* decodeOthemeConfig(content);
+  return yield* decodeOthemeConfig(content).pipe(
+    Effect.mapError(
+      (err) =>
+        new ConfigInvalidError({
+          configPath,
+          message: `Config file is invalid or outdated: ${configPath}\nReason: ${err.message}\nRun \`otheme config\` to reinitialize it.`,
+        }),
+    ),
+  );
 });
 
 const writeConfigToDisk = (config: OthemeConfig) =>
@@ -121,7 +130,15 @@ export class ConfigStore extends Context.Service<
 
         if (exists) {
           const content = yield* fs.readFileString(configPath);
-          yield* decodeOthemeConfig(content);
+          yield* decodeOthemeConfig(content).pipe(
+            Effect.mapError(
+              (err) =>
+                new ConfigInvalidError({
+                  configPath,
+                  message: `Config file is invalid or outdated: ${configPath}\nReason: ${err.message}\nRun \`otheme config\` to reinitialize it.`,
+                }),
+            ),
+          );
           return { wasCreated: false, path: configPath };
         }
 

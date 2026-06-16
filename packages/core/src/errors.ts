@@ -39,3 +39,11 @@ export class CommandExecutionError extends Schema.TaggedErrorClass<CommandExecut
     stderr: Schema.optional(Schema.String),
   },
 ) {}
+
+export class ConfigInvalidError extends Schema.TaggedErrorClass<ConfigInvalidError>()(
+  'ConfigInvalidError',
+  {
+    configPath: Schema.String,
+    message: Schema.String,
+  },
+) {}
