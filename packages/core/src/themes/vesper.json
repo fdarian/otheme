@@ -65,6 +65,9 @@
     "claude-code": {
       "mode": "map",
       "mapTo": "dark"
+    },
+    "git-delta": {
+      "features": "gruvmax-fang"
     }
   }
 }

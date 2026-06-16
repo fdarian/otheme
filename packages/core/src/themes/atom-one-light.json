@@ -65,6 +65,9 @@
     "claude-code": {
       "mode": "map",
       "mapTo": "light"
+    },
+    "git-delta": {
+      "features": "hoopoe"
     }
   }
 }

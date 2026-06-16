@@ -227,6 +227,25 @@
             }
           ]
         },
+        "git-delta": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "features": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "features"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "ghostty": {
           "anyOf": [
             {

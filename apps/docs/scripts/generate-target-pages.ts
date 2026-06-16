@@ -58,6 +58,15 @@ const targetPageConfigs = [
     slug: 'claude-code',
     title: 'claude-code',
   },
+  {
+    compatibility:
+      'Author mode. otheme writes a dedicated git include file with a `[delta]` section, deriving diff colors from the shared palette and setting the `features` field to a named delta theme.',
+    id: 'git-delta',
+    intro:
+      'The git-delta target writes ~/.config/git/otheme-delta.conf with palette-derived diff colors and ensures ~/.gitconfig includes it.',
+    slug: 'git-delta',
+    title: 'git-delta',
+  },
 ] as const satisfies ReadonlyArray<TargetPageConfig>;
 
 const escapeTableCell = (value: string): string => value.replaceAll('|', '\\|');

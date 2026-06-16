@@ -91,8 +91,13 @@ export const ClaudeCodeTarget = Schema.Struct({
   mode: Schema.Literal('map'),
 });
 
+export const GitDeltaTarget = Schema.Struct({
+  features: Schema.String,
+});
+
 export const Targets = Schema.Struct({
   'claude-code': Schema.optional(ClaudeCodeTarget),
+  'git-delta': Schema.optional(GitDeltaTarget),
   ghostty: Schema.optional(GhosttyTarget),
   nvim: Schema.optional(NvimTarget),
   tmux: Schema.optional(TmuxTarget),
@@ -108,6 +113,7 @@ export const Theme = Schema.Struct({
 });
 
 export type ClaudeCodeTarget = typeof ClaudeCodeTarget.Type;
+export type GitDeltaTarget = typeof GitDeltaTarget.Type;
 export type GhosttyAuthorTarget = typeof GhosttyAuthorTarget.Type;
 export type GhosttyMapTarget = typeof GhosttyMapTarget.Type;
 export type GhosttyTarget = typeof GhosttyTarget.Type;

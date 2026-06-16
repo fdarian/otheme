@@ -4,6 +4,7 @@ import type { AdapterPlan } from '../target-adapter.ts';
 import type {
   ClaudeCodeTarget,
   GhosttyTarget,
+  GitDeltaTarget,
   NvimTarget,
   Theme,
   TmuxTarget,
@@ -21,6 +22,9 @@ export const getGhosttyTarget = (theme: Theme): GhosttyTarget | undefined =>
 export const getClaudeCodeTarget = (
   theme: Theme,
 ): ClaudeCodeTarget | undefined => theme.targets['claude-code'];
+
+export const getGitDeltaTarget = (theme: Theme): GitDeltaTarget | undefined =>
+  theme.targets['git-delta'];
 
 export const requireNvimTarget = (theme: Theme) => {
   const target = getNvimTarget(theme);
@@ -64,6 +68,18 @@ export const requireClaudeCodeTarget = (theme: Theme) => {
   if (target === undefined) {
     return Effect.fail(
       new TargetNotFoundError({ targetId: 'claude-code', themeId: theme.id }),
+    );
+  }
+
+  return Effect.succeed(target);
+};
+
+export const requireGitDeltaTarget = (theme: Theme) => {
+  const target = getGitDeltaTarget(theme);
+
+  if (target === undefined) {
+    return Effect.fail(
+      new TargetNotFoundError({ targetId: 'git-delta', themeId: theme.id }),
     );
   }
 

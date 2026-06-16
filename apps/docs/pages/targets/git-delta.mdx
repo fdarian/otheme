@@ -1,0 +1,27 @@
+---
+title: git-delta
+description: Files and commands used by the git-delta target.
+---
+
+# git-delta
+
+The git-delta target writes ~/.config/git/otheme-delta.conf with palette-derived diff colors and ensures ~/.gitconfig includes it.
+
+This page is generated from the adapter plan used by `otheme set vesper --dry-run`. Paths are shown exactly as otheme prints them; `~` means your home directory.
+
+## Compatibility
+
+Author mode. otheme writes a dedicated git include file with a `[delta]` section, deriving diff colors from the shared palette and setting the `features` field to a named delta theme.
+
+## Files
+
+| Order | File | What otheme writes |
+| --- | --- | --- |
+| 1 | `~/.config/git/otheme-delta.conf` | write [delta] config with features=gruvmax-fang and palette-derived diff colors |
+| 2 | `~/.gitconfig` | add [include] path = ~/.config/git/otheme-delta.conf if not already present |
+
+## Commands
+
+| Order | Command | Why it runs |
+| --- | --- | --- |
+| 1 | `git config --global --list` | check whether the otheme delta include is already present in ~/.gitconfig |
