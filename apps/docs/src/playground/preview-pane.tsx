@@ -268,13 +268,18 @@ export function PreviewPane(props: PreviewPaneProps) {
           onClick={() => setPrefixActive((prev) => !prev)}
           style={{
             padding: '0.2rem 0.7rem',
-            borderRadius: '0.25rem',
-            border: '1px solid #d1d5db',
-            background: prefixActive ? '#111827' : '#fff',
-            color: prefixActive ? '#fff' : '#111827',
+            borderRadius: 'var(--vocs-radius-sm)',
+            border: '1px solid var(--vocs-border-color-primary)',
+            background: prefixActive
+              ? 'var(--vocs-color-accent)'
+              : 'var(--vocs-background-color-primary)',
+            color: prefixActive
+              ? 'var(--vocs-color-accentInvert)'
+              : 'var(--vocs-text-color-primary)',
             cursor: 'pointer',
             fontSize: '0.75rem',
             fontWeight: 500,
+            fontFamily: 'var(--vocs-font-sans)',
           }}
         >
           prefix active

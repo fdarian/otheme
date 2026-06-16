@@ -55,8 +55,8 @@ function ColorField(props: {
         style={{
           width: '1.5rem',
           height: '1.5rem',
-          borderRadius: '0.25rem',
-          border: '1px solid #d1d5db',
+          borderRadius: 'var(--vocs-radius-sm)',
+          border: '1px solid var(--vocs-border-color-primary)',
           background: props.value,
           cursor: 'pointer',
           flexShrink: 0,
@@ -67,9 +67,9 @@ function ColorField(props: {
       <span
         style={{
           fontSize: '0.75rem',
-          color: '#374151',
+          color: 'var(--vocs-text-color-secondary)',
           minWidth: '9rem',
-          fontFamily: 'monospace',
+          fontFamily: 'var(--vocs-font-mono)',
         }}
       >
         {props.label}
@@ -87,11 +87,13 @@ function ColorField(props: {
         style={{
           width: '5.5rem',
           fontSize: '0.75rem',
-          fontFamily: 'monospace',
+          fontFamily: 'var(--vocs-font-mono)',
           padding: '0.15rem 0.35rem',
-          border: '1px solid #d1d5db',
-          borderRadius: '0.25rem',
+          border: '1px solid var(--vocs-border-color-primary)',
+          borderRadius: 'var(--vocs-radius-sm)',
           outline: 'none',
+          background: 'var(--vocs-background-color-surface)',
+          color: 'var(--vocs-text-color-primary)',
         }}
       />
       {open && (
@@ -101,9 +103,9 @@ function ColorField(props: {
             top: '2rem',
             left: 0,
             zIndex: 100,
-            background: '#fff',
-            border: '1px solid #d1d5db',
-            borderRadius: '0.5rem',
+            background: 'var(--vocs-background-color-surface)',
+            border: '1px solid var(--vocs-border-color-primary)',
+            borderRadius: 'var(--vocs-radius-lg)',
             padding: '0.5rem',
             boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
           }}
@@ -128,13 +130,13 @@ function ColorGroup<T extends Record<string, string>>(props: {
     <section style={{ marginBottom: '1.25rem' }}>
       <h3
         style={{
-          fontSize: '0.8rem',
+          fontSize: '0.75rem',
           fontWeight: 600,
           textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          color: '#6b7280',
-          marginBottom: '0.5rem',
+          letterSpacing: '0.06em',
+          color: 'var(--vocs-text-color-muted)',
           margin: '0 0 0.5rem',
+          fontFamily: 'var(--vocs-font-sans)',
         }}
       >
         {props.label}
@@ -198,21 +200,21 @@ function TargetsEditor(props: {
     <section>
       <h3
         style={{
-          fontSize: '0.8rem',
+          fontSize: '0.75rem',
           fontWeight: 600,
           textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          color: '#6b7280',
-          marginBottom: '0.5rem',
+          letterSpacing: '0.06em',
+          color: 'var(--vocs-text-color-muted)',
           margin: '0 0 0.5rem',
+          fontFamily: 'var(--vocs-font-sans)',
         }}
       >
         Targets
       </h3>
       <div
         style={{
-          border: '1px solid #d1d5db',
-          borderRadius: '0.375rem',
+          border: '1px solid var(--vocs-border-color-primary)',
+          borderRadius: 'var(--vocs-radius-md)',
           overflow: 'hidden',
         }}
       >
@@ -267,6 +269,7 @@ export function EditorPane(props: EditorPaneProps) {
         boxSizing: 'border-box',
         height: '100%',
         overflowY: 'auto',
+        fontFamily: 'var(--vocs-font-sans)',
       }}
     >
       <section
@@ -286,17 +289,27 @@ export function EditorPane(props: EditorPaneProps) {
             fontSize: '0.85rem',
           }}
         >
-          <span style={{ fontWeight: 600, color: '#374151' }}>Name</span>
+          <span
+            style={{
+              fontWeight: 600,
+              color: 'var(--vocs-text-color-primary)',
+            }}
+          >
+            Name
+          </span>
           <input
             type="text"
             value={props.theme.name}
             onChange={handleNameChange}
             style={{
               fontSize: '0.85rem',
+              fontFamily: 'var(--vocs-font-sans)',
               padding: '0.2rem 0.5rem',
-              border: '1px solid #d1d5db',
-              borderRadius: '0.25rem',
+              border: '1px solid var(--vocs-border-color-primary)',
+              borderRadius: 'var(--vocs-radius-sm)',
               outline: 'none',
+              background: 'var(--vocs-background-color-surface)',
+              color: 'var(--vocs-text-color-primary)',
             }}
           />
         </label>
@@ -309,20 +322,33 @@ export function EditorPane(props: EditorPaneProps) {
             cursor: 'pointer',
           }}
         >
-          <span style={{ fontWeight: 600, color: '#374151' }}>Appearance</span>
+          <span
+            style={{
+              fontWeight: 600,
+              color: 'var(--vocs-text-color-primary)',
+            }}
+          >
+            Appearance
+          </span>
           <button
             type="button"
             onClick={handleAppearanceToggle}
             style={{
               padding: '0.2rem 0.75rem',
-              borderRadius: '0.25rem',
-              border: '1px solid #d1d5db',
+              borderRadius: 'var(--vocs-radius-sm)',
+              border: '1px solid var(--vocs-border-color-primary)',
               background:
-                props.theme.appearance === 'dark' ? '#111827' : '#f9fafb',
-              color: props.theme.appearance === 'dark' ? '#fff' : '#111827',
+                props.theme.appearance === 'dark'
+                  ? 'var(--vocs-color-accent)'
+                  : 'var(--vocs-background-color-surface)',
+              color:
+                props.theme.appearance === 'dark'
+                  ? 'var(--vocs-color-accentInvert)'
+                  : 'var(--vocs-text-color-primary)',
               cursor: 'pointer',
               fontSize: '0.8rem',
               fontWeight: 500,
+              fontFamily: 'var(--vocs-font-sans)',
             }}
           >
             {props.theme.appearance}
@@ -331,7 +357,10 @@ export function EditorPane(props: EditorPaneProps) {
       </section>
 
       <div
-        style={{ borderBottom: '1px solid #e5e7eb', marginBottom: '1.25rem' }}
+        style={{
+          borderBottom: '1px solid var(--vocs-border-color-primary)',
+          marginBottom: '1.25rem',
+        }}
       />
 
       <ColorGroup<UiColors>
@@ -341,7 +370,10 @@ export function EditorPane(props: EditorPaneProps) {
       />
 
       <div
-        style={{ borderBottom: '1px solid #e5e7eb', marginBottom: '1.25rem' }}
+        style={{
+          borderBottom: '1px solid var(--vocs-border-color-primary)',
+          marginBottom: '1.25rem',
+        }}
       />
 
       <ColorGroup<SyntaxColors>
@@ -351,7 +383,10 @@ export function EditorPane(props: EditorPaneProps) {
       />
 
       <div
-        style={{ borderBottom: '1px solid #e5e7eb', marginBottom: '1.25rem' }}
+        style={{
+          borderBottom: '1px solid var(--vocs-border-color-primary)',
+          marginBottom: '1.25rem',
+        }}
       />
 
       <TargetsEditor

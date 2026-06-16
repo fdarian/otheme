@@ -48,6 +48,8 @@ export function PlaygroundApp() {
         flexDirection: 'column',
         height: '100dvh',
         overflow: 'hidden',
+        background: 'var(--vocs-background-color-primary)',
+        fontFamily: 'var(--vocs-font-sans)',
       }}
     >
       <div
@@ -56,11 +58,21 @@ export function PlaygroundApp() {
           alignItems: 'center',
           gap: '0.5rem',
           padding: '0.5rem 1rem',
-          borderBottom: '1px solid #e5e7eb',
+          borderBottom: '1px solid var(--vocs-border-color-primary)',
+          background: 'var(--vocs-background-color-surface)',
           flexShrink: 0,
+          fontFamily: 'var(--vocs-font-sans)',
         }}
       >
-        <span style={{ fontWeight: 600, marginRight: '0.5rem' }}>Preset:</span>
+        <span
+          style={{
+            fontWeight: 600,
+            color: 'var(--vocs-text-color-primary)',
+            marginRight: '0.25rem',
+          }}
+        >
+          Preset:
+        </span>
         {(Object.keys(PRESETS) as PresetId[]).map((id) => (
           <button
             key={id}
@@ -68,12 +80,19 @@ export function PlaygroundApp() {
             onClick={() => handlePresetChange(id)}
             style={{
               padding: '0.25rem 0.75rem',
-              borderRadius: '0.375rem',
-              border: '1px solid #d1d5db',
-              background: activePreset === id ? '#111827' : '#fff',
-              color: activePreset === id ? '#fff' : '#111827',
+              borderRadius: 'var(--vocs-radius-md)',
+              border: '1px solid var(--vocs-border-color-primary)',
+              background:
+                activePreset === id
+                  ? 'var(--vocs-color-accent)'
+                  : 'var(--vocs-background-color-primary)',
+              color:
+                activePreset === id
+                  ? 'var(--vocs-color-accentInvert)'
+                  : 'var(--vocs-text-color-primary)',
               cursor: 'pointer',
               fontWeight: activePreset === id ? 600 : 400,
+              fontFamily: 'var(--vocs-font-sans)',
             }}
           >
             {PRESET_LABELS[id]}
@@ -85,10 +104,12 @@ export function PlaygroundApp() {
             onClick={handleReset}
             style={{
               padding: '0.25rem 0.75rem',
-              borderRadius: '0.375rem',
-              border: '1px solid #d1d5db',
-              background: '#fff',
+              borderRadius: 'var(--vocs-radius-md)',
+              border: '1px solid var(--vocs-border-color-primary)',
+              background: 'var(--vocs-background-color-primary)',
+              color: 'var(--vocs-text-color-primary)',
               cursor: 'pointer',
+              fontFamily: 'var(--vocs-font-sans)',
             }}
           >
             Reset
@@ -98,10 +119,12 @@ export function PlaygroundApp() {
             onClick={handleCopyJson}
             style={{
               padding: '0.25rem 0.75rem',
-              borderRadius: '0.375rem',
-              border: '1px solid #d1d5db',
-              background: '#fff',
+              borderRadius: 'var(--vocs-radius-md)',
+              border: '1px solid var(--vocs-border-color-primary)',
+              background: 'var(--vocs-background-color-primary)',
+              color: 'var(--vocs-text-color-primary)',
               cursor: 'pointer',
+              fontFamily: 'var(--vocs-font-sans)',
             }}
           >
             Copy JSON
@@ -116,10 +139,21 @@ export function PlaygroundApp() {
           overflow: 'hidden',
         }}
       >
-        <div style={{ borderRight: '1px solid #e5e7eb', overflow: 'auto' }}>
+        <div
+          style={{
+            borderRight: '1px solid var(--vocs-border-color-primary)',
+            overflow: 'auto',
+            background: 'var(--vocs-background-color-primary)',
+          }}
+        >
           <EditorPane theme={theme} onChange={setTheme} />
         </div>
-        <div style={{ overflow: 'auto' }}>
+        <div
+          style={{
+            overflow: 'auto',
+            background: 'var(--vocs-background-color-surface)',
+          }}
+        >
           <PreviewPane theme={theme} />
         </div>
       </div>
