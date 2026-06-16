@@ -5,6 +5,8 @@ import { useState } from 'react';
 import type {
   DiffLine,
   DiffSpan,
+  LogLine,
+  LogUiKey,
   PromptLine,
   SampleLine,
   Span,
@@ -14,11 +16,11 @@ import {
   APPLY_SUCCESS,
   CODE_SAMPLE,
   DIFF_SAMPLE,
+  LOG_SAMPLE,
   MARKDOWN_SAMPLE,
   PROMPT_APPLY,
-  PROMPT_CODE,
   PROMPT_DIFF,
-  PROMPT_README,
+  PROMPT_TRAIL,
 } from './preview-sample';
 import type { PaletteField, PreviewPaneProps } from './types';
 
@@ -237,6 +239,7 @@ function Prompt(props: {
   theme: Theme;
   prompt: PromptLine;
   inspect: InspectContext;
+  cursor?: boolean;
 }) {
   return (
     <div style={{ display: 'flex', gap: '0.5rem', whiteSpace: 'pre' }}>
@@ -268,6 +271,57 @@ function Prompt(props: {
       >
         {props.prompt.command}
       </InspectableSpan>
+      {props.cursor === true && (
+        <InspectableSpan
+          color={props.theme.ui.accent}
+          field={{ group: 'ui', key: 'accent' }}
+          inspect={props.inspect}
+          style={{
+            display: 'inline-block',
+            width: '0.55rem',
+            height: '1.05rem',
+            background: props.theme.ui.accent,
+          }}
+        >
+          {' '}
+        </InspectableSpan>
+      )}
+    </div>
+  );
+}
+
+/** Resolve a log segment's semantic ui field to a color. */
+function logColor(theme: Theme, ui: LogUiKey) {
+  return theme.ui[ui];
+}
+
+/** The build/server log stream (window 2), exercising the semantic ui palette. */
+function LogLines(props: {
+  theme: Theme;
+  lines: LogLine[];
+  inspect: InspectContext;
+}) {
+  return (
+    <div>
+      {props.lines.map((line, index) => (
+        <div
+          // biome-ignore lint/suspicious/noArrayIndexKey: static sample, index is stable
+          key={index}
+          style={{ whiteSpace: 'pre' }}
+        >
+          {line.map((seg, segIndex) => (
+            <InspectableSpan
+              // biome-ignore lint/suspicious/noArrayIndexKey: static sample, index is stable
+              key={segIndex}
+              color={logColor(props.theme, seg.ui)}
+              field={{ group: 'ui', key: seg.ui }}
+              inspect={props.inspect}
+            >
+              {seg.text}
+            </InspectableSpan>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
@@ -483,104 +537,118 @@ function SuccessLine(props: { theme: Theme; inspect: InspectContext }) {
   );
 }
 
-/** A blinking-style block cursor after the final prompt. */
-function PromptCursor(props: { theme: Theme; inspect: InspectContext }) {
-  return (
-    <div style={{ display: 'flex', gap: '0.5rem', whiteSpace: 'pre' }}>
-      <InspectableSpan
-        color={props.theme.ui.accent}
-        field={{ group: 'ui', key: 'accent' }}
-        inspect={props.inspect}
-      >
-        {PROMPT_README.dir}
-      </InspectableSpan>
-      <InspectableSpan
-        color={props.theme.ui.fgMuted}
-        field={{ group: 'ui', key: 'fgMuted' }}
-        inspect={props.inspect}
-      >
-        {PROMPT_README.branch}
-      </InspectableSpan>
-      <InspectableSpan
-        color={props.theme.ui.success}
-        field={{ group: 'ui', key: 'success' }}
-        inspect={props.inspect}
-      >
-        ❯
-      </InspectableSpan>
-      <InspectableSpan
-        color={props.theme.ui.accent}
-        field={{ group: 'ui', key: 'accent' }}
-        inspect={props.inspect}
-        style={{
-          display: 'inline-block',
-          width: '0.55rem',
-          height: '1.05rem',
-          background: props.theme.ui.accent,
-        }}
-      >
-        {' '}
-      </InspectableSpan>
-    </div>
-  );
-}
+/** The id of each tmux window the user can switch between. */
+type WindowId = 'zsh' | 'logs' | 'editor' | 'docs';
 
-/** The scrollback: prompts whose output is the existing sample data. */
-function Session(props: { theme: Theme; inspect: InspectContext }) {
+const WINDOW_TABS: { id: WindowId; label: string }[] = [
+  { id: 'zsh', label: '1:zsh' },
+  { id: 'logs', label: '2:logs' },
+  { id: 'editor', label: '3:editor' },
+  { id: 'docs', label: '4:docs' },
+];
+
+/** Fills the canvas body, scrolling on its own when the window overflows. */
+function WindowBody(props: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.6rem',
+        flex: 1,
+        minHeight: 0,
+        overflow: 'auto',
+        padding: '0.85rem',
         fontSize: '0.8rem',
         lineHeight: 1.6,
       }}
     >
-      <div>
-        <Prompt
-          theme={props.theme}
-          prompt={PROMPT_README}
-          inspect={props.inspect}
-        />
-        <OutputLines
-          theme={props.theme}
-          lines={MARKDOWN_SAMPLE}
-          inspect={props.inspect}
-        />
-      </div>
-      <div>
-        <Prompt
-          theme={props.theme}
-          prompt={PROMPT_CODE}
-          inspect={props.inspect}
-        />
-        <CodeLines
-          theme={props.theme}
-          lines={CODE_SAMPLE}
-          startLine={1}
-          inspect={props.inspect}
-        />
-      </div>
-      <div>
-        <Prompt
-          theme={props.theme}
-          prompt={PROMPT_DIFF}
-          inspect={props.inspect}
-        />
-        <DiffRegion theme={props.theme} inspect={props.inspect} />
-      </div>
-      <div>
-        <Prompt
-          theme={props.theme}
-          prompt={PROMPT_APPLY}
-          inspect={props.inspect}
-        />
-        <SuccessLine theme={props.theme} inspect={props.inspect} />
-      </div>
-      <PromptCursor theme={props.theme} inspect={props.inspect} />
+      {props.children}
     </div>
   );
+}
+
+/** Window 1: a short shell session — git-delta diff then `otheme set`. */
+function ShellWindow(props: { theme: Theme; inspect: InspectContext }) {
+  return (
+    <WindowBody>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+        <div>
+          <Prompt
+            theme={props.theme}
+            prompt={PROMPT_DIFF}
+            inspect={props.inspect}
+          />
+          <DiffRegion theme={props.theme} inspect={props.inspect} />
+        </div>
+        <div>
+          <Prompt
+            theme={props.theme}
+            prompt={PROMPT_APPLY}
+            inspect={props.inspect}
+          />
+          <SuccessLine theme={props.theme} inspect={props.inspect} />
+        </div>
+        <Prompt
+          theme={props.theme}
+          prompt={PROMPT_TRAIL}
+          inspect={props.inspect}
+          cursor
+        />
+      </div>
+    </WindowBody>
+  );
+}
+
+/** Window 2: the log stream. */
+function LogsWindow(props: { theme: Theme; inspect: InspectContext }) {
+  return (
+    <WindowBody>
+      <LogLines
+        theme={props.theme}
+        lines={LOG_SAMPLE}
+        inspect={props.inspect}
+      />
+    </WindowBody>
+  );
+}
+
+/** Window 3: nvim editing card.tsx. */
+function EditorWindow(props: { theme: Theme; inspect: InspectContext }) {
+  return (
+    <WindowBody>
+      <CodeLines
+        theme={props.theme}
+        lines={CODE_SAMPLE}
+        startLine={1}
+        inspect={props.inspect}
+      />
+    </WindowBody>
+  );
+}
+
+/** Window 4: the rendered markdown doc. */
+function DocsWindow(props: { theme: Theme; inspect: InspectContext }) {
+  return (
+    <WindowBody>
+      <OutputLines
+        theme={props.theme}
+        lines={MARKDOWN_SAMPLE}
+        inspect={props.inspect}
+      />
+    </WindowBody>
+  );
+}
+
+function ActiveWindow(props: {
+  window: WindowId;
+  theme: Theme;
+  inspect: InspectContext;
+}) {
+  if (props.window === 'zsh')
+    return <ShellWindow theme={props.theme} inspect={props.inspect} />;
+  if (props.window === 'logs')
+    return <LogsWindow theme={props.theme} inspect={props.inspect} />;
+  if (props.window === 'editor')
+    return <EditorWindow theme={props.theme} inspect={props.inspect} />;
+  return <DocsWindow theme={props.theme} inspect={props.inspect} />;
 }
 
 /** Prefer the tmux target's muted color, fall back to the ui muted foreground. */
@@ -590,9 +658,42 @@ function tmuxMuted(theme: Theme) {
   return theme.ui.fgMuted;
 }
 
+/**
+ * A clickable tmux window tab. This is a real control, not an inspect target —
+ * clicking always switches the window, even while inspect mode is on, so the
+ * tab takes precedence over color inspection.
+ */
+function WindowTab(props: {
+  theme: Theme;
+  label: string;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className={TOGGLE_CLASS}
+      onClick={props.onSelect}
+      aria-pressed={props.active}
+      style={{
+        all: 'unset',
+        cursor: 'pointer',
+        padding: '0 0.1rem',
+        borderRadius: '0.15rem',
+        color: props.active ? props.theme.ui.accent : tmuxMuted(props.theme),
+        fontWeight: props.active ? 700 : 400,
+      }}
+    >
+      {props.label}
+    </button>
+  );
+}
+
 function TmuxBar(props: {
   theme: Theme;
   prefixActive: boolean;
+  activeWindow: WindowId;
+  onSelectWindow: (window: WindowId) => void;
   inspect: InspectContext;
 }) {
   const muted = tmuxMuted(props.theme);
@@ -609,20 +710,15 @@ function TmuxBar(props: {
         borderBottom: `1px solid ${props.theme.ui.border}`,
       }}
     >
-      <InspectableSpan color={muted} field={mutedField} inspect={props.inspect}>
-        1:zsh
-      </InspectableSpan>
-      <InspectableSpan color={muted} field={mutedField} inspect={props.inspect}>
-        2:logs
-      </InspectableSpan>
-      <InspectableSpan
-        color={props.theme.ui.accent}
-        field={{ group: 'ui', key: 'accent' }}
-        inspect={props.inspect}
-        style={{ fontWeight: 700 }}
-      >
-        3:editor
-      </InspectableSpan>
+      {WINDOW_TABS.map((tab) => (
+        <WindowTab
+          key={tab.id}
+          theme={props.theme}
+          label={tab.label}
+          active={props.activeWindow === tab.id}
+          onSelect={() => props.onSelectWindow(tab.id)}
+        />
+      ))}
       <InspectableSpan
         color={props.prefixActive ? props.theme.ui.accentFg : muted}
         field={
@@ -682,6 +778,7 @@ function ToggleButton(props: {
 
 export function PreviewPane(props: PreviewPaneProps) {
   const [prefixActive, setPrefixActive] = useState(false);
+  const [activeWindow, setActiveWindow] = useState<WindowId>('zsh');
   const [hovered, setHovered] = useState<HoverTarget | null>(null);
 
   const inspect: InspectContext = {
@@ -794,19 +891,15 @@ export function PreviewPane(props: PreviewPaneProps) {
         <TmuxBar
           theme={props.theme}
           prefixActive={prefixActive}
+          activeWindow={activeWindow}
+          onSelectWindow={setActiveWindow}
           inspect={inspect}
         />
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            padding: '0.85rem',
-            overflow: 'auto',
-          }}
-        >
-          <Session theme={props.theme} inspect={inspect} />
-        </div>
+        <ActiveWindow
+          window={activeWindow}
+          theme={props.theme}
+          inspect={inspect}
+        />
       </div>
       {props.inspectMode && hovered !== null && (
         <InspectTooltip target={hovered} />

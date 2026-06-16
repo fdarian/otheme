@@ -1,9 +1,16 @@
 /**
- * Pre-tokenized code sample for the preview pane.
+ * Pre-tokenized samples for the preview pane.
  *
- * Each token name maps directly to a key in SyntaxColors or to 'comment'
- * (ui.comment) or 'plain' (ui.fg). This lets the preview pane color every
- * span without pulling in a real syntax highlighter.
+ * The preview is framed as four tmux windows. Each window draws from its own
+ * sample below, and the syntax/ui token coverage is spread across them:
+ *   1:zsh    -> a shell session (git-delta diff + `otheme set` success)
+ *   2:logs   -> a log stream exercising the semantic ui palette
+ *   3:editor -> a TS/JSX file exercising every syntax token
+ *   4:docs   -> a markdown doc exercising the markup tokens
+ *
+ * Each syntax token name maps directly to a key in SyntaxColors or to
+ * 'comment' (ui.comment) or 'plain' (ui.fg), so the preview can color every
+ * span without a real highlighter.
  */
 
 export type TokenKind =
@@ -33,98 +40,136 @@ export type Span = { text: string; token: TokenKind };
 
 export type SampleLine = Span[];
 
-/** TypeScript + TSX snippet that exercises every syntax token. */
+/**
+ * Window 3 (editor): a believable TS/TSX file that exercises every syntax
+ * token — attribute, constant, func, keyword, number, operator, punctuation,
+ * punctuationSpecial, string, stringEscape, stringSpecial, tag, type,
+ * variable, variableBuiltin, variableMember (+ comment).
+ */
 export const CODE_SAMPLE: SampleLine[] = [
-  // import keyword, variable, string, punctuationSpecial
   [
     { text: 'import ', token: 'keyword' },
     { text: '{', token: 'punctuationSpecial' },
-    { text: ' useState ', token: 'variable' },
+    { text: ' useState', token: 'variable' },
+    { text: ', ', token: 'punctuation' },
+    { text: 'useMemo ', token: 'variable' },
     { text: '}', token: 'punctuationSpecial' },
     { text: " from '", token: 'plain' },
     { text: 'react', token: 'string' },
     { text: "'", token: 'plain' },
+    { text: ';', token: 'punctuation' },
   ],
-  // blank line
+  [
+    { text: 'import ', token: 'keyword' },
+    { text: 'type ', token: 'keyword' },
+    { text: '{', token: 'punctuationSpecial' },
+    { text: ' User ', token: 'type' },
+    { text: '}', token: 'punctuationSpecial' },
+    { text: " from './", token: 'plain' },
+    { text: 'user', token: 'string' },
+    { text: "'", token: 'plain' },
+    { text: ';', token: 'punctuation' },
+  ],
   [{ text: '', token: 'plain' }],
-  // type alias
+  [
+    {
+      text: '/** Maximum greetings before we rate-limit. */',
+      token: 'comment',
+    },
+  ],
+  [
+    { text: 'const ', token: 'keyword' },
+    { text: 'MAX_GREETINGS', token: 'constant' },
+    { text: ' = ', token: 'operator' },
+    { text: '100', token: 'number' },
+    { text: ';', token: 'punctuation' },
+  ],
+  [{ text: '', token: 'plain' }],
   [
     { text: 'type ', token: 'keyword' },
-    { text: 'Config', token: 'type' },
+    { text: 'CardProps', token: 'type' },
     { text: ' = ', token: 'operator' },
     { text: '{', token: 'punctuation' },
   ],
-  // attribute (object key), type annotation
   [
     { text: '  ', token: 'plain' },
-    { text: 'name', token: 'attribute' },
+    { text: 'user', token: 'attribute' },
     { text: ': ', token: 'punctuation' },
-    { text: 'string', token: 'type' },
+    { text: 'User', token: 'type' },
     { text: ';', token: 'punctuation' },
   ],
   [
     { text: '  ', token: 'plain' },
-    { text: 'retries', token: 'attribute' },
+    { text: 'count', token: 'attribute' },
     { text: ': ', token: 'punctuation' },
     { text: 'number', token: 'type' },
     { text: ';', token: 'punctuation' },
   ],
   [{ text: '}', token: 'punctuation' }],
-  // blank
   [{ text: '', token: 'plain' }],
-  // const, constant
   [
-    { text: 'const ', token: 'keyword' },
-    { text: 'MAX_RETRIES', token: 'constant' },
-    { text: ' = ', token: 'operator' },
-    { text: '3', token: 'number' },
-    { text: ';', token: 'punctuation' },
-  ],
-  // blank
-  [{ text: '', token: 'plain' }],
-  // comment
-  [{ text: '/** Render a greeting card. */', token: 'comment' }],
-  // function with generic type, variableBuiltin (this), punctuation
-  [
+    { text: 'export ', token: 'keyword' },
     { text: 'function ', token: 'keyword' },
     { text: 'Card', token: 'func' },
-    { text: '<', token: 'punctuation' },
-    { text: 'T', token: 'type' },
-    { text: '>(', token: 'punctuation' },
+    { text: '(', token: 'punctuation' },
     { text: 'props', token: 'variable' },
     { text: ': ', token: 'punctuation' },
-    { text: 'T', token: 'type' },
+    { text: 'CardProps', token: 'type' },
     { text: ') {', token: 'punctuation' },
   ],
-  // variableBuiltin (console), variableMember (.log)
+  [
+    { text: '  const ', token: 'keyword' },
+    { text: 'name', token: 'variable' },
+    { text: ' = ', token: 'operator' },
+    { text: 'props', token: 'variable' },
+    { text: '.', token: 'punctuation' },
+    { text: 'user', token: 'variableMember' },
+    { text: '.', token: 'punctuation' },
+    { text: 'name', token: 'variableMember' },
+    { text: ';', token: 'punctuation' },
+  ],
+  [
+    { text: '  const ', token: 'keyword' },
+    { text: 'greeting', token: 'variable' },
+    { text: ' = ', token: 'operator' },
+    { text: '`Hi ', token: 'string' },
+    { text: '$', token: 'punctuationSpecial' },
+    { text: '{', token: 'punctuationSpecial' },
+    { text: 'name', token: 'variable' },
+    { text: '}', token: 'punctuationSpecial' },
+    { text: '!', token: 'string' },
+    { text: '\\n', token: 'stringEscape' },
+    { text: '`', token: 'stringSpecial' },
+    { text: ';', token: 'punctuation' },
+  ],
   [
     { text: '  ', token: 'plain' },
     { text: 'console', token: 'variableBuiltin' },
     { text: '.', token: 'punctuation' },
     { text: 'log', token: 'variableMember' },
     { text: '(', token: 'punctuation' },
-    { text: 'props', token: 'variable' },
+    { text: 'greeting', token: 'variable' },
     { text: ');', token: 'punctuation' },
   ],
-  // string with stringEscape and stringSpecial
   [
     { text: '  const ', token: 'keyword' },
-    { text: 'msg', token: 'variable' },
+    { text: 'label', token: 'variable' },
     { text: ' = ', token: 'operator' },
-    { text: '`Hello ', token: 'string' },
-    { text: '\\n', token: 'stringEscape' },
-    { text: '$', token: 'punctuationSpecial' },
-    { text: '{', token: 'punctuationSpecial' },
-    { text: 'name', token: 'variable' },
-    { text: '}', token: 'punctuationSpecial' },
-    { text: '`', token: 'stringSpecial' },
-    { text: ';', token: 'punctuation' },
+    { text: 'useMemo', token: 'func' },
+    { text: '(', token: 'punctuation' },
+    { text: '() ', token: 'punctuation' },
+    { text: '=>', token: 'operator' },
+    { text: ' props', token: 'variable' },
+    { text: '.', token: 'punctuation' },
+    { text: 'count', token: 'variableMember' },
+    { text: ', [', token: 'punctuation' },
+    { text: 'props', token: 'variable' },
+    { text: ']);', token: 'punctuation' },
   ],
-  // return JSX — tag, attribute
   [{ text: '  return (', token: 'punctuation' }],
   [
     { text: '    <', token: 'punctuation' },
-    { text: 'div', token: 'tag' },
+    { text: 'section', token: 'tag' },
     { text: ' ', token: 'plain' },
     { text: 'className', token: 'attribute' },
     { text: '=', token: 'operator' },
@@ -132,33 +177,88 @@ export const CODE_SAMPLE: SampleLine[] = [
     { text: '>', token: 'punctuation' },
   ],
   [
-    { text: '      ', token: 'plain' },
+    { text: '      <', token: 'punctuation' },
+    { text: 'h2', token: 'tag' },
+    { text: '>', token: 'punctuation' },
     { text: '{', token: 'punctuationSpecial' },
-    { text: 'msg', token: 'variable' },
+    { text: 'greeting', token: 'variable' },
     { text: '}', token: 'punctuationSpecial' },
+    { text: '</', token: 'punctuation' },
+    { text: 'h2', token: 'tag' },
+    { text: '>', token: 'punctuation' },
+  ],
+  [
+    { text: '      <', token: 'punctuation' },
+    { text: 'span', token: 'tag' },
+    { text: '>', token: 'punctuation' },
+    { text: '{', token: 'punctuationSpecial' },
+    { text: 'label', token: 'variable' },
+    { text: '}', token: 'punctuationSpecial' },
+    { text: '</', token: 'punctuation' },
+    { text: 'span', token: 'tag' },
+    { text: '>', token: 'punctuation' },
   ],
   [
     { text: '    </', token: 'punctuation' },
-    { text: 'div', token: 'tag' },
+    { text: 'section', token: 'tag' },
     { text: '>', token: 'punctuation' },
   ],
   [{ text: '  );', token: 'punctuation' }],
   [{ text: '}', token: 'punctuation' }],
 ];
 
-/** Short markdown block to show markupHeading, markupLink, markupList. */
+/**
+ * Window 4 (docs): a fuller markdown doc — headings, a paragraph with a link,
+ * a bullet list, a numbered list, inline code, a fenced code block, and a
+ * blockquote — exercising markupHeading / markupLink / markupList.
+ */
 export const MARKDOWN_SAMPLE: SampleLine[] = [
-  [{ text: '# README', token: 'markupHeading' }],
+  [{ text: '# otheme', token: 'markupHeading' }],
+  [{ text: '', token: 'plain' }],
+  [
+    { text: 'One theme JSON, every tool. See ', token: 'plain' },
+    { text: '[the docs](https://otheme.dev)', token: 'markupLink' },
+    { text: ' to start.', token: 'plain' },
+  ],
+  [{ text: '', token: 'plain' }],
+  [{ text: '## Targets', token: 'markupHeading' }],
   [{ text: '', token: 'plain' }],
   [
     { text: '- ', token: 'markupList' },
+    { text: 'nvim, tmux, ghostty, git-delta', token: 'plain' },
+  ],
+  [
+    { text: '- ', token: 'markupList' },
+    { text: 'Run ', token: 'plain' },
+    { text: '`otheme set <name>`', token: 'stringSpecial' },
+    { text: ' to apply.', token: 'plain' },
+  ],
+  [{ text: '', token: 'plain' }],
+  [{ text: '## Quick start', token: 'markupHeading' }],
+  [{ text: '', token: 'plain' }],
+  [
+    { text: '1. ', token: 'markupList' },
     { text: 'Install with ', token: 'plain' },
     { text: '`bun install`', token: 'stringSpecial' },
   ],
   [
-    { text: '- ', token: 'markupList' },
-    { text: 'Docs: ', token: 'plain' },
-    { text: '[otheme.dev](https://otheme.dev)', token: 'markupLink' },
+    { text: '2. ', token: 'markupList' },
+    { text: 'Pick a preset above', token: 'plain' },
+  ],
+  [{ text: '', token: 'plain' }],
+  [{ text: '```sh', token: 'comment' }],
+  [
+    { text: 'otheme set ', token: 'plain' },
+    { text: 'vesper', token: 'string' },
+  ],
+  [{ text: '```', token: 'comment' }],
+  [{ text: '', token: 'plain' }],
+  [
+    { text: '> ', token: 'markupList' },
+    {
+      text: 'Tip: keep your palette JSON in version control.',
+      token: 'comment',
+    },
   ],
 ];
 
@@ -221,18 +321,6 @@ export const DIFF_SAMPLE: DiffLine[] = [
 /** A zsh-style prompt line: a directory segment, a git branch, and the typed command. */
 export type PromptLine = { dir: string; branch: string; command: string };
 
-export const PROMPT_README: PromptLine = {
-  dir: '~/code/card',
-  branch: 'main',
-  command: 'cat README.md',
-};
-
-export const PROMPT_CODE: PromptLine = {
-  dir: '~/code/card',
-  branch: 'main',
-  command: 'bat src/card.tsx',
-};
-
 export const PROMPT_DIFF: PromptLine = {
   dir: '~/code/card',
   branch: 'main',
@@ -245,5 +333,96 @@ export const PROMPT_APPLY: PromptLine = {
   command: 'otheme set vesper',
 };
 
+/** Trailing prompt with a blinking cursor at the end of the shell window. */
+export const PROMPT_TRAIL: PromptLine = {
+  dir: '~/code/card',
+  branch: 'main',
+  command: '',
+};
+
 /** Success line printed after `otheme set`. */
 export const APPLY_SUCCESS = 'applied to nvim · tmux · ghostty · git-delta';
+
+/**
+ * Window 2 (logs): a build/server log stream. Each segment names the semantic
+ * ui field that drives its color, so the window exercises ui.info, ui.warning,
+ * ui.error, ui.success, ui.fgMuted (timestamps/DEBUG) and ui.hint (notices).
+ */
+export type LogUiKey =
+  | 'info'
+  | 'warning'
+  | 'error'
+  | 'success'
+  | 'fgMuted'
+  | 'hint'
+  | 'fg';
+
+export type LogSpan = { text: string; ui: LogUiKey };
+
+export type LogLine = LogSpan[];
+
+export const LOG_SAMPLE: LogLine[] = [
+  [
+    { text: '12:01:31 ', ui: 'fgMuted' },
+    { text: 'INFO  ', ui: 'info' },
+    { text: 'otheme build starting (mode=production)', ui: 'fg' },
+  ],
+  [
+    { text: '12:01:31 ', ui: 'fgMuted' },
+    { text: 'DEBUG ', ui: 'fgMuted' },
+    { text: 'resolved 4 targets: nvim, tmux, ghostty, delta', ui: 'fgMuted' },
+  ],
+  [
+    { text: '12:01:32 ', ui: 'fgMuted' },
+    { text: 'INFO  ', ui: 'info' },
+    { text: 'loaded palette vesper (40 fields)', ui: 'fg' },
+  ],
+  [
+    { text: '12:01:32 ', ui: 'fgMuted' },
+    { text: 'HINT  ', ui: 'hint' },
+    { text: 'set OTHEME_CACHE=1 to skip unchanged targets', ui: 'hint' },
+  ],
+  [
+    { text: '12:01:33 ', ui: 'fgMuted' },
+    { text: 'OK    ', ui: 'success' },
+    { text: 'wrote ~/.config/nvim/colors/vesper.lua', ui: 'fg' },
+  ],
+  [
+    { text: '12:01:33 ', ui: 'fgMuted' },
+    { text: 'OK    ', ui: 'success' },
+    { text: 'wrote ~/.config/tmux/vesper.conf', ui: 'fg' },
+  ],
+  [
+    { text: '12:01:34 ', ui: 'fgMuted' },
+    { text: 'WARN  ', ui: 'warning' },
+    { text: 'ghostty config already managed, merging keys', ui: 'fg' },
+  ],
+  [
+    { text: '12:01:34 ', ui: 'fgMuted' },
+    { text: 'OK    ', ui: 'success' },
+    { text: 'wrote ~/.config/ghostty/themes/vesper', ui: 'fg' },
+  ],
+  [
+    { text: '12:01:35 ', ui: 'fgMuted' },
+    { text: 'ERROR ', ui: 'error' },
+    { text: 'delta: ~/.gitconfig not writable, skipped', ui: 'fg' },
+  ],
+  [
+    { text: '12:01:35 ', ui: 'fgMuted' },
+    { text: 'HINT  ', ui: 'hint' },
+    {
+      text: 'fix with: chmod u+w ~/.gitconfig && otheme set vesper',
+      ui: 'hint',
+    },
+  ],
+  [
+    { text: '12:01:36 ', ui: 'fgMuted' },
+    { text: 'INFO  ', ui: 'info' },
+    { text: 'server listening on :3000', ui: 'fg' },
+  ],
+  [
+    { text: '12:01:36 ', ui: 'fgMuted' },
+    { text: 'OK    ', ui: 'success' },
+    { text: 'build finished in 1.84s (3/4 targets)', ui: 'fg' },
+  ],
+];
