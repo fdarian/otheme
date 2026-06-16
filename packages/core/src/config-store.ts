@@ -8,6 +8,41 @@ import {
   Schema,
 } from 'effect';
 import { ConfigInvalidError } from './errors.ts';
+import { GhosttyTarget, HexColor } from './theme-schema.ts';
+
+const PartialClaudeCodeTarget = Schema.Struct({
+  mapTo: Schema.optional(Schema.Literals(['dark', 'light'])),
+  mode: Schema.optional(Schema.Literal('map')),
+});
+
+const PartialGitDeltaTarget = Schema.Struct({
+  features: Schema.optional(Schema.String),
+});
+
+const PartialNvimTarget = Schema.Struct({
+  colorscheme: Schema.optional(Schema.String),
+  transparentBg: Schema.optional(Schema.Boolean),
+});
+
+const PartialTmuxTarget = Schema.Struct({
+  inactiveFg: Schema.optional(HexColor),
+  muted: Schema.optional(HexColor),
+  searchCurrent: Schema.optional(HexColor),
+  searchMatch: Schema.optional(HexColor),
+  sessionFormatter: Schema.optional(Schema.String),
+  statusRight: Schema.optional(Schema.String),
+});
+
+const PartialTargets = Schema.Struct({
+  'claude-code': Schema.optional(PartialClaudeCodeTarget),
+  'git-delta': Schema.optional(PartialGitDeltaTarget),
+  ghostty: Schema.optional(GhosttyTarget),
+  macos: Schema.optional(Schema.Struct({})),
+  nvim: Schema.optional(PartialNvimTarget),
+  tmux: Schema.optional(PartialTmuxTarget),
+});
+
+export type PartialTargets = typeof PartialTargets.Type;
 
 const TargetsConfig = Schema.Struct({
   'claude-code': Schema.optional(Schema.Boolean),
@@ -21,6 +56,7 @@ const TargetsConfig = Schema.Struct({
 export const OthemeConfig = Schema.Struct({
   $schema: Schema.optional(Schema.String),
   aliases: Schema.Record(Schema.String, Schema.String),
+  overrides: Schema.optional(Schema.Record(Schema.String, PartialTargets)),
   targets: Schema.optional(TargetsConfig),
 });
 

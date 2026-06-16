@@ -8,6 +8,9 @@ import {
   isThemeId,
   loadTheme,
   type OthemeConfig,
+  type PartialTargets,
+  type TargetAdapter,
+  type Theme,
   targetAdapters,
 } from '@otheme/core';
 import { Console, Effect, Layer } from 'effect';
@@ -70,15 +73,52 @@ const noTargetsNotice = Effect.gen(function* () {
   yield* Console.log(`then set targets to enable them: ${ids}`);
 });
 
-const printAdapterPlan = (adapterIndex: number, themeId: string) =>
+const mergeTargetOverride = (
+  targets: Theme['targets'],
+  override: PartialTargets | undefined,
+): Theme['targets'] => {
+  if (override === undefined) {
+    return targets;
+  }
+
+  return {
+    'claude-code':
+      targets['claude-code'] !== undefined &&
+      override['claude-code'] !== undefined
+        ? { ...targets['claude-code'], ...override['claude-code'] }
+        : targets['claude-code'],
+    'git-delta':
+      targets['git-delta'] !== undefined && override['git-delta'] !== undefined
+        ? { ...targets['git-delta'], ...override['git-delta'] }
+        : targets['git-delta'],
+    ghostty:
+      override.ghostty !== undefined ? override.ghostty : targets.ghostty,
+    macos:
+      targets.macos !== undefined && override.macos !== undefined
+        ? { ...targets.macos, ...override.macos }
+        : targets.macos,
+    nvim:
+      targets.nvim !== undefined && override.nvim !== undefined
+        ? { ...targets.nvim, ...override.nvim }
+        : targets.nvim,
+    tmux:
+      targets.tmux !== undefined && override.tmux !== undefined
+        ? { ...targets.tmux, ...override.tmux }
+        : targets.tmux,
+  };
+};
+
+const withOverrides = (theme: Theme, config: OthemeConfig): Theme => {
+  const override =
+    config.overrides !== undefined ? config.overrides[theme.id] : undefined;
+  return {
+    ...theme,
+    targets: mergeTargetOverride(theme.targets, override),
+  };
+};
+
+const printAdapterPlan = (adapter: TargetAdapter, theme: Theme) =>
   Effect.gen(function* () {
-    const adapter = targetAdapters[adapterIndex];
-
-    if (adapter === undefined) {
-      return;
-    }
-
-    const theme = yield* loadTheme(themeId);
     const plan = adapter.plan(theme);
 
     yield* Console.log(`[${adapter.id}]`);
@@ -104,7 +144,8 @@ const printAdapterPlan = (adapterIndex: number, themeId: string) =>
 
 const printDryRun = (themeId: string, config: OthemeConfig) =>
   Effect.gen(function* () {
-    const theme = yield* loadTheme(themeId);
+    const rawTheme = yield* loadTheme(themeId);
+    const theme = withOverrides(rawTheme, config);
     const enabledAdapters = getEnabledAdapters(config);
 
     if (enabledAdapters.length === 0) {
@@ -125,14 +166,14 @@ const printDryRun = (themeId: string, config: OthemeConfig) =>
         continue;
       }
 
-      const adapterIndex = targetAdapters.indexOf(adapter);
-      yield* printAdapterPlan(adapterIndex, theme.id);
+      yield* printAdapterPlan(adapter, theme);
     }
   });
 
 const applyTheme = (themeId: string, config: OthemeConfig) =>
   Effect.gen(function* () {
-    const theme = yield* loadTheme(themeId);
+    const rawTheme = yield* loadTheme(themeId);
+    const theme = withOverrides(rawTheme, config);
     const enabledAdapters = getEnabledAdapters(config);
 
     if (enabledAdapters.length === 0) {
