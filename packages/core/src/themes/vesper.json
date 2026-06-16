@@ -58,6 +58,16 @@
       "inactiveFg": "#7E7E7E",
       "searchMatch": "#5CCFE6",
       "searchCurrent": "#D0679D"
+    },
+    {
+      "id": "ghostty",
+      "mode": "map",
+      "mapTo": "Vesper"
+    },
+    {
+      "id": "claude-code",
+      "mode": "map",
+      "mapTo": "dark"
     }
   ]
 }

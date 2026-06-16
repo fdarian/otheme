@@ -58,6 +58,16 @@
       "inactiveFg": "#A0A1A7",
       "searchMatch": "#0184BC",
       "searchCurrent": "#A626A4"
+    },
+    {
+      "id": "ghostty",
+      "mode": "map",
+      "mapTo": "Atom One Light"
+    },
+    {
+      "id": "claude-code",
+      "mode": "map",
+      "mapTo": "light"
     }
   ]
 }

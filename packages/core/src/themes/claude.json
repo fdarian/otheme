@@ -58,6 +58,16 @@
       "inactiveFg": "#A3A299",
       "searchMatch": "#2E8B8B",
       "searchCurrent": "#8B6CB0"
+    },
+    {
+      "id": "ghostty",
+      "mode": "map",
+      "mapTo": "Claude"
+    },
+    {
+      "id": "claude-code",
+      "mode": "map",
+      "mapTo": "light"
     }
   ]
 }
