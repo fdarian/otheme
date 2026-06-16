@@ -65,7 +65,7 @@ type SearchResponse = {
     displayName?: string;
     version: string;
     downloadCount?: number;
-    files?: { download?: string; manifest?: string; icon?: string };
+    files?: { download?: string; icon?: string };
   }[];
 };
 
@@ -84,8 +84,10 @@ export async function searchThemes(
   const extensions = body.extensions ?? [];
   return extensions.flatMap((ext) => {
     const download = ext.files?.download;
-    const manifest = ext.files?.manifest;
-    if (download === undefined || manifest === undefined) return [];
+    if (download === undefined) return [];
+    // The Open VSX search response does not include a manifest URL, so build
+    // the package.json file URL from the extension coordinates.
+    const manifestUrl = `${OPEN_VSX_API}/${ext.namespace}/${ext.name}/${ext.version}/file/package.json`;
     return [
       {
         namespace: ext.namespace,
@@ -93,7 +95,7 @@ export async function searchThemes(
         displayName: ext.displayName ?? ext.name,
         version: ext.version,
         downloadUrl: download,
-        manifestUrl: manifest,
+        manifestUrl,
         downloadCount: ext.downloadCount ?? 0,
         iconUrl: ext.files?.icon,
       },
