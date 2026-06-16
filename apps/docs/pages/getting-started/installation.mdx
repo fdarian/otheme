@@ -1,51 +1,56 @@
 ---
 title: Installation
-description: How to run otheme from the current source tree.
+description: Install otheme via Homebrew, npx, or npm.
 ---
 
 # Installation
 
-otheme is packaged as a Bun-built CLI binary. The CLI package declares an `otheme` executable, but this repository does not yet include a published npm release. For now, build it from source.
+otheme is a Node-based CLI. Pick the installation method that fits your workflow.
 
-## Build from source
-
-```sh
-bun install
-cd apps/cli
-bun run build
-```
-
-That creates the CLI entrypoint at:
-
-```text
-apps/cli/dist/cli.js
-```
-
-You can run it directly from the repository:
+## Homebrew (macOS and Linux)
 
 ```sh
-bun apps/cli/dist/cli.js --help
+brew tap farreldarian/tap
+brew install farreldarian/tap/otheme
 ```
 
-For a local command named `otheme`, link the built file somewhere on your `PATH`:
-
-```sh
-mkdir -p ~/.local/bin
-ln -sf "$PWD/apps/cli/dist/cli.js" ~/.local/bin/otheme
-```
-
-Then verify the command:
+Verify the install:
 
 ```sh
 otheme --help
 ```
 
+## npx (no install required)
+
+Run otheme directly without installing it globally:
+
+```sh
+npx otheme set vesper
+```
+
+Use dry run first to preview what will change:
+
+```sh
+npx otheme set vesper --dry-run
+```
+
+## Global npm install
+
+```sh
+npm install -g otheme
+```
+
+Then run from anywhere:
+
+```sh
+otheme set vesper
+otheme --help
+```
+
 ## Before applying
 
-Use dry run first:
+Use dry run to preview every file otheme would write and every command it would run — without applying anything:
 
 ```sh
 otheme set vesper --dry-run
 ```
-
-Dry run previews every file otheme would write and every command it would run. It does not apply the theme.
