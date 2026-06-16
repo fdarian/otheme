@@ -4,9 +4,44 @@ import atomOneLightJson from '@otheme/core/themes/atom-one-light.json';
 import claudeJson from '@otheme/core/themes/claude.json';
 import vesperJson from '@otheme/core/themes/vesper.json';
 import { useState } from 'react';
+import { Group, Panel, Separator } from 'react-resizable-panels';
 import { EditorPane } from './editor-pane';
 import { PreviewPane } from './preview-pane';
 import type { PaletteField, ThemeValue } from './types';
+
+const RESIZE_HANDLE_CLASS = 'otheme-resize-handle';
+
+/**
+ * A thin vertical divider between the editor and preview panes. The hover/drag
+ * state widens its inner line and tints it with a subtle neutral — never the
+ * white accent — and the cursor turns to col-resize.
+ */
+const RESIZE_HANDLE_STYLE = `
+.${RESIZE_HANDLE_CLASS} {
+  position: relative;
+  width: 9px;
+  cursor: col-resize;
+  flex-shrink: 0;
+  outline: none;
+}
+.${RESIZE_HANDLE_CLASS}::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: var(--vocs-border-color-primary);
+  transition: width 0.12s ease, background 0.12s ease;
+}
+.${RESIZE_HANDLE_CLASS}:hover::after,
+.${RESIZE_HANDLE_CLASS}:active::after,
+.${RESIZE_HANDLE_CLASS}:focus-visible::after {
+  width: 3px;
+  background: rgba(128, 128, 128, 0.6);
+}
+`;
 
 type PresetId = 'vesper' | 'claude' | 'atom-one-light';
 
@@ -133,41 +168,41 @@ export function PlaygroundApp() {
           </button>
         </div>
       </div>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          flex: 1,
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          style={{
-            borderRight: '1px solid var(--vocs-border-color-primary)',
-            overflow: 'auto',
-            background: 'var(--vocs-background-color-primary)',
-          }}
-        >
-          <EditorPane
-            theme={theme}
-            onChange={setTheme}
-            focusField={focusField}
-          />
-        </div>
-        <div
-          style={{
-            overflow: 'auto',
-            background: 'var(--vocs-background-color-surface)',
-          }}
-        >
-          <PreviewPane
-            theme={theme}
-            inspectMode={inspectMode}
-            onInspect={setFocusField}
-            onToggleInspect={() => setInspectMode((prev) => !prev)}
-          />
-        </div>
-      </div>
+      <style>{RESIZE_HANDLE_STYLE}</style>
+      <Group orientation="horizontal" style={{ flex: 1, overflow: 'hidden' }}>
+        <Panel defaultSize="50%" minSize="25%">
+          <div
+            style={{
+              height: '100%',
+              overflow: 'auto',
+              background: 'var(--vocs-background-color-primary)',
+            }}
+          >
+            <EditorPane
+              theme={theme}
+              onChange={setTheme}
+              focusField={focusField}
+            />
+          </div>
+        </Panel>
+        <Separator className={RESIZE_HANDLE_CLASS} />
+        <Panel defaultSize="50%" minSize="25%">
+          <div
+            style={{
+              height: '100%',
+              overflow: 'auto',
+              background: 'var(--vocs-background-color-surface)',
+            }}
+          >
+            <PreviewPane
+              theme={theme}
+              inspectMode={inspectMode}
+              onInspect={setFocusField}
+              onToggleInspect={() => setInspectMode((prev) => !prev)}
+            />
+          </div>
+        </Panel>
+      </Group>
     </div>
   );
 }
