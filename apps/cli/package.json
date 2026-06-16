@@ -9,7 +9,7 @@
     "url": "https://github.com/fdarian/otheme.git",
     "directory": "apps/cli"
   },
-  "homepage": "https://github.com/fdarian/otheme",
+  "homepage": "https://otheme.fdarian.com",
   "bin": {
     "otheme": "./dist/cli.js"
   },

@@ -38,7 +38,7 @@ function assetUrl(label: string): string {
 
 const formula = `class Otheme < Formula
   desc "Apply shared themes across editor and terminal targets"
-  homepage "https://github.com/fdarian/otheme"
+  homepage "https://otheme.fdarian.com"
   version "${VERSION}"
 
   on_macos do
