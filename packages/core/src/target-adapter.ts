@@ -1,6 +1,10 @@
-import type { Effect, FileSystem, Path, PlatformError } from 'effect';
+import type { Config, Effect, FileSystem, Path, PlatformError } from 'effect';
 import type { CommandExecutor } from './command-executor.ts';
-import type { AdapterError, CommandExecutionError } from './errors.ts';
+import type {
+  AdapterError,
+  CommandExecutionError,
+  TargetNotFoundError,
+} from './errors.ts';
 import type { TargetId, Theme } from './theme-schema.ts';
 
 export interface PlannedCreate {
@@ -24,7 +28,11 @@ export interface TargetAdapter {
     theme: Theme,
   ) => Effect.Effect<
     void,
-    AdapterError | CommandExecutionError | PlatformError.PlatformError,
+    | AdapterError
+    | CommandExecutionError
+    | Config.ConfigError
+    | PlatformError.PlatformError
+    | TargetNotFoundError,
     CommandExecutor | FileSystem.FileSystem | Path.Path
   >;
   readonly plan: (theme: Theme) => AdapterPlan;

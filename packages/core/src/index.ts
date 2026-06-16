@@ -1,3 +1,4 @@
+export * from './adapters/index.ts';
 export * from './alias-store.ts';
 export * from './command-executor.ts';
 export * from './errors.ts';
