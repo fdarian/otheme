@@ -1,4 +1,5 @@
 {
+  "$schema": "../../theme.schema.json",
   "id": "atom-one-light",
   "name": "Atom One Light",
   "appearance": "light",

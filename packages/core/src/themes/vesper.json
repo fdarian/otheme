@@ -1,4 +1,5 @@
 {
+  "$schema": "../../theme.schema.json",
   "id": "vesper",
   "name": "Vesper",
   "appearance": "dark",

@@ -32,6 +32,12 @@
       "formatter": {
         "enabled": false
       }
+    },
+    {
+      "includes": ["packages/core/theme.schema.json"],
+      "formatter": {
+        "enabled": false
+      }
     }
   ]
 }

@@ -1,0 +1,663 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "appearance": {
+      "type": "string",
+      "enum": [
+        "dark",
+        "light"
+      ]
+    },
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "syntax": {
+      "type": "object",
+      "properties": {
+        "attribute": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "constant": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "func": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "keyword": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "markupHeading": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "markupLink": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "markupList": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "number": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "operator": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "punctuation": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "punctuationSpecial": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "string": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "stringEscape": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "stringSpecial": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "tag": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "variable": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "variableBuiltin": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "variableMember": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        }
+      },
+      "required": [
+        "attribute",
+        "constant",
+        "func",
+        "keyword",
+        "markupHeading",
+        "markupLink",
+        "markupList",
+        "number",
+        "operator",
+        "punctuation",
+        "punctuationSpecial",
+        "string",
+        "stringEscape",
+        "stringSpecial",
+        "tag",
+        "type",
+        "variable",
+        "variableBuiltin",
+        "variableMember"
+      ],
+      "additionalProperties": false
+    },
+    "targets": {
+      "type": "object",
+      "properties": {
+        "claude-code": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "mapTo": {
+                  "type": "string",
+                  "enum": [
+                    "dark",
+                    "light"
+                  ]
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "map"
+                  ]
+                }
+              },
+              "required": [
+                "mapTo",
+                "mode"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ghostty": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "mode": {
+                      "type": "string",
+                      "enum": [
+                        "author"
+                      ]
+                    },
+                    "fontFamily": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "fontThicken": {
+                      "anyOf": [
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "fontThickenStrength": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "NaN"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "Infinity"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "-Infinity"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "mode"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "mapTo": {
+                      "type": "string"
+                    },
+                    "mode": {
+                      "type": "string",
+                      "enum": [
+                        "map"
+                      ]
+                    },
+                    "fontFamily": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "fontThicken": {
+                      "anyOf": [
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "fontThickenStrength": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "NaN"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "Infinity"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "-Infinity"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "mapTo",
+                    "mode"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "nvim": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "colorscheme": {
+                  "type": "string"
+                },
+                "transparentBg": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "colorscheme",
+                "transparentBg"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tmux": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "inactiveFg": {
+                  "type": "string",
+                  "allOf": [
+                    {
+                      "pattern": "^#[0-9A-Fa-f]{6}$"
+                    }
+                  ]
+                },
+                "muted": {
+                  "type": "string",
+                  "allOf": [
+                    {
+                      "pattern": "^#[0-9A-Fa-f]{6}$"
+                    }
+                  ]
+                },
+                "searchCurrent": {
+                  "type": "string",
+                  "allOf": [
+                    {
+                      "pattern": "^#[0-9A-Fa-f]{6}$"
+                    }
+                  ]
+                },
+                "searchMatch": {
+                  "type": "string",
+                  "allOf": [
+                    {
+                      "pattern": "^#[0-9A-Fa-f]{6}$"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "inactiveFg",
+                "muted",
+                "searchCurrent",
+                "searchMatch"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ui": {
+      "type": "object",
+      "properties": {
+        "accent": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "accentFg": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "bg": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "bgFloat": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "bgHover": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "bgVisual": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "border": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "comment": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "diffAdd": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "diffChg": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "diffDel": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "error": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "fg": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "fgDim": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "fgMuted": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "hint": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "info": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "lineNr": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "search": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "success": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "warning": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        }
+      },
+      "required": [
+        "accent",
+        "accentFg",
+        "bg",
+        "bgFloat",
+        "bgHover",
+        "bgVisual",
+        "border",
+        "comment",
+        "diffAdd",
+        "diffChg",
+        "diffDel",
+        "error",
+        "fg",
+        "fgDim",
+        "fgMuted",
+        "hint",
+        "info",
+        "lineNr",
+        "search",
+        "success",
+        "warning"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "appearance",
+    "id",
+    "name",
+    "syntax",
+    "targets",
+    "ui"
+  ],
+  "additionalProperties": false
+}
