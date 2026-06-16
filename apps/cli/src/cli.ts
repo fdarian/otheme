@@ -4,8 +4,10 @@ import { NodeRuntime, NodeServices } from '@effect/platform-node';
 import {
   AliasStore,
   CommandExecutor,
+  ConfigStore,
   isThemeId,
   loadTheme,
+  type OthemeConfig,
   targetAdapters,
 } from '@otheme/core';
 import { Console, Effect, Layer } from 'effect';
@@ -48,6 +50,25 @@ const loadThemeOrAlias = (value: string) =>
     return yield* loadTheme(themeId);
   });
 
+const getEnabledAdapters = (config: OthemeConfig) => {
+  const targets = config.targets;
+
+  if (targets === undefined) {
+    return [];
+  }
+
+  return targetAdapters.filter((adapter) => targets[adapter.id] === true);
+};
+
+const noTargetsNotice = Effect.gen(function* () {
+  const ids = targetAdapters.map((adapter) => adapter.id).join(', ');
+
+  yield* Console.log(
+    'No targets are enabled. Run `otheme config` to initialize your config,',
+  );
+  yield* Console.log(`then set targets to enable them: ${ids}`);
+});
+
 const printAdapterPlan = (adapterIndex: number, themeId: string) =>
   Effect.gen(function* () {
     const adapter = targetAdapters[adapterIndex];
@@ -80,26 +101,45 @@ const printAdapterPlan = (adapterIndex: number, themeId: string) =>
     }
   });
 
-const printDryRun = (themeId: string) =>
+const printDryRun = (themeId: string, config: OthemeConfig) =>
   Effect.gen(function* () {
     const theme = yield* loadTheme(themeId);
+    const enabledAdapters = getEnabledAdapters(config);
+
+    if (enabledAdapters.length === 0) {
+      yield* noTargetsNotice;
+      return;
+    }
 
     yield* Console.log(`theme: ${theme.id} (${theme.name})`);
 
-    for (let index = 0; index < targetAdapters.length; index += 1) {
+    for (let index = 0; index < enabledAdapters.length; index += 1) {
       if (index > 0) {
         yield* Console.log('');
       }
 
-      yield* printAdapterPlan(index, theme.id);
+      const adapter = enabledAdapters[index];
+
+      if (adapter === undefined) {
+        continue;
+      }
+
+      const adapterIndex = targetAdapters.indexOf(adapter);
+      yield* printAdapterPlan(adapterIndex, theme.id);
     }
   });
 
-const applyTheme = (themeId: string) =>
+const applyTheme = (themeId: string, config: OthemeConfig) =>
   Effect.gen(function* () {
     const theme = yield* loadTheme(themeId);
+    const enabledAdapters = getEnabledAdapters(config);
 
-    for (const adapter of targetAdapters) {
+    if (enabledAdapters.length === 0) {
+      yield* noTargetsNotice;
+      return;
+    }
+
+    for (const adapter of enabledAdapters) {
       yield* adapter.apply(theme);
     }
   });
@@ -113,13 +153,15 @@ const setCommand = Command.make(
   (config) =>
     Effect.gen(function* () {
       const theme = yield* loadThemeOrAlias(config.theme);
+      const configStore = yield* ConfigStore;
+      const othemeConfig = yield* configStore.read();
 
       if (config.dryRun) {
-        yield* printDryRun(theme.id);
+        yield* printDryRun(theme.id, othemeConfig);
         return;
       }
 
-      yield* applyTheme(theme.id);
+      yield* applyTheme(theme.id, othemeConfig);
       yield* Console.log(`applied ${theme.id}`);
     }),
 ).pipe(Command.withDescription('Apply a theme to supported targets'));
@@ -156,8 +198,28 @@ const aliasCommand = Command.make('alias').pipe(
   Command.withDescription('List or update theme aliases'),
 );
 
+const configCommand = Command.make('config', {}, () =>
+  Effect.gen(function* () {
+    const configStore = yield* ConfigStore;
+    const result = yield* configStore.init();
+
+    if (result.wasCreated) {
+      yield* Console.log(`Created config at ${result.path}`);
+      yield* Console.log(
+        'Targets are disabled by default. Edit the file to enable targets.',
+      );
+    } else {
+      yield* Console.log(`Config already exists at ${result.path}`);
+    }
+  }),
+).pipe(
+  Command.withDescription(
+    'Initialize the otheme config file if it does not exist',
+  ),
+);
+
 export const cli = Command.make('otheme').pipe(
-  Command.withSubcommands([setCommand, aliasCommand]),
+  Command.withSubcommands([setCommand, aliasCommand, configCommand]),
   Command.withDescription('Apply shared themes to editor and terminal targets'),
 );
 
@@ -167,6 +229,7 @@ const commandExecutorLayer = CommandExecutor.layer.pipe(
 
 const mainLayer = Layer.mergeAll(
   NodeServices.layer,
+  ConfigStore.layer,
   AliasStore.layer,
   commandExecutorLayer,
 );
