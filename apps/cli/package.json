@@ -1,15 +1,29 @@
 {
   "name": "otheme",
   "version": "0.0.0",
+  "description": "Apply shared themes across editor and terminal targets",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/farreldarian/otheme.git",
+    "directory": "apps/cli"
+  },
+  "homepage": "https://otheme.farreldarian.com",
   "bin": {
     "otheme": "./dist/cli.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "dependencies": {
-    "@effect/platform-bun": "4.0.0-beta.83",
+    "@effect/platform-node": "4.0.0-beta.83",
     "@otheme/core": "workspace:*",
     "effect": "4.0.0-beta.83"
   },

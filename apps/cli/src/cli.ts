@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { BunRuntime, BunServices } from '@effect/platform-bun';
+import { NodeRuntime, NodeServices } from '@effect/platform-node';
 import {
   AliasStore,
   CommandExecutor,
@@ -162,15 +162,15 @@ export const cli = Command.make('otheme').pipe(
 );
 
 const commandExecutorLayer = CommandExecutor.layer.pipe(
-  Layer.provide(BunServices.layer),
+  Layer.provide(NodeServices.layer),
 );
 
 const mainLayer = Layer.mergeAll(
-  BunServices.layer,
+  NodeServices.layer,
   AliasStore.layer,
   commandExecutorLayer,
 );
 
-BunRuntime.runMain(
+NodeRuntime.runMain(
   Command.run(cli, { version: '0.0.0' }).pipe(Effect.provide(mainLayer)),
 );
