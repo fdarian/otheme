@@ -46,28 +46,24 @@
     "markupLink": "#FFFFFF",
     "markupList": "#A0A0A0"
   },
-  "targets": [
-    {
-      "id": "nvim",
+  "targets": {
+    "nvim": {
       "colorscheme": "vesper",
       "transparentBg": true
     },
-    {
-      "id": "tmux",
+    "tmux": {
       "muted": "#565B66",
       "inactiveFg": "#7E7E7E",
       "searchMatch": "#5CCFE6",
       "searchCurrent": "#D0679D"
     },
-    {
-      "id": "ghostty",
+    "ghostty": {
       "mode": "map",
       "mapTo": "Vesper"
     },
-    {
-      "id": "claude-code",
+    "claude-code": {
       "mode": "map",
       "mapTo": "dark"
     }
-  ]
+  }
 }

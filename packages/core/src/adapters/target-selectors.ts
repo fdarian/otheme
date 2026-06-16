@@ -9,47 +9,18 @@ import type {
   TmuxTarget,
 } from '../theme-schema.ts';
 
-export const getNvimTarget = (theme: Theme): NvimTarget | undefined => {
-  for (const target of theme.targets) {
-    if (target.id === 'nvim') {
-      return target;
-    }
-  }
+export const getNvimTarget = (theme: Theme): NvimTarget | undefined =>
+  theme.targets.nvim;
 
-  return undefined;
-};
+export const getTmuxTarget = (theme: Theme): TmuxTarget | undefined =>
+  theme.targets.tmux;
 
-export const getTmuxTarget = (theme: Theme): TmuxTarget | undefined => {
-  for (const target of theme.targets) {
-    if (target.id === 'tmux') {
-      return target;
-    }
-  }
-
-  return undefined;
-};
-
-export const getGhosttyTarget = (theme: Theme): GhosttyTarget | undefined => {
-  for (const target of theme.targets) {
-    if (target.id === 'ghostty') {
-      return target;
-    }
-  }
-
-  return undefined;
-};
+export const getGhosttyTarget = (theme: Theme): GhosttyTarget | undefined =>
+  theme.targets.ghostty;
 
 export const getClaudeCodeTarget = (
   theme: Theme,
-): ClaudeCodeTarget | undefined => {
-  for (const target of theme.targets) {
-    if (target.id === 'claude-code') {
-      return target;
-    }
-  }
-
-  return undefined;
-};
+): ClaudeCodeTarget | undefined => theme.targets['claude-code'];
 
 export const requireNvimTarget = (theme: Theme) => {
   const target = getNvimTarget(theme);

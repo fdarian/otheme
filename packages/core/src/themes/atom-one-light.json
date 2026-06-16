@@ -46,28 +46,24 @@
     "markupLink": "#5C78E2",
     "markupList": "#D3604F"
   },
-  "targets": [
-    {
-      "id": "nvim",
+  "targets": {
+    "nvim": {
       "colorscheme": "one-light",
       "transparentBg": false
     },
-    {
-      "id": "tmux",
+    "tmux": {
       "muted": "#A0A1A7",
       "inactiveFg": "#A0A1A7",
       "searchMatch": "#0184BC",
       "searchCurrent": "#A626A4"
     },
-    {
-      "id": "ghostty",
+    "ghostty": {
       "mode": "map",
       "mapTo": "Atom One Light"
     },
-    {
-      "id": "claude-code",
+    "claude-code": {
       "mode": "map",
       "mapTo": "light"
     }
-  ]
+  }
 }
