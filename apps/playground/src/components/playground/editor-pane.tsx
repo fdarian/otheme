@@ -49,6 +49,7 @@ import { ScrollArea } from '#/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectLabel,
   SelectSeparator,
@@ -679,21 +680,25 @@ export function EditorPane(props: EditorPaneProps) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectLabel>Built-in</SelectLabel>
-                  {builtInPresets.map((preset) => (
-                    <SelectItem key={preset.id} value={preset.id}>
-                      {presetLabel(preset)}
-                    </SelectItem>
-                  ))}
+                  <SelectGroup>
+                    <SelectLabel>Built-in</SelectLabel>
+                    {builtInPresets.map((preset) => (
+                      <SelectItem key={preset.id} value={preset.id}>
+                        {presetLabel(preset)}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                   {addedPresets.length > 0 ? (
                     <>
                       <SelectSeparator />
-                      <SelectLabel>Added</SelectLabel>
-                      {addedPresets.map((preset) => (
-                        <SelectItem key={preset.id} value={preset.id}>
-                          {presetLabel(preset)}
-                        </SelectItem>
-                      ))}
+                      <SelectGroup>
+                        <SelectLabel>Added</SelectLabel>
+                        {addedPresets.map((preset) => (
+                          <SelectItem key={preset.id} value={preset.id}>
+                            {presetLabel(preset)}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
                     </>
                   ) : null}
                 </SelectContent>
