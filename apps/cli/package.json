@@ -1,0 +1,26 @@
+{
+  "name": "otheme",
+  "version": "0.0.0",
+  "type": "module",
+  "bin": {
+    "otheme": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@effect/platform-bun": "4.0.0-beta.83",
+    "@otheme/core": "workspace:*",
+    "effect": "4.0.0-beta.83"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.17"
+  },
+  "scripts": {
+    "build": "bun build src/cli.ts --target=node --outfile dist/cli.js",
+    "check": "bun run check:type && bun run check:lint",
+    "check:lint": "biome check .",
+    "check:type": "tsc --noEmit",
+    "prepack": "bun run build"
+  }
+}

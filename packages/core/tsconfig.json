@@ -1,0 +1,10 @@
+{
+  "extends": "@repo/config/tsconfig-library",
+  "compilerOptions": {
+    "paths": {
+      "#/*": ["./src/*"]
+    },
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*.ts", "src/**/*.json"]
+}

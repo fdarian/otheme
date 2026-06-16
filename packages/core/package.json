@@ -1,0 +1,16 @@
+{
+  "name": "@otheme/core",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "effect": "4.0.0-beta.83"
+  },
+  "scripts": {
+    "check": "bun run check:type && bun run check:lint",
+    "check:lint": "biome check .",
+    "check:type": "tsc --noEmit"
+  }
+}
