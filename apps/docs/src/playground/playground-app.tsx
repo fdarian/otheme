@@ -170,7 +170,7 @@ export function PlaygroundApp() {
       </div>
       <style>{RESIZE_HANDLE_STYLE}</style>
       <Group orientation="horizontal" style={{ flex: 1, overflow: 'hidden' }}>
-        <Panel defaultSize="50%" minSize="25%">
+        <Panel defaultSize="20%" minSize="25%">
           <div
             style={{
               height: '100%',
@@ -186,7 +186,7 @@ export function PlaygroundApp() {
           </div>
         </Panel>
         <Separator className={RESIZE_HANDLE_CLASS} />
-        <Panel defaultSize="50%" minSize="25%">
+        <Panel defaultSize="80%" minSize="25%">
           <div
             style={{
               height: '100%',
