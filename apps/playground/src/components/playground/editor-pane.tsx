@@ -1,14 +1,44 @@
 import MonacoEditor, { type OnMount } from '@monaco-editor/react';
 import type { SyntaxColors, UiColors } from '@otheme/core/schema';
-import { Check, Copy, RotateCcw } from 'lucide-react';
+import {
+  Check,
+  Copy,
+  Ellipsis,
+  LoaderCircle,
+  Plus,
+  RotateCcw,
+  Search,
+  Trash2,
+} from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
+
 import type {
   EditorPaneProps,
-  PresetId,
+  Preset,
   ThemeValue,
 } from '#/components/playground/types';
+import {
+  type ImportedTheme,
+  importTheme,
+  mapVscodeTheme,
+  searchThemes,
+  type ThemeSearchResult,
+} from '#/components/playground/vscode-import';
 import { Button } from '#/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '#/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '#/components/ui/dropdown-menu';
 import { Input } from '#/components/ui/input';
 import {
   Popover,
@@ -20,6 +50,8 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select';
@@ -29,15 +61,30 @@ import targetsSchema from '../../../../../packages/core/theme.schema.json';
 
 const TARGETS_SCHEMA_URI = 'otheme://theme/targets.json';
 const HEX_PATTERN = /^#[0-9A-Fa-f]{6}$/;
-
-const PRESET_LABELS: Record<PresetId, string> = {
-  'atom-one-light': 'Atom One Light',
-  claude: 'Claude',
-  vesper: 'Vesper',
-};
+const DOWNLOAD_COUNT_FORMATTER = new Intl.NumberFormat();
 
 function fieldId(group: 'ui' | 'syntax', key: string) {
   return `${group}:${key}`;
+}
+
+function presetLabel(preset: Preset) {
+  return preset.theme.name.trim() || 'Untitled';
+}
+
+function formatError(error: unknown) {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  try {
+    return JSON.stringify(error, null, 2);
+  } catch {
+    return String(error);
+  }
 }
 
 function ToolbarLabel(props: { children: React.ReactNode }) {
@@ -56,6 +103,309 @@ function ToolbarGroup(props: {
     <div className={cn('flex min-w-0 flex-col gap-1', props.className)}>
       {props.children}
     </div>
+  );
+}
+
+function SearchResultButton(props: {
+  disabled: boolean;
+  onSelect: () => void;
+  result: ThemeSearchResult;
+}) {
+  return (
+    <button
+      type="button"
+      className="flex w-full flex-col gap-1 rounded-md px-3 py-3 text-left transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+      disabled={props.disabled}
+      onClick={props.onSelect}
+    >
+      <span className="font-medium">{props.result.displayName}</span>
+      <span className="text-xs text-muted-foreground">
+        {`${props.result.namespace}.${props.result.name}`}
+      </span>
+      <span className="text-xs text-muted-foreground">
+        {`${DOWNLOAD_COUNT_FORMATTER.format(props.result.downloadCount)} downloads`}
+      </span>
+    </button>
+  );
+}
+
+function ImportedThemeButton(props: {
+  disabled: boolean;
+  importedTheme: ImportedTheme;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="flex w-full items-center justify-between gap-3 rounded-md px-3 py-3 text-left transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+      disabled={props.disabled}
+      onClick={props.onSelect}
+    >
+      <span className="font-medium">{props.importedTheme.label}</span>
+      <span className="text-xs text-muted-foreground">Select</span>
+    </button>
+  );
+}
+
+function NewPresetDialog(props: {
+  onAddPreset: (theme: ThemeValue) => void;
+  onCreateBlankPreset: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<ThemeSearchResult[]>([]);
+  const [importedThemes, setImportedThemes] = useState<ImportedTheme[]>([]);
+  const [selectedResult, setSelectedResult] =
+    useState<ThemeSearchResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const [importingLabel, setImportingLabel] = useState<string | null>(null);
+
+  function resetState() {
+    setQuery('');
+    setResults([]);
+    setImportedThemes([]);
+    setSelectedResult(null);
+    setError(null);
+    setHasSearched(false);
+    setIsSearching(false);
+    setIsImporting(false);
+    setImportingLabel(null);
+  }
+
+  function handleOpenChange(nextOpen: boolean) {
+    setOpen(nextOpen);
+
+    if (!nextOpen) {
+      resetState();
+    }
+  }
+
+  async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const trimmedQuery = query.trim();
+    if (trimmedQuery.length === 0) {
+      setError('Enter a theme name to search.');
+      return;
+    }
+
+    setError(null);
+    setHasSearched(false);
+    setResults([]);
+    setImportedThemes([]);
+    setSelectedResult(null);
+    setIsSearching(true);
+
+    try {
+      const nextResults = await searchThemes(trimmedQuery);
+      setResults(nextResults);
+      setHasSearched(true);
+    } catch (nextError) {
+      setError(formatError(nextError));
+    } finally {
+      setIsSearching(false);
+    }
+  }
+
+  async function handleImportResult(result: ThemeSearchResult) {
+    setError(null);
+    setImportedThemes([]);
+    setSelectedResult(null);
+    setIsImporting(true);
+    setImportingLabel(result.displayName);
+
+    try {
+      const nextThemes = await importTheme(result);
+
+      if (nextThemes.length === 1) {
+        const firstTheme = nextThemes[0];
+
+        if (firstTheme === undefined) {
+          throw new Error(
+            'Imported extension did not include a readable theme.',
+          );
+        }
+
+        handleImportedThemeSelect(firstTheme);
+        return;
+      }
+
+      setImportedThemes(nextThemes);
+      setSelectedResult(result);
+    } catch (nextError) {
+      setError(formatError(nextError));
+    } finally {
+      setIsImporting(false);
+      setImportingLabel(null);
+    }
+  }
+
+  function handleImportedThemeSelect(importedTheme: ImportedTheme) {
+    try {
+      const mappedTheme = mapVscodeTheme(
+        importedTheme.vscodeTheme,
+        importedTheme.label,
+      );
+
+      props.onAddPreset(mappedTheme);
+      handleOpenChange(false);
+    } catch (nextError) {
+      setError(formatError(nextError));
+    }
+  }
+
+  return (
+    <>
+      <Button
+        size="sm"
+        variant="outline"
+        className="shrink-0"
+        onClick={() => handleOpenChange(true)}
+      >
+        <Plus className="size-3.5" />
+        New
+      </Button>
+
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>New Preset</DialogTitle>
+            <DialogDescription>
+              Add a blank preset or import a VSCode theme from Open VSX.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex flex-col gap-5">
+            <section className="flex flex-col gap-3">
+              <div className="space-y-1">
+                <h2 className="text-sm font-medium">Blank</h2>
+                <p className="text-sm text-muted-foreground">
+                  Start from the built-in palette and edit it directly.
+                </p>
+              </div>
+
+              <Button
+                variant="outline"
+                className="justify-start"
+                onClick={() => {
+                  props.onCreateBlankPreset();
+                  handleOpenChange(false);
+                }}
+              >
+                <Plus className="size-4" />
+                Blank preset
+              </Button>
+            </section>
+
+            <Separator />
+
+            <section className="flex flex-col gap-3">
+              <div className="space-y-1">
+                <h2 className="text-sm font-medium">Import from VSCode</h2>
+                <p className="text-sm text-muted-foreground">
+                  Search Open VSX, download the extension, and map its theme
+                  into the playground palette.
+                </p>
+              </div>
+
+              <form className="flex gap-2" onSubmit={handleSearch}>
+                <Input
+                  value={query}
+                  placeholder="Search Open VSX themes"
+                  disabled={isSearching || isImporting}
+                  onChange={(event) => setQuery(event.target.value)}
+                />
+                <Button
+                  type="submit"
+                  variant="outline"
+                  disabled={isSearching || isImporting}
+                >
+                  {isSearching ? (
+                    <LoaderCircle className="size-4 animate-spin" />
+                  ) : (
+                    <Search className="size-4" />
+                  )}
+                  {isSearching ? 'Searching...' : 'Search'}
+                </Button>
+              </form>
+
+              {isImporting ? (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <LoaderCircle className="size-4 animate-spin" />
+                  <span>{`Importing ${importingLabel ?? 'theme'}...`}</span>
+                </div>
+              ) : null}
+
+              {error !== null ? (
+                <div
+                  role="alert"
+                  className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+                >
+                  {error}
+                </div>
+              ) : null}
+
+              {results.length > 0 ? (
+                <div className="flex flex-col gap-2">
+                  <p className="text-xs font-medium uppercase text-muted-foreground">
+                    Search Results
+                  </p>
+                  <ScrollArea className="h-60 rounded-md border">
+                    <div className="flex flex-col py-1">
+                      {results.map((result) => (
+                        <SearchResultButton
+                          key={`${result.namespace}.${result.name}`}
+                          disabled={isSearching || isImporting}
+                          result={result}
+                          onSelect={() => handleImportResult(result)}
+                        />
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </div>
+              ) : hasSearched && !isSearching ? (
+                <p className="text-sm text-muted-foreground">
+                  No themes found.
+                </p>
+              ) : null}
+
+              {importedThemes.length > 1 && selectedResult !== null ? (
+                <>
+                  <Separator />
+                  <div className="flex flex-col gap-2">
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium uppercase text-muted-foreground">
+                        Included Themes
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {selectedResult.displayName}
+                      </p>
+                    </div>
+                    <ScrollArea className="h-48 rounded-md border">
+                      <div className="flex flex-col py-1">
+                        {importedThemes.map((importedTheme) => (
+                          <ImportedThemeButton
+                            key={`${selectedResult.namespace}.${selectedResult.name}.${importedTheme.label}`}
+                            disabled={isSearching || isImporting}
+                            importedTheme={importedTheme}
+                            onSelect={() =>
+                              handleImportedThemeSelect(importedTheme)
+                            }
+                          />
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </div>
+                </>
+              ) : null}
+            </section>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
@@ -267,6 +617,10 @@ export function EditorPane(props: EditorPaneProps) {
   const [flashingKey, setFlashingKey] = useState<string | null>(null);
   const uiKeys = Object.keys(props.theme.ui) as (keyof UiColors)[];
   const syntaxKeys = Object.keys(props.theme.syntax) as (keyof SyntaxColors)[];
+  const builtInPresets = props.presets.filter((preset) => preset.builtIn);
+  const addedPresets = props.presets.filter(
+    (preset) => preset.builtIn === false,
+  );
 
   function registerInput(id: string, input: HTMLInputElement | null) {
     if (input === null) {
@@ -314,25 +668,66 @@ export function EditorPane(props: EditorPaneProps) {
     <div className="flex h-full min-h-0 flex-col bg-background">
       <div className="border-b bg-card px-4 py-3">
         <div className="flex flex-wrap items-end gap-3">
-          <ToolbarGroup className="w-52">
+          <ToolbarGroup className="w-full max-w-[30rem]">
             <ToolbarLabel>Preset</ToolbarLabel>
-            <Select
-              value={props.activePreset}
-              onValueChange={(value) => props.onSelectPreset(value as PresetId)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {(Object.entries(PRESET_LABELS) as [PresetId, string][]).map(
-                  ([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
+            <div className="flex items-center gap-2">
+              <Select
+                value={props.activePreset}
+                onValueChange={(value) => props.onSelectPreset(value)}
+              >
+                <SelectTrigger className="flex-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectLabel>Built-in</SelectLabel>
+                  {builtInPresets.map((preset) => (
+                    <SelectItem key={preset.id} value={preset.id}>
+                      {presetLabel(preset)}
                     </SelectItem>
-                  ),
-                )}
-              </SelectContent>
-            </Select>
+                  ))}
+                  {addedPresets.length > 0 ? (
+                    <>
+                      <SelectSeparator />
+                      <SelectLabel>Added</SelectLabel>
+                      {addedPresets.map((preset) => (
+                        <SelectItem key={preset.id} value={preset.id}>
+                          {presetLabel(preset)}
+                        </SelectItem>
+                      ))}
+                    </>
+                  ) : null}
+                </SelectContent>
+              </Select>
+
+              <NewPresetDialog
+                onAddPreset={props.onAddPreset}
+                onCreateBlankPreset={props.onCreateBlankPreset}
+              />
+
+              {props.canRemovePreset ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className="h-9 w-9 shrink-0"
+                    >
+                      <Ellipsis className="size-4" />
+                      <span className="sr-only">Preset actions</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      className="text-destructive focus:text-destructive"
+                      onSelect={props.onRemovePreset}
+                    >
+                      <Trash2 className="size-4" />
+                      Remove preset
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : null}
+            </div>
           </ToolbarGroup>
 
           <ToolbarGroup className="w-44">
