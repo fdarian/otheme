@@ -38,6 +38,12 @@
       "formatter": {
         "enabled": false
       }
+    },
+    {
+      "includes": ["packages/core/config.schema.json"],
+      "formatter": {
+        "enabled": false
+      }
     }
   ]
 }

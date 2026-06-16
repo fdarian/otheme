@@ -10,6 +10,8 @@ type Page =
   | { path: '/'; render: 'static' }
   | { path: '/targets/claude-code'; render: 'static' }
   | { path: '/targets/ghostty'; render: 'static' }
+  | { path: '/targets/git-delta'; render: 'static' }
+  | { path: '/targets/macos'; render: 'static' }
   | { path: '/targets/nvim'; render: 'static' }
   | { path: '/targets/tmux'; render: 'static' }
 
