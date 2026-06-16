@@ -5,15 +5,20 @@ import { useState } from 'react';
 import type {
   DiffLine,
   DiffSpan,
+  PromptLine,
   SampleLine,
   Span,
   TokenKind,
 } from './preview-sample';
 import {
+  APPLY_SUCCESS,
   CODE_SAMPLE,
   DIFF_SAMPLE,
   MARKDOWN_SAMPLE,
-  MARKDOWN_TAB_GAP,
+  PROMPT_APPLY,
+  PROMPT_CODE,
+  PROMPT_DIFF,
+  PROMPT_README,
 } from './preview-sample';
 import type { PreviewPaneProps } from './types';
 
@@ -68,12 +73,16 @@ function CodeLines(props: {
   );
 }
 
-function CodeRegion(props: { theme: Theme }) {
+/** A zsh-style prompt line followed by the typed command. */
+function Prompt(props: { theme: Theme; prompt: PromptLine }) {
   return (
-    <div style={{ fontSize: '0.8rem', lineHeight: 1.6 }}>
-      <CodeLines theme={props.theme} lines={CODE_SAMPLE} startLine={1} />
-      <div style={{ height: MARKDOWN_TAB_GAP }} />
-      <CodeLines theme={props.theme} lines={MARKDOWN_SAMPLE} startLine={1} />
+    <div style={{ display: 'flex', gap: '0.5rem', whiteSpace: 'pre' }}>
+      <span style={{ color: props.theme.ui.accent }}>{props.prompt.dir}</span>
+      <span style={{ color: props.theme.ui.fgMuted }}>
+        {props.prompt.branch}
+      </span>
+      <span style={{ color: props.theme.ui.success }}>❯</span>
+      <span style={{ color: props.theme.ui.fg }}>{props.prompt.command}</span>
     </div>
   );
 }
@@ -187,21 +196,98 @@ function DiffRow(props: { theme: Theme; line: DiffLine }) {
 
 function DiffRegion(props: { theme: Theme }) {
   return (
-    <div
-      style={{
-        fontSize: '0.8rem',
-        lineHeight: 1.6,
-        borderTop: `1px solid ${props.theme.ui.border}`,
-        borderBottom: `1px solid ${props.theme.ui.border}`,
-        margin: '1rem 0',
-        paddingTop: '0.75rem',
-        paddingBottom: '0.75rem',
-      }}
-    >
+    <div style={{ fontSize: '0.8rem', lineHeight: 1.6 }}>
       {DIFF_SAMPLE.map((line, index) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: static sample, index is stable
         <DiffRow key={index} theme={props.theme} line={line} />
       ))}
+    </div>
+  );
+}
+
+/** Multi-line plain output (e.g. the markdown rendered by `cat`). */
+function OutputLines(props: { theme: Theme; lines: SampleLine[] }) {
+  return (
+    <div style={{ fontSize: '0.8rem', lineHeight: 1.6 }}>
+      {props.lines.map((line, index) => (
+        <div
+          // biome-ignore lint/suspicious/noArrayIndexKey: static sample, index is stable
+          key={index}
+          style={{ whiteSpace: 'pre' }}
+        >
+          {line.map((span: Span, spanIndex) => (
+            <span
+              // biome-ignore lint/suspicious/noArrayIndexKey: static sample, index is stable
+              key={spanIndex}
+              style={{ color: tokenColor(props.theme, span.token) }}
+            >
+              {span.text}
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** The success line printed by `otheme set`, colored with ui.success. */
+function SuccessLine(props: { theme: Theme }) {
+  return (
+    <div
+      style={{
+        fontSize: '0.8rem',
+        lineHeight: 1.6,
+        color: props.theme.ui.success,
+        whiteSpace: 'pre',
+      }}
+    >
+      ✓ {APPLY_SUCCESS}
+    </div>
+  );
+}
+
+/** A blinking-style block cursor after the final prompt. */
+function PromptCursor(props: { theme: Theme }) {
+  return (
+    <div style={{ display: 'flex', gap: '0.5rem', whiteSpace: 'pre' }}>
+      <span style={{ color: props.theme.ui.accent }}>{PROMPT_README.dir}</span>
+      <span style={{ color: props.theme.ui.fgMuted }}>
+        {PROMPT_README.branch}
+      </span>
+      <span style={{ color: props.theme.ui.success }}>❯</span>
+      <span
+        style={{
+          display: 'inline-block',
+          width: '0.55rem',
+          height: '1.05rem',
+          background: props.theme.ui.accent,
+        }}
+      />
+    </div>
+  );
+}
+
+/** The scrollback: prompts whose output is the existing sample data. */
+function Session(props: { theme: Theme }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+      <div>
+        <Prompt theme={props.theme} prompt={PROMPT_README} />
+        <OutputLines theme={props.theme} lines={MARKDOWN_SAMPLE} />
+      </div>
+      <div>
+        <Prompt theme={props.theme} prompt={PROMPT_CODE} />
+        <CodeLines theme={props.theme} lines={CODE_SAMPLE} startLine={1} />
+      </div>
+      <div>
+        <Prompt theme={props.theme} prompt={PROMPT_DIFF} />
+        <DiffRegion theme={props.theme} />
+      </div>
+      <div>
+        <Prompt theme={props.theme} prompt={PROMPT_APPLY} />
+        <SuccessLine theme={props.theme} />
+      </div>
+      <PromptCursor theme={props.theme} />
     </div>
   );
 }
@@ -223,7 +309,8 @@ function TmuxBar(props: { theme: Theme; prefixActive: boolean }) {
         gap: '1rem',
         fontSize: '0.8rem',
         background: props.theme.ui.bg,
-        paddingTop: '0.5rem',
+        padding: '0.4rem 0.85rem',
+        borderBottom: `1px solid ${props.theme.ui.border}`,
       }}
     >
       <span style={{ color: muted }}>1:zsh</span>
@@ -343,6 +430,7 @@ export function PreviewPane(props: PreviewPaneProps) {
             {props.theme.name}
           </span>
         </div>
+        <TmuxBar theme={props.theme} prefixActive={prefixActive} />
         <div
           style={{
             flex: 1,
@@ -352,11 +440,7 @@ export function PreviewPane(props: PreviewPaneProps) {
             overflow: 'auto',
           }}
         >
-          <CodeRegion theme={props.theme} />
-          <DiffRegion theme={props.theme} />
-          <div style={{ marginTop: 'auto' }}>
-            <TmuxBar theme={props.theme} prefixActive={prefixActive} />
-          </div>
+          <Session theme={props.theme} />
         </div>
       </div>
     </div>

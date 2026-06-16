@@ -162,9 +162,6 @@ export const MARKDOWN_SAMPLE: SampleLine[] = [
   ],
 ];
 
-/** Vertical gap between the code block and the markdown "tab" below it. */
-export const MARKDOWN_TAB_GAP = '1rem';
-
 /** Lines for the git-delta diff region. */
 export type DiffSpan = { text: string; kind: 'plain' | 'emphasis' };
 
@@ -220,3 +217,33 @@ export const DIFF_SAMPLE: DiffLine[] = [
     spans: [{ text: '}', kind: 'plain' }],
   },
 ];
+
+/** A zsh-style prompt line: a directory segment, a git branch, and the typed command. */
+export type PromptLine = { dir: string; branch: string; command: string };
+
+export const PROMPT_README: PromptLine = {
+  dir: '~/code/card',
+  branch: 'main',
+  command: 'cat README.md',
+};
+
+export const PROMPT_CODE: PromptLine = {
+  dir: '~/code/card',
+  branch: 'main',
+  command: 'bat src/card.tsx',
+};
+
+export const PROMPT_DIFF: PromptLine = {
+  dir: '~/code/card',
+  branch: 'main',
+  command: 'git diff',
+};
+
+export const PROMPT_APPLY: PromptLine = {
+  dir: '~/code/card',
+  branch: 'main',
+  command: 'otheme set vesper',
+};
+
+/** Success line printed after `otheme set`. */
+export const APPLY_SUCCESS = 'applied to nvim · tmux · ghostty · git-delta';
