@@ -3,6 +3,7 @@
 import atomOneLightJson from '@otheme/core/themes/atom-one-light.json';
 import claudeJson from '@otheme/core/themes/claude.json';
 import vesperJson from '@otheme/core/themes/vesper.json';
+import { Agentation } from 'agentation';
 import { useState } from 'react';
 import { Group, Panel, Separator } from 'react-resizable-panels';
 import { EditorPane } from './editor-pane';
@@ -203,6 +204,8 @@ export function PlaygroundApp() {
           </div>
         </Panel>
       </Group>
+
+      {process.env.NODE_ENV === 'development' && <Agentation />}
     </div>
   );
 }
