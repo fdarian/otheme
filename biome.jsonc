@@ -25,5 +25,13 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["apps/docs/pages.gen.ts"],
+      "formatter": {
+        "enabled": false
+      }
+    }
+  ]
 }
