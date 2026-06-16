@@ -6,7 +6,7 @@ import vesperJson from '@otheme/core/themes/vesper.json';
 import { useState } from 'react';
 import { EditorPane } from './editor-pane';
 import { PreviewPane } from './preview-pane';
-import type { ThemeValue } from './types';
+import type { PaletteField, ThemeValue } from './types';
 
 type PresetId = 'vesper' | 'claude' | 'atom-one-light';
 
@@ -27,6 +27,7 @@ const DEFAULT_PRESET: PresetId = 'vesper';
 export function PlaygroundApp() {
   const [activePreset, setActivePreset] = useState<PresetId>(DEFAULT_PRESET);
   const [theme, setTheme] = useState<ThemeValue>(PRESETS[DEFAULT_PRESET]);
+  const [focusField, setFocusField] = useState<PaletteField | null>(null);
 
   function handlePresetChange(preset: PresetId) {
     setActivePreset(preset);
@@ -146,7 +147,11 @@ export function PlaygroundApp() {
             background: 'var(--vocs-background-color-primary)',
           }}
         >
-          <EditorPane theme={theme} onChange={setTheme} />
+          <EditorPane
+            theme={theme}
+            onChange={setTheme}
+            focusField={focusField}
+          />
         </div>
         <div
           style={{
@@ -154,7 +159,7 @@ export function PlaygroundApp() {
             background: 'var(--vocs-background-color-surface)',
           }}
         >
-          <PreviewPane theme={theme} />
+          <PreviewPane theme={theme} onInspect={setFocusField} />
         </div>
       </div>
     </div>

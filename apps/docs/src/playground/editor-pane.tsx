@@ -35,10 +35,16 @@ function useMonacoTheme(): 'vs-dark' | 'light' {
 
 const TARGETS_SCHEMA_URI = 'otheme://theme/targets.json';
 
+function fieldId(group: 'ui' | 'syntax', key: string) {
+  return `${group}:${key}`;
+}
+
 function ColorField(props: {
   label: string;
   value: string;
   onChange: (hex: string) => void;
+  flashing: boolean;
+  registerInput: (input: HTMLInputElement | null) => void;
 }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -73,6 +79,16 @@ function ColorField(props: {
         alignItems: 'center',
         gap: '0.5rem',
         marginBottom: '0.4rem',
+        padding: '0.15rem 0.35rem',
+        margin: '0 -0.35rem 0.4rem',
+        borderRadius: 'var(--vocs-radius-sm)',
+        outline: props.flashing
+          ? '2px solid var(--vocs-color-accent)'
+          : '2px solid transparent',
+        background: props.flashing
+          ? 'var(--vocs-background-color-surface)'
+          : 'transparent',
+        transition: 'outline-color 0.2s ease, background 0.2s ease',
       }}
     >
       <button
@@ -102,6 +118,7 @@ function ColorField(props: {
       </span>
       <input
         type="text"
+        ref={props.registerInput}
         defaultValue={props.value}
         key={props.value}
         onBlur={handleHexInput}
@@ -145,8 +162,11 @@ function ColorField(props: {
 
 function ColorGroup<T extends Record<string, string>>(props: {
   label: string;
+  group: 'ui' | 'syntax';
   colors: T;
   onChange: (updated: T) => void;
+  flashingKey: string | null;
+  registerInput: (id: string, input: HTMLInputElement | null) => void;
 }) {
   function handleFieldChange(field: string, hex: string) {
     props.onChange({ ...props.colors, [field]: hex } as T);
@@ -168,14 +188,19 @@ function ColorGroup<T extends Record<string, string>>(props: {
         {props.label}
       </h3>
       <div>
-        {Object.keys(props.colors).map((field) => (
-          <ColorField
-            key={field}
-            label={field}
-            value={props.colors[field] as string}
-            onChange={(hex) => handleFieldChange(field, hex)}
-          />
-        ))}
+        {Object.keys(props.colors).map((field) => {
+          const id = fieldId(props.group, field);
+          return (
+            <ColorField
+              key={field}
+              label={field}
+              value={props.colors[field] as string}
+              onChange={(hex) => handleFieldChange(field, hex)}
+              flashing={props.flashingKey === id}
+              registerInput={(input) => props.registerInput(id, input)}
+            />
+          );
+        })}
       </div>
     </section>
   );
@@ -269,6 +294,31 @@ function TargetsEditor(props: {
 }
 
 export function EditorPane(props: EditorPaneProps) {
+  const inputsRef = useRef(new Map<string, HTMLInputElement>());
+  const [flashingKey, setFlashingKey] = useState<string | null>(null);
+
+  function registerInput(id: string, input: HTMLInputElement | null) {
+    if (input === null) {
+      inputsRef.current.delete(id);
+      return;
+    }
+    inputsRef.current.set(id, input);
+  }
+
+  useEffect(() => {
+    if (props.focusField === null) return;
+    const id = fieldId(props.focusField.group, props.focusField.key);
+    const input = inputsRef.current.get(id);
+    if (input === undefined) return;
+
+    input.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    input.focus();
+    input.select();
+    setFlashingKey(id);
+    const timeout = setTimeout(() => setFlashingKey(null), 1000);
+    return () => clearTimeout(timeout);
+  }, [props.focusField]);
+
   function handleUiChange(updated: UiColors) {
     props.onChange({ ...props.theme, ui: updated });
   }
@@ -394,8 +444,11 @@ export function EditorPane(props: EditorPaneProps) {
 
       <ColorGroup<UiColors>
         label="UI"
+        group="ui"
         colors={props.theme.ui}
         onChange={handleUiChange}
+        flashingKey={flashingKey}
+        registerInput={registerInput}
       />
 
       <div
@@ -407,8 +460,11 @@ export function EditorPane(props: EditorPaneProps) {
 
       <ColorGroup<SyntaxColors>
         label="Syntax"
+        group="syntax"
         colors={props.theme.syntax}
         onChange={handleSyntaxChange}
+        flashingKey={flashingKey}
+        registerInput={registerInput}
       />
 
       <div
