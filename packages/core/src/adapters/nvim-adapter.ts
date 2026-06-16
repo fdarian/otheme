@@ -13,8 +13,16 @@ import {
 const nvimColorsPathFor = (target: NvimTarget): string =>
   `~/.local/share/nvim/site/colors/${target.colorscheme}.lua`;
 
+/**
+ * Uses writefile to /dev/stdout because nvim's :echo in --headless -es mode
+ * does not produce output — the silent ex flag suppresses it entirely.
+ */
 const nvimDiscoverRunDirCommand = (): string =>
-  formatCommand('nvim', ['--headless', '-es', "+echo stdpath('run')", '+q']);
+  formatCommand('nvim', [
+    '--headless',
+    "+call writefile([stdpath('run')], '/dev/stdout')",
+    '+q',
+  ]);
 
 const nvimLiveApplyCommand = (target: NvimTarget): string =>
   formatCommand('nvim', [
@@ -44,26 +52,38 @@ const parseNvimRunDir = (output: string) =>
     return runDir;
   });
 
+/**
+ * stdpath('run') is unique per nvim process, so the helper invocation returns
+ * its own temporary dir.  All running instances share the same *parent* dir
+ * (e.g. /tmp/nvim.user/), so we enumerate sockets one level up.
+ */
 const discoverNvimSockets = Effect.gen(function* () {
   const executor = yield* CommandExecutor;
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
   const output = yield* executor.read('nvim', [
     '--headless',
-    '-es',
-    "+echo stdpath('run')",
+    "+call writefile([stdpath('run')], '/dev/stdout')",
     '+q',
   ]);
-  const runDir = yield* parseNvimRunDir(output);
-  const entries = yield* fs.readDirectory(runDir, { recursive: true });
+  const instanceRunDir = yield* parseNvimRunDir(output);
+  const socketsBaseDir = path.dirname(instanceRunDir);
+
+  const baseExists = yield* fs.exists(socketsBaseDir);
+
+  if (!baseExists) {
+    return [];
+  }
+
+  const entries = yield* fs.readDirectory(socketsBaseDir, { recursive: true });
   const sockets: Array<string> = [];
 
   for (const entry of entries) {
-    const socketPath = path.join(runDir, entry);
-    const info = yield* fs.stat(socketPath);
+    const entryPath = path.join(socketsBaseDir, entry);
+    const info = yield* fs.stat(entryPath);
 
     if (info.type === 'Socket') {
-      sockets.push(socketPath);
+      sockets.push(entryPath);
     }
   }
 
