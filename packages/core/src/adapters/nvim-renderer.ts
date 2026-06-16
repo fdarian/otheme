@@ -132,6 +132,7 @@ function groups(theme: Theme, target: NvimTarget): Group[] {
     ['@markup.raw', { fg: s.string }],
     ['@markup.list', { fg: s.markupList }],
     ['@tag', { fg: s.tag }],
+    ['@tag.builtin', { fg: s.tag }],
     ['@tag.attribute', { fg: s.attribute }],
     ['@tag.delimiter', { fg: ui.fgMuted }],
     ['@label', { fg: s.tag }],
