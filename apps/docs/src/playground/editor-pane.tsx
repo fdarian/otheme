@@ -7,6 +7,32 @@ import { HexColorPicker } from 'react-colorful';
 import targetsSchema from '../../../../packages/core/theme.schema.json';
 import type { EditorPaneProps, ThemeValue } from './types';
 
+function readDocsTheme(): 'vs-dark' | 'light' {
+  if (typeof document === 'undefined') return 'light';
+  return document.documentElement.dataset.vocsTheme === 'dark'
+    ? 'vs-dark'
+    : 'light';
+}
+
+function useMonacoTheme(): 'vs-dark' | 'light' {
+  const [monacoTheme, setMonacoTheme] = useState<'vs-dark' | 'light'>(
+    readDocsTheme,
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setMonacoTheme(readDocsTheme());
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-vocs-theme'],
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  return monacoTheme;
+}
+
 const TARGETS_SCHEMA_URI = 'otheme://theme/targets.json';
 
 function ColorField(props: {
@@ -167,6 +193,8 @@ function TargetsEditor(props: {
     setJsonText(JSON.stringify(props.targets, null, 2));
   }, [props.targets]);
 
+  const monacoTheme = useMonacoTheme();
+
   const handleMount: OnMount = useCallback((editor, monaco) => {
     const model = editor.getModel();
     if (model === null)
@@ -221,6 +249,7 @@ function TargetsEditor(props: {
         <MonacoEditor
           height="320px"
           language="json"
+          theme={monacoTheme}
           value={jsonText}
           onChange={handleChange}
           onMount={handleMount}
