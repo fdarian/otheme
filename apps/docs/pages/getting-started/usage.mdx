@@ -68,3 +68,37 @@ otheme alias set light claude
 ```
 
 After changing an alias, `otheme set dark` or `otheme set light` resolves to the theme you chose.
+
+## Config
+
+otheme stores configuration at:
+
+```text
+~/.config/otheme/config.json
+```
+
+Initialize it with:
+
+```sh
+otheme config
+```
+
+### Per-theme overrides
+
+The `overrides` key lets you customize target fields for specific themes without modifying the theme definition. Overrides are keyed by theme id and merged on top of the theme's own target fields when `otheme set` runs.
+
+Example — keep a custom session formatter on a specific theme's tmux status bar:
+
+```json
+{
+  "overrides": {
+    "vesper": {
+      "tmux": {
+        "sessionFormatter": "~/.config/tmux/tools/format-session/target/release/format-session"
+      }
+    }
+  }
+}
+```
+
+Any override key that does not match an active theme is silently ignored.

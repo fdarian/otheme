@@ -9,13 +9,14 @@ import {
 } from '@otheme/core';
 import { Effect } from 'effect';
 
-interface TargetPageConfig {
+type TargetPageConfig = {
   readonly compatibility: string;
+  readonly extraSections?: string;
   readonly id: TargetAdapter['id'];
   readonly intro: string;
   readonly slug: string;
   readonly title: string;
-}
+};
 
 const representativeThemeId = 'vesper';
 const generatedNotice =
@@ -34,9 +35,46 @@ const targetPageConfigs = [
   {
     compatibility:
       'Author mode. otheme generates a tmux theme file from the shared theme palette and points tmux at it.',
+    extraSections: `## Session name formatting
+
+By default, otheme renders the tmux status bar with the plain session name (\`#{session_name}\`).
+
+You can customize this via the \`overrides\` field in \`~/.config/otheme/config.json\`:
+
+### \`sessionFormatter\`
+
+Run a custom binary to format the session name. otheme injects it as \`#(<formatter> '#{session_name}')\` in both the prefix and non-prefix branches of the status right.
+
+\`\`\`json
+{
+  "overrides": {
+    "vesper": {
+      "tmux": {
+        "sessionFormatter": "~/.config/tmux/tools/format-session/target/release/format-session"
+      }
+    }
+  }
+}
+\`\`\`
+
+### \`statusRight\`
+
+Replace the entire status-right string. Supports \`{{placeholder}}\` substitution (e.g. \`{{accent}}\`, \`{{muted}}\`). This wins over \`sessionFormatter\` when both are set.
+
+\`\`\`json
+{
+  "overrides": {
+    "vesper": {
+      "tmux": {
+        "statusRight": "#[fg={{muted}}]my custom status"
+      }
+    }
+  }
+}
+\`\`\``,
     id: 'tmux',
     intro:
-      'The tmux target writes a generated tmux theme file, updates the active source line, and reloads tmux.',
+      'The tmux target writes a generated tmux theme file, updates the active source line, and reloads tmux.\n\nBy default the status bar shows the plain tmux session name (`#{session_name}`). You can override this per theme — see [Session name formatting](#session-name-formatting) below.',
     slug: 'tmux',
     title: 'tmux',
   },
@@ -151,7 +189,7 @@ ${fileRows(plan.creates)}
 ## Commands
 
 ${commandRows(plan.commands)}
-`;
+${config.extraSections !== undefined ? `\n${config.extraSections}\n` : ''}`;
   });
 
 const writeTargetPage = (config: TargetPageConfig) =>
