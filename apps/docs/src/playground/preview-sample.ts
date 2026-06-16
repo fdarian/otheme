@@ -36,7 +36,18 @@ export type TokenKind =
   | 'variableBuiltin'
   | 'variableMember';
 
-export type Span = { text: string; token: TokenKind };
+/**
+ * An LSP-style diagnostic on a span: 'error' draws a wavy underline in
+ * ui.error, 'unused' draws a wavy underline in ui.hint and dims the token
+ * (like nvim's DiagnosticUnnecessary).
+ */
+export type SpanDiagnostic = 'error' | 'unused';
+
+export type Span = {
+  text: string;
+  token: TokenKind;
+  diagnostic?: SpanDiagnostic;
+};
 
 export type SampleLine = Span[];
 
@@ -65,9 +76,8 @@ export const CODE_SAMPLE: SampleLine[] = [
     { text: '{', token: 'punctuationSpecial' },
     { text: ' User ', token: 'type' },
     { text: '}', token: 'punctuationSpecial' },
-    { text: " from './", token: 'plain' },
-    { text: 'user', token: 'string' },
-    { text: "'", token: 'plain' },
+    { text: ' from ', token: 'plain' },
+    { text: "'./user'", token: 'string', diagnostic: 'error' },
     { text: ';', token: 'punctuation' },
   ],
   [{ text: '', token: 'plain' }],
@@ -79,7 +89,7 @@ export const CODE_SAMPLE: SampleLine[] = [
   ],
   [
     { text: 'const ', token: 'keyword' },
-    { text: 'MAX_GREETINGS', token: 'constant' },
+    { text: 'MAX_GREETINGS', token: 'constant', diagnostic: 'unused' },
     { text: ' = ', token: 'operator' },
     { text: '100', token: 'number' },
     { text: ';', token: 'punctuation' },
@@ -206,6 +216,26 @@ export const CODE_SAMPLE: SampleLine[] = [
   [{ text: '  );', token: 'punctuation' }],
   [{ text: '}', token: 'punctuation' }],
 ];
+
+/**
+ * LSP-style trailing virtual text shown to the right of a CODE_SAMPLE line,
+ * keyed by line index. 'error' lines render in ui.error, 'hint' in ui.hint.
+ */
+export type CodeDiagnostic = { severity: 'error' | 'hint'; message: string };
+
+export const CODE_DIAGNOSTICS: Record<number, CodeDiagnostic> = {
+  // import type { User } from './user';
+  1: {
+    severity: 'error',
+    message:
+      "Cannot find module './user' or its corresponding type declarations.",
+  },
+  // const MAX_GREETINGS = 100;
+  4: {
+    severity: 'hint',
+    message: "'MAX_GREETINGS' is declared but its value is never read.",
+  },
+};
 
 /**
  * Window 4 (docs): a fuller markdown doc — headings, a paragraph with a link,

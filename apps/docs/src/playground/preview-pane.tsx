@@ -3,6 +3,7 @@
 import type { Theme } from '@otheme/core/schema';
 import { useState } from 'react';
 import type {
+  CodeDiagnostic,
   DiffLine,
   DiffSpan,
   LogLine,
@@ -10,10 +11,12 @@ import type {
   PromptLine,
   SampleLine,
   Span,
+  SpanDiagnostic,
   TokenKind,
 } from './preview-sample';
 import {
   APPLY_SUCCESS,
+  CODE_DIAGNOSTICS,
   CODE_SAMPLE,
   DIFF_SAMPLE,
   LOG_SAMPLE,
@@ -188,48 +191,122 @@ function InspectTooltip(props: { target: HoverTarget }) {
   );
 }
 
+/** The ui key driving a span/virtual-text diagnostic of a given severity. */
+function diagnosticKey(severity: SpanDiagnostic | CodeDiagnostic['severity']) {
+  return severity === 'error' ? 'error' : 'hint';
+}
+
+/** A single code token, with optional LSP-diagnostic decoration. */
+function CodeToken(props: {
+  theme: Theme;
+  span: Span;
+  inspect: InspectContext;
+}) {
+  if (props.span.diagnostic === undefined) {
+    return (
+      <InspectableSpan
+        color={tokenColor(props.theme, props.span.token)}
+        field={tokenField(props.span.token)}
+        inspect={props.inspect}
+      >
+        {props.span.text}
+      </InspectableSpan>
+    );
+  }
+
+  const key = diagnosticKey(props.span.diagnostic);
+  const underline = props.theme.ui[key];
+  // 'unused' dims the identifier like nvim's DiagnosticUnnecessary.
+  const textColor =
+    props.span.diagnostic === 'unused'
+      ? props.theme.ui.fgMuted
+      : tokenColor(props.theme, props.span.token);
+  return (
+    <InspectableSpan
+      color={textColor}
+      field={{ group: 'ui', key }}
+      inspect={props.inspect}
+      style={{
+        textDecoration: `underline wavy ${underline}`,
+        textUnderlineOffset: '0.2rem',
+      }}
+    >
+      {props.span.text}
+    </InspectableSpan>
+  );
+}
+
+/** LSP-style virtual text to the right of a diagnostic line. */
+function VirtualText(props: {
+  theme: Theme;
+  diagnostic: CodeDiagnostic;
+  inspect: InspectContext;
+}) {
+  const key = diagnosticKey(props.diagnostic.severity);
+  const color = props.theme.ui[key];
+  return (
+    <InspectableSpan
+      color={color}
+      field={{ group: 'ui', key }}
+      inspect={props.inspect}
+      style={{ paddingLeft: '1.5rem', opacity: 0.9 }}
+    >
+      ■ {props.diagnostic.message}
+    </InspectableSpan>
+  );
+}
+
 function CodeLines(props: {
   theme: Theme;
   lines: SampleLine[];
   startLine: number;
   inspect: InspectContext;
+  diagnostics?: Record<number, CodeDiagnostic>;
 }) {
   return (
     <>
-      {props.lines.map((line, index) => (
-        <div
-          // biome-ignore lint/suspicious/noArrayIndexKey: static sample, index is stable
-          key={index}
-          style={{ display: 'flex', whiteSpace: 'pre' }}
-        >
-          <InspectableSpan
-            color={props.theme.ui.lineNr}
-            field={{ group: 'ui', key: 'lineNr' }}
-            inspect={props.inspect}
-            style={{
-              minWidth: '2.5rem',
-              textAlign: 'right',
-              paddingRight: '1rem',
-              userSelect: 'none',
-            }}
+      {props.lines.map((line, index) => {
+        const diagnostic = props.diagnostics?.[index];
+        return (
+          <div
+            // biome-ignore lint/suspicious/noArrayIndexKey: static sample, index is stable
+            key={index}
+            style={{ display: 'flex', whiteSpace: 'pre' }}
           >
-            {props.startLine + index}
-          </InspectableSpan>
-          <span>
-            {line.map((span: Span, spanIndex) => (
-              <InspectableSpan
-                // biome-ignore lint/suspicious/noArrayIndexKey: static sample, index is stable
-                key={spanIndex}
-                color={tokenColor(props.theme, span.token)}
-                field={tokenField(span.token)}
-                inspect={props.inspect}
-              >
-                {span.text}
-              </InspectableSpan>
-            ))}
-          </span>
-        </div>
-      ))}
+            <InspectableSpan
+              color={props.theme.ui.lineNr}
+              field={{ group: 'ui', key: 'lineNr' }}
+              inspect={props.inspect}
+              style={{
+                minWidth: '2.5rem',
+                textAlign: 'right',
+                paddingRight: '1rem',
+                userSelect: 'none',
+              }}
+            >
+              {props.startLine + index}
+            </InspectableSpan>
+            <span>
+              {line.map((span: Span, spanIndex) => (
+                <CodeToken
+                  // biome-ignore lint/suspicious/noArrayIndexKey: static sample, index is stable
+                  key={spanIndex}
+                  theme={props.theme}
+                  span={span}
+                  inspect={props.inspect}
+                />
+              ))}
+              {diagnostic !== undefined && (
+                <VirtualText
+                  theme={props.theme}
+                  diagnostic={diagnostic}
+                  inspect={props.inspect}
+                />
+              )}
+            </span>
+          </div>
+        );
+      })}
     </>
   );
 }
@@ -619,6 +696,7 @@ function EditorWindow(props: { theme: Theme; inspect: InspectContext }) {
         lines={CODE_SAMPLE}
         startLine={1}
         inspect={props.inspect}
+        diagnostics={CODE_DIAGNOSTICS}
       />
     </WindowBody>
   );
