@@ -33,6 +33,7 @@
   },
   "scripts": {
     "build": "bun build src/cli.ts --target=node --outfile dist/cli.js",
+    "build:binaries": "bun run scripts/build-binaries.ts",
     "check": "bun run check:type && bun run check:lint",
     "check:lint": "biome check .",
     "check:type": "tsc --noEmit",
