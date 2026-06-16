@@ -8,6 +8,7 @@ type Page =
   | { path: '/getting-started/installation'; render: 'static' }
   | { path: '/getting-started/usage'; render: 'static' }
   | { path: '/'; render: 'static' }
+  | { path: '/playground'; render: 'static' }
   | { path: '/targets/claude-code'; render: 'static' }
   | { path: '/targets/ghostty'; render: 'static' }
   | { path: '/targets/git-delta'; render: 'static' }
