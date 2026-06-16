@@ -31,6 +31,7 @@ export default defineConfig({
   topNav: [
     { text: 'Guide', link: '/' },
     { text: 'Targets', link: '/targets/nvim' },
+    { text: 'Playground', link: '/playground' },
   ],
   socials: [{ icon: 'github', link: 'https://github.com/fdarian/otheme' }],
 });
