@@ -31,4 +31,7 @@ export default defineConfig({
     { text: 'Guide', link: '/' },
     { text: 'Targets', link: '/targets/nvim' },
   ],
+  socials: [
+     { icon: 'github', link: 'https://github.com/fdarian/otheme' }
+  ]
 });
