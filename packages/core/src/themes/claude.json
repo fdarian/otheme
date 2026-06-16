@@ -1,0 +1,63 @@
+{
+  "id": "claude",
+  "name": "Claude",
+  "appearance": "light",
+  "ui": {
+    "bg": "#FAF9F5",
+    "bgFloat": "#F0EEE6",
+    "bgHover": "#E8E6DC",
+    "bgVisual": "#E8E6DC",
+    "fg": "#141413",
+    "fgMuted": "#5A5852",
+    "fgDim": "#83817A",
+    "comment": "#A3A299",
+    "border": "#DCD9CF",
+    "lineNr": "#C4C1B6",
+    "search": "#E8D9CF",
+    "accent": "#D97757",
+    "accentFg": "#FAF9F5",
+    "error": "#C15F3C",
+    "warning": "#B16803",
+    "info": "#6A9BCC",
+    "hint": "#8B6CB0",
+    "success": "#788C5D",
+    "diffAdd": "#E4EBDB",
+    "diffDel": "#F3DDD3",
+    "diffChg": "#F3EAD6"
+  },
+  "syntax": {
+    "variable": "#141413",
+    "variableBuiltin": "#B16803",
+    "variableMember": "#C15F3C",
+    "func": "#6A9BCC",
+    "keyword": "#8B6CB0",
+    "operator": "#2E8B8B",
+    "punctuation": "#5A5852",
+    "punctuationSpecial": "#C15F3C",
+    "type": "#2E8B8B",
+    "attribute": "#6A9BCC",
+    "string": "#788C5D",
+    "stringEscape": "#83817A",
+    "stringSpecial": "#B16803",
+    "constant": "#B16803",
+    "number": "#B16803",
+    "tag": "#6A9BCC",
+    "markupHeading": "#C15F3C",
+    "markupLink": "#6A9BCC",
+    "markupList": "#C15F3C"
+  },
+  "targets": [
+    {
+      "id": "nvim",
+      "colorscheme": "claude",
+      "transparentBg": false
+    },
+    {
+      "id": "tmux",
+      "muted": "#A3A299",
+      "inactiveFg": "#A3A299",
+      "searchMatch": "#2E8B8B",
+      "searchCurrent": "#8B6CB0"
+    }
+  ]
+}

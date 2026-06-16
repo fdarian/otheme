@@ -1,0 +1,121 @@
+import { Schema } from 'effect';
+
+export const HexColor = Schema.String.check(
+  Schema.isPattern(/^#[0-9A-Fa-f]{6}$/, {
+    message: 'Expected a six-digit hex color like #A1B2C3',
+  }),
+);
+
+export const UiColors = Schema.Struct({
+  accent: HexColor,
+  accentFg: HexColor,
+  bg: HexColor,
+  bgFloat: HexColor,
+  bgHover: HexColor,
+  bgVisual: HexColor,
+  border: HexColor,
+  comment: HexColor,
+  diffAdd: HexColor,
+  diffChg: HexColor,
+  diffDel: HexColor,
+  error: HexColor,
+  fg: HexColor,
+  fgDim: HexColor,
+  fgMuted: HexColor,
+  hint: HexColor,
+  info: HexColor,
+  lineNr: HexColor,
+  search: HexColor,
+  success: HexColor,
+  warning: HexColor,
+});
+
+export const SyntaxColors = Schema.Struct({
+  attribute: HexColor,
+  constant: HexColor,
+  func: HexColor,
+  keyword: HexColor,
+  markupHeading: HexColor,
+  markupLink: HexColor,
+  markupList: HexColor,
+  number: HexColor,
+  operator: HexColor,
+  punctuation: HexColor,
+  punctuationSpecial: HexColor,
+  string: HexColor,
+  stringEscape: HexColor,
+  stringSpecial: HexColor,
+  tag: HexColor,
+  type: HexColor,
+  variable: HexColor,
+  variableBuiltin: HexColor,
+  variableMember: HexColor,
+});
+
+export const NvimTarget = Schema.Struct({
+  colorscheme: Schema.String,
+  id: Schema.Literal('nvim'),
+  transparentBg: Schema.Boolean,
+});
+
+export const TmuxTarget = Schema.Struct({
+  id: Schema.Literal('tmux'),
+  inactiveFg: HexColor,
+  muted: HexColor,
+  searchCurrent: HexColor,
+  searchMatch: HexColor,
+});
+
+const GhosttyFontFields = {
+  fontFamily: Schema.optional(Schema.String),
+  fontThicken: Schema.optional(Schema.Boolean),
+  fontThickenStrength: Schema.optional(Schema.Number),
+};
+
+export const GhosttyAuthorTarget = Schema.Struct({
+  id: Schema.Literal('ghostty'),
+  mode: Schema.Literal('author'),
+  ...GhosttyFontFields,
+});
+
+export const GhosttyMapTarget = Schema.Struct({
+  id: Schema.Literal('ghostty'),
+  mapTo: Schema.String,
+  mode: Schema.Literal('map'),
+  ...GhosttyFontFields,
+});
+
+export const ClaudeCodeTarget = Schema.Struct({
+  id: Schema.Literal('claude-code'),
+  mapTo: Schema.Literals(['dark', 'light']),
+  mode: Schema.Literal('map'),
+});
+
+export const Target = Schema.Union([
+  NvimTarget,
+  TmuxTarget,
+  GhosttyAuthorTarget,
+  GhosttyMapTarget,
+  ClaudeCodeTarget,
+]);
+
+export const Theme = Schema.Struct({
+  appearance: Schema.Literals(['dark', 'light']),
+  id: Schema.String,
+  name: Schema.String,
+  syntax: SyntaxColors,
+  targets: Schema.Array(Target),
+  ui: UiColors,
+});
+
+export type ClaudeCodeTarget = typeof ClaudeCodeTarget.Type;
+export type GhosttyAuthorTarget = typeof GhosttyAuthorTarget.Type;
+export type GhosttyMapTarget = typeof GhosttyMapTarget.Type;
+export type NvimTarget = typeof NvimTarget.Type;
+export type SyntaxColors = typeof SyntaxColors.Type;
+export type Target = typeof Target.Type;
+export type TargetId = Target['id'];
+export type Theme = typeof Theme.Type;
+export type Appearance = Theme['appearance'];
+export type TmuxTarget = typeof TmuxTarget.Type;
+export type UiColors = typeof UiColors.Type;

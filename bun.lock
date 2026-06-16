@@ -24,6 +24,7 @@
         "effect": "4.0.0-beta.83",
       },
       "devDependencies": {
+        "@repo/config": "workspace:*",
         "@types/bun": "^1.2.17",
       },
     },
@@ -39,6 +40,9 @@
       "version": "0.0.0",
       "dependencies": {
         "effect": "4.0.0-beta.83",
+      },
+      "devDependencies": {
+        "@repo/config": "workspace:*",
       },
     },
   },

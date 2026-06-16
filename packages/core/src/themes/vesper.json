@@ -1,0 +1,63 @@
+{
+  "id": "vesper",
+  "name": "Vesper",
+  "appearance": "dark",
+  "ui": {
+    "bg": "#101010",
+    "bgFloat": "#1A1A1A",
+    "bgHover": "#282828",
+    "bgVisual": "#493C31",
+    "fg": "#FFFFFF",
+    "fgMuted": "#A0A0A0",
+    "fgDim": "#7E7E7E",
+    "comment": "#8b8b8b",
+    "border": "#444444",
+    "lineNr": "#505050",
+    "search": "#575757",
+    "accent": "#FFC799",
+    "accentFg": "#000000",
+    "error": "#FF8080",
+    "warning": "#FFC799",
+    "info": "#7E7E7E",
+    "hint": "#A0A0A0",
+    "success": "#99FFE4",
+    "diffAdd": "#233D37",
+    "diffDel": "#3D2020",
+    "diffChg": "#3D3025"
+  },
+  "syntax": {
+    "variable": "#FFFFFF",
+    "variableBuiltin": "#A0A0A0",
+    "variableMember": "#FFFFFF",
+    "func": "#FFC799",
+    "keyword": "#A0A0A0",
+    "operator": "#A0A0A0",
+    "punctuation": "#A0A0A0",
+    "punctuationSpecial": "#A0A0A0",
+    "type": "#FFC799",
+    "attribute": "#A0A0A0",
+    "string": "#99FFE4",
+    "stringEscape": "#FFC799",
+    "stringSpecial": "#99FFE4",
+    "constant": "#FFC799",
+    "number": "#FFC799",
+    "tag": "#FFC799",
+    "markupHeading": "#FFC799",
+    "markupLink": "#FFFFFF",
+    "markupList": "#A0A0A0"
+  },
+  "targets": [
+    {
+      "id": "nvim",
+      "colorscheme": "vesper",
+      "transparentBg": true
+    },
+    {
+      "id": "tmux",
+      "muted": "#565B66",
+      "inactiveFg": "#7E7E7E",
+      "searchMatch": "#5CCFE6",
+      "searchCurrent": "#D0679D"
+    }
+  ]
+}

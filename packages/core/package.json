@@ -8,6 +8,9 @@
   "dependencies": {
     "effect": "4.0.0-beta.83"
   },
+  "devDependencies": {
+    "@repo/config": "workspace:*"
+  },
   "scripts": {
     "check": "bun run check:type && bun run check:lint",
     "check:lint": "biome check .",

@@ -1,0 +1,63 @@
+{
+  "id": "atom-one-light",
+  "name": "Atom One Light",
+  "appearance": "light",
+  "ui": {
+    "bg": "#FAFAFA",
+    "bgFloat": "#EBEBEC",
+    "bgHover": "#DFDFE0",
+    "bgVisual": "#D4DBF4",
+    "fg": "#242529",
+    "fgMuted": "#58585A",
+    "fgDim": "#7E8086",
+    "comment": "#A2A3A7",
+    "border": "#C9C9CA",
+    "lineNr": "#B4B4BB",
+    "search": "#BBC6F0",
+    "accent": "#5C78E2",
+    "accentFg": "#FAFAFA",
+    "error": "#D36151",
+    "warning": "#A48819",
+    "info": "#5C78E2",
+    "hint": "#7274A7",
+    "success": "#669F59",
+    "diffAdd": "#DFEADB",
+    "diffDel": "#FBDFD9",
+    "diffChg": "#FAF2E6"
+  },
+  "syntax": {
+    "variable": "#242529",
+    "variableBuiltin": "#AD6E25",
+    "variableMember": "#D3604F",
+    "func": "#5C78E2",
+    "keyword": "#A449AB",
+    "operator": "#3882B7",
+    "punctuation": "#4D4F52",
+    "punctuationSpecial": "#D3604F",
+    "type": "#3882B7",
+    "attribute": "#5C78E2",
+    "string": "#649F57",
+    "stringEscape": "#7E8086",
+    "stringSpecial": "#AD6E25",
+    "constant": "#C18401",
+    "number": "#AD6E25",
+    "tag": "#5C78E2",
+    "markupHeading": "#D3604F",
+    "markupLink": "#5C78E2",
+    "markupList": "#D3604F"
+  },
+  "targets": [
+    {
+      "id": "nvim",
+      "colorscheme": "one-light",
+      "transparentBg": false
+    },
+    {
+      "id": "tmux",
+      "muted": "#A0A1A7",
+      "inactiveFg": "#A0A1A7",
+      "searchMatch": "#0184BC",
+      "searchCurrent": "#A626A4"
+    }
+  ]
+}
