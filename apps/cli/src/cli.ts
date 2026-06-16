@@ -12,6 +12,7 @@ import {
 } from '@otheme/core';
 import { Console, Effect, Layer } from 'effect';
 import { Argument, Command, Flag } from 'effect/unstable/cli';
+import packageJson from '../package.json';
 
 const themeArg = Argument.string('theme-or-alias').pipe(
   Argument.withDescription('Theme id or configured alias'),
@@ -235,5 +236,7 @@ const mainLayer = Layer.mergeAll(
 );
 
 NodeRuntime.runMain(
-  Command.run(cli, { version: '0.0.0' }).pipe(Effect.provide(mainLayer)),
+  Command.run(cli, { version: packageJson.version }).pipe(
+    Effect.provide(mainLayer),
+  ),
 );
