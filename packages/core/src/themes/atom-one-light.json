@@ -68,6 +68,7 @@
     },
     "git-delta": {
       "features": "hoopoe"
-    }
+    },
+    "macos": {}
   }
 }

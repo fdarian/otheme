@@ -1,0 +1,24 @@
+---
+title: macos
+description: Files and commands used by the macos target.
+---
+
+# macos
+
+The macos target switches the macOS system appearance (dark or light) to match the active theme.
+
+This page is generated from the adapter plan used by `otheme set vesper --dry-run`. Paths are shown exactly as otheme prints them; `~` means your home directory.
+
+## Compatibility
+
+Command mode. otheme runs an osascript one-liner to set the macOS system appearance to match the theme's top-level `appearance` field.
+
+## Files
+
+No files are written for this target.
+
+## Commands
+
+| Order | Command | Why it runs |
+| --- | --- | --- |
+| 1 | `osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'` | set macOS system appearance to dark to match the theme |

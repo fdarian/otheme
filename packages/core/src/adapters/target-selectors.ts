@@ -5,6 +5,7 @@ import type {
   ClaudeCodeTarget,
   GhosttyTarget,
   GitDeltaTarget,
+  MacosTarget,
   NvimTarget,
   Theme,
   TmuxTarget,
@@ -25,6 +26,9 @@ export const getClaudeCodeTarget = (
 
 export const getGitDeltaTarget = (theme: Theme): GitDeltaTarget | undefined =>
   theme.targets['git-delta'];
+
+export const getMacosTarget = (theme: Theme): MacosTarget | undefined =>
+  theme.targets.macos;
 
 export const requireNvimTarget = (theme: Theme) => {
   const target = getNvimTarget(theme);
@@ -80,6 +84,18 @@ export const requireGitDeltaTarget = (theme: Theme) => {
   if (target === undefined) {
     return Effect.fail(
       new TargetNotFoundError({ targetId: 'git-delta', themeId: theme.id }),
+    );
+  }
+
+  return Effect.succeed(target);
+};
+
+export const requireMacosTarget = (theme: Theme) => {
+  const target = getMacosTarget(theme);
+
+  if (target === undefined) {
+    return Effect.fail(
+      new TargetNotFoundError({ targetId: 'macos', themeId: theme.id }),
     );
   }
 

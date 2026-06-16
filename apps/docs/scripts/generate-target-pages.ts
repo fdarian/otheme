@@ -67,6 +67,15 @@ const targetPageConfigs = [
     slug: 'git-delta',
     title: 'git-delta',
   },
+  {
+    compatibility:
+      "Command mode. otheme runs an osascript one-liner to set the macOS system appearance to match the theme's top-level `appearance` field.",
+    id: 'macos',
+    intro:
+      'The macos target switches the macOS system appearance (dark or light) to match the active theme.',
+    slug: 'macos',
+    title: 'macos',
+  },
 ] as const satisfies ReadonlyArray<TargetPageConfig>;
 
 const escapeTableCell = (value: string): string => value.replaceAll('|', '\\|');

@@ -395,6 +395,23 @@
             }
           ]
         },
+        "macos": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "object"
+                },
+                {
+                  "type": "array"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "nvim": {
           "anyOf": [
             {

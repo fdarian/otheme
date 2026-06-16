@@ -95,10 +95,13 @@ export const GitDeltaTarget = Schema.Struct({
   features: Schema.String,
 });
 
+export const MacosTarget = Schema.Struct({});
+
 export const Targets = Schema.Struct({
   'claude-code': Schema.optional(ClaudeCodeTarget),
   'git-delta': Schema.optional(GitDeltaTarget),
   ghostty: Schema.optional(GhosttyTarget),
+  macos: Schema.optional(MacosTarget),
   nvim: Schema.optional(NvimTarget),
   tmux: Schema.optional(TmuxTarget),
 });
@@ -112,15 +115,16 @@ export const Theme = Schema.Struct({
   ui: UiColors,
 });
 
+export type Appearance = Theme['appearance'];
 export type ClaudeCodeTarget = typeof ClaudeCodeTarget.Type;
 export type GitDeltaTarget = typeof GitDeltaTarget.Type;
 export type GhosttyAuthorTarget = typeof GhosttyAuthorTarget.Type;
 export type GhosttyMapTarget = typeof GhosttyMapTarget.Type;
 export type GhosttyTarget = typeof GhosttyTarget.Type;
+export type MacosTarget = typeof MacosTarget.Type;
 export type NvimTarget = typeof NvimTarget.Type;
 export type SyntaxColors = typeof SyntaxColors.Type;
 export type TargetId = keyof typeof Targets.Type;
 export type Theme = typeof Theme.Type;
-export type Appearance = Theme['appearance'];
 export type TmuxTarget = typeof TmuxTarget.Type;
 export type UiColors = typeof UiColors.Type;
