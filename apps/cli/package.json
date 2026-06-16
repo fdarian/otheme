@@ -1,6 +1,6 @@
 {
   "name": "otheme",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Apply shared themes across editor and terminal targets",
   "type": "module",
   "license": "Apache-2.0",
