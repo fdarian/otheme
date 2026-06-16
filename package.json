@@ -20,7 +20,6 @@
   "devDependencies": {
     "@biomejs/biome": "^2.0.0",
     "@changesets/cli": "^2.29.7",
-    "@total-typescript/tsconfig": "^1.0.4",
     "turbo": "^2.5.8",
     "typescript": "^5.8.3"
   }
