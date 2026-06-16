@@ -27,7 +27,7 @@ class Otheme < Formula
   homepage "https://github.com/fdarian/otheme"
   url "https://registry.npmjs.org/otheme/-/otheme-1.0.0.tgz"
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
-  license "MIT"
+  license "Apache-2.0"
 
   depends_on "node"
 
