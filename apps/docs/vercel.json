@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/playground",
-      "destination": "https://otheme-playground.vercel.app/"
+      "destination": "https://otheme-playground.vercel.app/playground"
     },
     {
       "source": "/playground/:path*",
-      "destination": "https://otheme-playground.vercel.app/:path*"
+      "destination": "https://otheme-playground.vercel.app/playground/:path*"
     }
   ]
 }
