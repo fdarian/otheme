@@ -14,7 +14,11 @@ type TargetPageConfig = {
   readonly extraSections?: string;
   readonly id: TargetAdapter['id'];
   readonly intro: string;
+  /** Optional markdown sections rendered between generatedNotice and ## Compatibility. */
+  readonly setupSection?: string;
   readonly slug: string;
+  /** Optional markdown sections rendered between ## Files and ## Commands. */
+  readonly midSections?: string;
   readonly title: string;
 };
 
@@ -25,10 +29,25 @@ const generatedNotice =
 const targetPageConfigs = [
   {
     compatibility:
-      'Author mode. otheme generates a Neovim colorscheme file from the shared theme palette, then asks running Neovim instances to switch to it.',
+      'Requires `init.lua`. If otheme finds `~/.config/nvim/init.vim` but no `init.lua`, it will print an error and tell you either to migrate to `init.lua` or to add the block manually.',
     id: 'nvim',
     intro:
-      'The nvim target writes a generated Lua colorscheme and live-applies it to running Neovim instances when possible.',
+      'The nvim target generates a Lua colorscheme file and auto-manages the `~/.config/nvim/init.lua` block that sources it. New Neovim instances pick up the theme immediately; already-running instances are live-updated via their socket.',
+    midSections: `## init.lua block
+
+otheme appends (or replaces) the following block in your \`init.lua\`. The markers let otheme locate and replace the block on subsequent runs — do not edit the lines inside it:
+
+\`\`\`lua
+-- >>> otheme: auto-generated — do NOT edit this block. otheme locates and >>>
+-- >>> replaces it by matching these markers; manual edits are overwritten. >>>
+pcall(dofile, vim.fn.expand("~/.config/otheme/generated/nvim.lua"))
+-- <<< otheme <<<
+\`\`\`
+
+The block is appended at end-of-file on first run so it executes after your plugin/colorscheme setup (last-colorscheme-wins, avoiding lazy.nvim load-order issues).`,
+    setupSection: `## Setup
+
+Enable the nvim target in your config and run \`otheme set <theme>\` — that's it. otheme writes the generated colorscheme and patches your \`init.lua\` automatically. No manual colorscheme line is needed.`,
     slug: 'nvim',
     title: 'nvim',
   },
@@ -177,7 +196,7 @@ description: Files and commands used by the ${config.title} target.
 ${config.intro}
 
 ${generatedNotice}
-
+${config.setupSection !== undefined ? `\n${config.setupSection}\n` : ''}
 ## Compatibility
 
 ${config.compatibility}
@@ -185,7 +204,7 @@ ${config.compatibility}
 ## Files
 
 ${fileRows(plan.creates)}
-
+${config.midSections !== undefined ? `\n${config.midSections}\n` : ''}
 ## Commands
 
 ${commandRows(plan.commands)}

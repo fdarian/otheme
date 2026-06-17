@@ -21,7 +21,7 @@ Requires `init.lua`. If otheme finds `~/.config/nvim/init.vim` but no `init.lua`
 
 | Order | File | What otheme writes |
 | --- | --- | --- |
-| 1 | `~/.config/otheme/generated/nvim.lua` | write generated Neovim colorscheme (overwritten in place on every `set`) |
+| 1 | `~/.config/otheme/generated/nvim.lua` | write generated Neovim colorscheme for Vesper |
 | 2 | `~/.config/nvim/init.lua` | patch init.lua with otheme auto-source block (idempotent) |
 
 ## init.lua block
@@ -42,4 +42,4 @@ The block is appended at end-of-file on first run so it executes after your plug
 | Order | Command | Why it runs |
 | --- | --- | --- |
 | 1 | `nvim --headless '+call writefile([stdpath('\''run'\'')], '\''/dev/stdout'\'')' +q` | discover Neovim runtime directory for live sockets |
-| 2 | `nvim --server '<socket>' --remote-expr 'luafile("~/.config/otheme/generated/nvim.lua")'` | live-apply the generated colorscheme to each running Neovim socket |
+| 2 | `nvim --server '<socket>' --remote-expr 'execute("luafile ~/.config/otheme/generated/nvim.lua")'` | live-apply the generated colorscheme to each running Neovim socket |
