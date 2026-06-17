@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/playground",
+      "destination": "https://otheme-playground.vercel.app/"
+    },
+    {
       "source": "/playground/:path*",
       "destination": "https://otheme-playground.vercel.app/:path*"
     }
