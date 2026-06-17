@@ -88,10 +88,19 @@ export const GhosttyTarget = Schema.Union([
   GhosttyMapTarget,
 ]);
 
-export const ClaudeCodeTarget = Schema.Struct({
+export const ClaudeCodeAuthorTarget = Schema.Struct({
+  mode: Schema.Literal('author'),
+});
+
+export const ClaudeCodeMapTarget = Schema.Struct({
   mapTo: Schema.Literals(['dark', 'light']),
   mode: Schema.Literal('map'),
 });
+
+export const ClaudeCodeTarget = Schema.Union([
+  ClaudeCodeAuthorTarget,
+  ClaudeCodeMapTarget,
+]);
 
 export const GitDeltaTarget = Schema.Struct({
   features: Schema.String,
@@ -118,6 +127,8 @@ export const Theme = Schema.Struct({
 });
 
 export type Appearance = Theme['appearance'];
+export type ClaudeCodeAuthorTarget = typeof ClaudeCodeAuthorTarget.Type;
+export type ClaudeCodeMapTarget = typeof ClaudeCodeMapTarget.Type;
 export type ClaudeCodeTarget = typeof ClaudeCodeTarget.Type;
 export type GitDeltaTarget = typeof GitDeltaTarget.Type;
 export type GhosttyAuthorTarget = typeof GhosttyAuthorTarget.Type;
