@@ -666,19 +666,58 @@ function ActiveWindow(props: {
 
 function WindowTab(props: {
   active: boolean;
+  inspect: InspectContext;
   label: string;
   onSelect: () => void;
   theme: Theme;
 }) {
+  const color = props.active ? props.theme.ui.accent : tmuxMuted(props.theme);
+  const field: PaletteField = props.active
+    ? { group: 'ui', key: 'accent' }
+    : { group: 'ui', key: 'fgMuted' };
+
+  function reportHover(element: HTMLButtonElement) {
+    props.inspect.onHover({
+      field,
+      rect: element.getBoundingClientRect(),
+    });
+  }
+
   return (
     <button
       type="button"
       aria-pressed={props.active}
-      onClick={props.onSelect}
+      className={props.inspect.active ? INSPECTABLE_CLASS : undefined}
+      onBlur={
+        props.inspect.active ? () => props.inspect.onHover(null) : undefined
+      }
+      onClick={
+        props.inspect.active
+          ? () => props.inspect.onInspect(field)
+          : props.onSelect
+      }
+      onFocus={
+        props.inspect.active
+          ? (event) => reportHover(event.currentTarget)
+          : undefined
+      }
+      onMouseEnter={
+        props.inspect.active
+          ? (event) => reportHover(event.currentTarget)
+          : undefined
+      }
+      onMouseLeave={
+        props.inspect.active ? () => props.inspect.onHover(null) : undefined
+      }
+      onMouseMove={
+        props.inspect.active
+          ? (event) => reportHover(event.currentTarget)
+          : undefined
+      }
       style={{
         all: 'unset',
         borderRadius: '0.15rem',
-        color: props.active ? props.theme.ui.accent : tmuxMuted(props.theme),
+        color,
         cursor: 'pointer',
         fontWeight: props.active ? 700 : 400,
         padding: '0 0.1rem',
@@ -715,6 +754,7 @@ function TmuxBar(props: {
         <WindowTab
           key={tab.id}
           active={props.activeWindow === tab.id}
+          inspect={props.inspect}
           label={tab.label}
           onSelect={() => props.onSelectWindow(tab.id)}
           theme={props.theme}
