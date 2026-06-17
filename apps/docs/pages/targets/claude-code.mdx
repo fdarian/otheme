@@ -5,19 +5,20 @@ description: Files and commands used by the claude-code target.
 
 # claude-code
 
-The claude-code target updates Claude Code settings JSON while preserving other settings.
+The claude-code target writes a generated Claude Code theme JSON when needed and updates Claude Code settings while preserving other settings.
 
 This page is generated from the adapter plan used by `otheme set vesper --dry-run`. Paths are shown exactly as otheme prints them; `~` means your home directory.
 
 ## Compatibility
 
-Map mode. otheme sets Claude Code to an existing appearance value: `light` or `dark`.
+Author and map modes. In author mode, otheme writes `~/.claude/themes/<theme-id>.json` and sets `theme = custom:<theme-id>`. In map mode, it sets `theme` to the built-in `light` or `dark` preset.
 
 ## Files
 
 | Order | File | What otheme writes |
 | --- | --- | --- |
-| 1 | `~/.claude/settings.json` | set JSON key theme = dark |
+| 1 | `~/.claude/themes/vesper.json` | write generated Claude Code theme vesper |
+| 2 | `~/.claude/settings.json` | set JSON key theme = custom:vesper |
 
 ## Commands
 
