@@ -63,8 +63,7 @@
       "mapTo": "Vesper"
     },
     "claude-code": {
-      "mode": "map",
-      "mapTo": "dark"
+      "mode": "author"
     },
     "git-delta": {
       "features": "gruvmax-fang"

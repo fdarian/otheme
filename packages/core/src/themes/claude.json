@@ -63,8 +63,7 @@
       "mapTo": "Claude"
     },
     "claude-code": {
-      "mode": "map",
-      "mapTo": "light"
+      "mode": "author"
     },
     "git-delta": {
       "features": "hoopoe"
