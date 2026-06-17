@@ -10,27 +10,18 @@ interface ClaudeCodeThemeDocument {
 const claudeCodeThemeOverrides = (
   theme: Theme,
 ): Partial<Record<ClaudeCodeThemeToken, string>> => ({
-  claude: theme.ui.accent,
-  professionalBlue: theme.ui.info,
-  chromeYellow: theme.ui.warning,
+  // Override only identity (bg/fg/brand), semantic status, diffs, message and
+  // selection backgrounds, the prompt border, autocomplete selection, and the
+  // two faithful subagent hues. Secondary text, mode indicators, and
+  // decorative tokens inherit from Claude Code's base preset to stay balanced
+  // and neutral.
+  background: theme.ui.bg,
   text: theme.ui.fg,
   inverseText: theme.ui.accentFg,
-  inactive: theme.ui.fgDim,
-  subtle: theme.ui.fgMuted,
-  suggestion: theme.ui.accent,
-  remember: theme.ui.hint,
-  background: theme.ui.bg,
+  claude: theme.ui.accent,
   success: theme.ui.success,
   error: theme.ui.error,
   warning: theme.ui.warning,
-  merged: theme.ui.hint,
-  promptBorder: theme.ui.border,
-  permission: theme.ui.warning,
-  planMode: theme.ui.info,
-  autoAccept: theme.ui.success,
-  bashBorder: theme.ui.accent,
-  ide: theme.ui.info,
-  fastMode: theme.ui.accent,
   diffAdded: theme.ui.diffAdd,
   diffRemoved: theme.ui.diffDel,
   diffAddedWord: theme.ui.success,
@@ -40,8 +31,8 @@ const claudeCodeThemeOverrides = (
   userMessageBackgroundHover: theme.ui.bgHover,
   bashMessageBackgroundColor: theme.ui.bgFloat,
   memoryBackgroundColor: theme.ui.bgFloat,
-  // Only error/success map cleanly to named subagent hues. The other
-  // subagent colors inherit from Claude Code's base palette to stay distinct.
+  suggestion: theme.ui.accent,
+  promptBorder: theme.ui.border,
   red_FOR_SUBAGENTS_ONLY: theme.ui.error,
   green_FOR_SUBAGENTS_ONLY: theme.ui.success,
 });
