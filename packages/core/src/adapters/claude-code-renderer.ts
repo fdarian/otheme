@@ -14,7 +14,7 @@ const claudeCodeThemeOverrides = (theme: Theme): Record<string, string> => ({
   inverseText: theme.ui.accentFg,
   inactive: theme.ui.fgDim,
   subtle: theme.ui.fgMuted,
-  suggestion: theme.ui.comment,
+  suggestion: theme.ui.accent,
   remember: theme.ui.hint,
   background: theme.ui.bg,
   success: theme.ui.success,
