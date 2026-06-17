@@ -1,0 +1,20 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
+  "extends": ["../../biome.jsonc"],
+  "vcs": {
+    "root": "../.."
+  },
+  "files": {
+    "includes": ["**", "!**/routeTree.gen.ts"]
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.css"],
+      "css": {
+        "parser": {
+          "tailwindDirectives": true
+        }
+      }
+    }
+  ]
+}

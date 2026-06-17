@@ -1,11 +1,18 @@
 {
   "extends": "@repo/config/tsconfig-server",
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["es2022", "dom", "dom.iterable"],
     "paths": {
       "#/*": ["./src/*"]
     },
     "rootDir": ".",
     "types": ["bun"]
   },
-  "include": ["vocs.config.ts", "scripts/**/*.ts", "src/**/*.ts"]
+  "include": [
+    "vocs.config.ts",
+    "scripts/**/*.ts",
+    "src/**/*.ts",
+    "pages/**/*.tsx"
+  ]
 }
