@@ -84,6 +84,23 @@ function formatError(error: unknown) {
   }
 }
 
+type DialogOpenChangeDetails = {
+  preventUnmountOnClose(): void;
+  reason: string;
+};
+
+function ImportErrorNotice(props: { message: string }) {
+  return (
+    <div
+      role="alert"
+      aria-live="polite"
+      className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+    >
+      {props.message}
+    </div>
+  );
+}
+
 function ToolbarLabel(props: { children: React.ReactNode }) {
   return (
     <span className="text-[11px] font-medium text-muted-foreground">
@@ -105,6 +122,7 @@ function ToolbarGroup(props: {
 
 function SearchResultButton(props: {
   disabled: boolean;
+  onPressStart: () => void;
   onSelect: () => void;
   result: ThemeSearchResult;
 }) {
@@ -113,6 +131,12 @@ function SearchResultButton(props: {
       type="button"
       className="flex w-full flex-col gap-1 rounded-md px-3 py-3 text-left transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
       disabled={props.disabled}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          props.onPressStart();
+        }
+      }}
+      onPointerDownCapture={props.onPressStart}
       onClick={props.onSelect}
     >
       <span className="font-medium">{props.result.displayName}</span>
@@ -129,6 +153,7 @@ function SearchResultButton(props: {
 function ImportedThemeButton(props: {
   disabled: boolean;
   importedTheme: ImportedTheme;
+  onPressStart: () => void;
   onSelect: () => void;
 }) {
   return (
@@ -136,6 +161,12 @@ function ImportedThemeButton(props: {
       type="button"
       className="flex w-full items-center justify-between gap-3 rounded-md px-3 py-3 text-left transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
       disabled={props.disabled}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          props.onPressStart();
+        }
+      }}
+      onPointerDownCapture={props.onPressStart}
       onClick={props.onSelect}
     >
       <span className="font-medium">{props.importedTheme.label}</span>
@@ -159,6 +190,10 @@ function NewPresetDialog(props: {
   const [isSearching, setIsSearching] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importingLabel, setImportingLabel] = useState<string | null>(null);
+  const pendingDialogInteractionRef = useRef(false);
+
+  const showImportedThemePicker =
+    importedThemes.length > 1 && selectedResult !== null;
 
   function resetState() {
     setQuery('');
@@ -172,12 +207,35 @@ function NewPresetDialog(props: {
     setImportingLabel(null);
   }
 
-  function handleOpenChange(nextOpen: boolean) {
-    setOpen(nextOpen);
+  function closeDialog() {
+    setOpen(false);
+    resetState();
+  }
 
-    if (!nextOpen) {
-      resetState();
+  function armDialogInteractionGuard() {
+    pendingDialogInteractionRef.current = true;
+  }
+
+  function handleOpenChange(
+    nextOpen: boolean,
+    eventDetails?: DialogOpenChangeDetails,
+  ) {
+    if (nextOpen) {
+      setOpen(true);
+      return;
     }
+
+    if (
+      pendingDialogInteractionRef.current &&
+      eventDetails !== undefined &&
+      (eventDetails.reason === 'outside-press' ||
+        eventDetails.reason === 'focus-out')
+    ) {
+      eventDetails.preventUnmountOnClose();
+      return;
+    }
+
+    closeDialog();
   }
 
   async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
@@ -195,6 +253,7 @@ function NewPresetDialog(props: {
     setImportedThemes([]);
     setSelectedResult(null);
     setIsSearching(true);
+    armDialogInteractionGuard();
 
     try {
       const nextResults = await searchThemes(trimmedQuery);
@@ -203,6 +262,7 @@ function NewPresetDialog(props: {
     } catch (nextError) {
       setError(formatError(nextError));
     } finally {
+      pendingDialogInteractionRef.current = false;
       setIsSearching(false);
     }
   }
@@ -213,6 +273,7 @@ function NewPresetDialog(props: {
     setSelectedResult(null);
     setIsImporting(true);
     setImportingLabel(result.displayName);
+    armDialogInteractionGuard();
 
     try {
       const nextThemes = await importTheme(result);
@@ -235,12 +296,16 @@ function NewPresetDialog(props: {
     } catch (nextError) {
       setError(formatError(nextError));
     } finally {
+      pendingDialogInteractionRef.current = false;
       setIsImporting(false);
       setImportingLabel(null);
     }
   }
 
   function handleImportedThemeSelect(importedTheme: ImportedTheme) {
+    setError(null);
+    armDialogInteractionGuard();
+
     try {
       const mappedTheme = mapVscodeTheme(
         importedTheme.vscodeTheme,
@@ -248,9 +313,11 @@ function NewPresetDialog(props: {
       );
 
       props.onAddPreset(mappedTheme);
-      handleOpenChange(false);
+      closeDialog();
     } catch (nextError) {
       setError(formatError(nextError));
+    } finally {
+      pendingDialogInteractionRef.current = false;
     }
   }
 
@@ -319,6 +386,12 @@ function NewPresetDialog(props: {
                   type="submit"
                   variant="outline"
                   disabled={isSearching || isImporting}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      armDialogInteractionGuard();
+                    }
+                  }}
+                  onPointerDownCapture={armDialogInteractionGuard}
                 >
                   {isSearching ? (
                     <LoaderCircle className="size-4 animate-spin" />
@@ -336,13 +409,8 @@ function NewPresetDialog(props: {
                 </div>
               ) : null}
 
-              {error !== null ? (
-                <div
-                  role="alert"
-                  className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm text-destructive"
-                >
-                  {error}
-                </div>
+              {error !== null && !showImportedThemePicker ? (
+                <ImportErrorNotice message={error} />
               ) : null}
 
               {results.length > 0 ? (
@@ -356,6 +424,7 @@ function NewPresetDialog(props: {
                         <SearchResultButton
                           key={`${result.namespace}.${result.name}`}
                           disabled={isSearching || isImporting}
+                          onPressStart={armDialogInteractionGuard}
                           result={result}
                           onSelect={() => handleImportResult(result)}
                         />
@@ -369,7 +438,7 @@ function NewPresetDialog(props: {
                 </p>
               ) : null}
 
-              {importedThemes.length > 1 && selectedResult !== null ? (
+              {showImportedThemePicker ? (
                 <>
                   <Separator />
                   <div className="flex flex-col gap-2">
@@ -381,6 +450,9 @@ function NewPresetDialog(props: {
                         {selectedResult.displayName}
                       </p>
                     </div>
+                    {error !== null ? (
+                      <ImportErrorNotice message={error} />
+                    ) : null}
                     <ScrollArea className="h-48 rounded-md border">
                       <div className="flex flex-col py-1">
                         {importedThemes.map((importedTheme) => (
@@ -388,6 +460,7 @@ function NewPresetDialog(props: {
                             key={`${selectedResult.namespace}.${selectedResult.name}.${importedTheme.label}`}
                             disabled={isSearching || isImporting}
                             importedTheme={importedTheme}
+                            onPressStart={armDialogInteractionGuard}
                             onSelect={() =>
                               handleImportedThemeSelect(importedTheme)
                             }
