@@ -74,6 +74,34 @@ const noTargetsNotice = Effect.gen(function* () {
   yield* Console.log(`then set targets to enable them: ${ids}`);
 });
 
+const mergeClaudeCodeTarget = (
+  target: Theme['targets']['claude-code'],
+  override: PartialTargets['claude-code'],
+): Theme['targets']['claude-code'] => {
+  if (target === undefined || override === undefined) {
+    return target;
+  }
+
+  const mode = override.mode !== undefined ? override.mode : target.mode;
+
+  if (mode === 'author') {
+    return { mode: 'author' };
+  }
+
+  const mapTo =
+    override.mapTo !== undefined
+      ? override.mapTo
+      : target.mode === 'map'
+        ? target.mapTo
+        : undefined;
+
+  if (mapTo === undefined) {
+    throw new Error('Claude Code target override requires mapTo in map mode');
+  }
+
+  return { mapTo, mode: 'map' };
+};
+
 const mergeTargetOverride = (
   targets: Theme['targets'],
   override: PartialTargets | undefined,
@@ -83,11 +111,10 @@ const mergeTargetOverride = (
   }
 
   return {
-    'claude-code':
-      targets['claude-code'] !== undefined &&
-      override['claude-code'] !== undefined
-        ? { ...targets['claude-code'], ...override['claude-code'] }
-        : targets['claude-code'],
+    'claude-code': mergeClaudeCodeTarget(
+      targets['claude-code'],
+      override['claude-code'],
+    ),
     'git-delta':
       targets['git-delta'] !== undefined && override['git-delta'] !== undefined
         ? { ...targets['git-delta'], ...override['git-delta'] }

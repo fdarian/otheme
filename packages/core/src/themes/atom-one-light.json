@@ -63,8 +63,7 @@
       "mapTo": "Atom One Light"
     },
     "claude-code": {
-      "mode": "map",
-      "mapTo": "light"
+      "mode": "author"
     },
     "git-delta": {
       "features": "hoopoe"

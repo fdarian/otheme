@@ -12,7 +12,7 @@ import { GhosttyTarget, HexColor } from './theme-schema.ts';
 
 const PartialClaudeCodeTarget = Schema.Struct({
   mapTo: Schema.optional(Schema.Literals(['dark', 'light'])),
-  mode: Schema.optional(Schema.Literal('map')),
+  mode: Schema.optional(Schema.Literals(['author', 'map'])),
 });
 
 const PartialGitDeltaTarget = Schema.Struct({
