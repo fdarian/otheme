@@ -3,6 +3,7 @@ import claudeJson from '@otheme/core/themes/claude.json';
 import vesperJson from '@otheme/core/themes/vesper.json';
 import { useState } from 'react';
 
+import { AppThemeToggle } from '#/components/playground/app-theme-toggle';
 import { EditorPane } from '#/components/playground/editor-pane';
 import { PreviewPane } from '#/components/playground/preview-pane';
 import type {
@@ -167,34 +168,45 @@ export function PlaygroundApp() {
   }
 
   return (
-    <main className="h-dvh overflow-hidden bg-background text-foreground">
-      <ResizablePanelGroup orientation="horizontal">
-        <ResizablePanel defaultSize={50} minSize={28}>
-          <EditorPane
-            activePreset={activePreset}
-            canRemovePreset={selectedPreset.builtIn === false}
-            focusField={focusField}
-            onAddPreset={handleAddPreset}
-            onChange={handleThemeChange}
-            onCopyJson={handleCopyJson}
-            onCreateBlankPreset={handleCreateBlankPreset}
-            onRemovePreset={handleRemovePreset}
-            onReset={handleReset}
-            onSelectPreset={handlePresetChange}
-            presets={presets}
-            theme={theme}
-          />
-        </ResizablePanel>
-        <ResizableHandle className="bg-border/80 after:w-[3px] hover:after:bg-muted-foreground/40" />
-        <ResizablePanel defaultSize={50} minSize={28}>
-          <PreviewPane
-            inspectMode={inspectMode}
-            onInspect={setFocusField}
-            onToggleInspect={() => setInspectMode((previous) => !previous)}
-            theme={theme}
-          />
-        </ResizablePanel>
-      </ResizablePanelGroup>
+    <main className="flex h-dvh flex-col overflow-hidden bg-background text-foreground">
+      <header className="border-b bg-card px-4 py-2.5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="truncate font-medium">otheme playground</p>
+          </div>
+          <AppThemeToggle />
+        </div>
+      </header>
+
+      <div className="min-h-0 flex-1">
+        <ResizablePanelGroup orientation="horizontal">
+          <ResizablePanel defaultSize={50} minSize={28}>
+            <EditorPane
+              activePreset={activePreset}
+              canRemovePreset={selectedPreset.builtIn === false}
+              focusField={focusField}
+              onAddPreset={handleAddPreset}
+              onChange={handleThemeChange}
+              onCopyJson={handleCopyJson}
+              onCreateBlankPreset={handleCreateBlankPreset}
+              onRemovePreset={handleRemovePreset}
+              onReset={handleReset}
+              onSelectPreset={handlePresetChange}
+              presets={presets}
+              theme={theme}
+            />
+          </ResizablePanel>
+          <ResizableHandle className="bg-border/80 after:w-[3px] hover:after:bg-muted-foreground/40" />
+          <ResizablePanel defaultSize={50} minSize={28}>
+            <PreviewPane
+              inspectMode={inspectMode}
+              onInspect={setFocusField}
+              onToggleInspect={() => setInspectMode((previous) => !previous)}
+              theme={theme}
+            />
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
     </main>
   );
 }

@@ -10,6 +10,7 @@ import {
   Search,
   Trash2,
 } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
 
@@ -518,6 +519,7 @@ function TargetsEditor(props: {
   onChange: (updated: ThemeValue['targets']) => void;
   targets: ThemeValue['targets'];
 }) {
+  const { resolvedTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
   const [jsonText, setJsonText] = useState(() =>
     JSON.stringify(props.targets, null, 2),
@@ -577,6 +579,8 @@ function TargetsEditor(props: {
     }
   }
 
+  const editorTheme = resolvedTheme === 'light' ? 'light' : 'vs-dark';
+
   return (
     <section className="flex flex-col gap-3">
       <h2 className="text-xs font-semibold uppercase text-muted-foreground">
@@ -596,7 +600,7 @@ function TargetsEditor(props: {
               tabSize: 2,
               wordWrap: 'on',
             }}
-            theme="vs-dark"
+            theme={editorTheme}
             value={jsonText}
             onChange={handleChange}
             onMount={handleMount}
