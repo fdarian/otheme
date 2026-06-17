@@ -8,6 +8,9 @@
     "cssVariables": true
   },
   "iconLibrary": "lucide",
+  "registries": {
+    "@coss": "https://coss.com/ui/r/{name}.json"
+  },
   "aliases": {
     "components": "#/components",
     "utils": "#/lib/utils",

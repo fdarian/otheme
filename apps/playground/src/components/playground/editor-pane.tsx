@@ -33,13 +33,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '#/components/ui/dialog';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '#/components/ui/dropdown-menu';
 import { Input } from '#/components/ui/input';
+import { Menu, MenuItem, MenuPopup, MenuTrigger } from '#/components/ui/menu';
 import {
   Popover,
   PopoverContent,
@@ -50,8 +45,8 @@ import {
   Select,
   SelectContent,
   SelectGroup,
+  SelectGroupLabel,
   SelectItem,
-  SelectLabel,
   SelectSeparator,
   SelectTrigger,
   SelectValue,
@@ -440,14 +435,16 @@ function ColorField(props: {
       )}
     >
       <Popover>
-        <PopoverTrigger asChild>
-          <button
-            type="button"
-            aria-label={`Pick color for ${props.label}`}
-            className="size-6 shrink-0 rounded-sm border border-input shadow-sm"
-            style={{ background: props.value }}
-          />
-        </PopoverTrigger>
+        <PopoverTrigger
+          aria-label={`Pick color for ${props.label}`}
+          render={
+            <button
+              type="button"
+              className="size-6 shrink-0 rounded-sm border border-input shadow-sm"
+              style={{ background: props.value }}
+            />
+          }
+        />
         <PopoverContent align="start" className="w-auto p-3">
           <div className="flex flex-col gap-3">
             <HexColorPicker color={props.value} onChange={props.onChange} />
@@ -674,14 +671,18 @@ export function EditorPane(props: EditorPaneProps) {
             <div className="flex items-center gap-2">
               <Select
                 value={props.activePreset}
-                onValueChange={(value) => props.onSelectPreset(value)}
+                onValueChange={(value) => {
+                  if (value !== null) {
+                    props.onSelectPreset(value);
+                  }
+                }}
               >
                 <SelectTrigger className="flex-1">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Built-in</SelectLabel>
+                    <SelectGroupLabel>Built-in</SelectGroupLabel>
                     {builtInPresets.map((preset) => (
                       <SelectItem key={preset.id} value={preset.id}>
                         {presetLabel(preset)}
@@ -692,7 +693,7 @@ export function EditorPane(props: EditorPaneProps) {
                     <>
                       <SelectSeparator />
                       <SelectGroup>
-                        <SelectLabel>Added</SelectLabel>
+                        <SelectGroupLabel>Added</SelectGroupLabel>
                         {addedPresets.map((preset) => (
                           <SelectItem key={preset.id} value={preset.id}>
                             {presetLabel(preset)}
@@ -710,27 +711,29 @@ export function EditorPane(props: EditorPaneProps) {
               />
 
               {props.canRemovePreset ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="h-9 w-9 shrink-0"
-                    >
-                      <Ellipsis className="size-4" />
-                      <span className="sr-only">Preset actions</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      className="text-destructive focus:text-destructive"
-                      onSelect={props.onRemovePreset}
+                <Menu>
+                  <MenuTrigger
+                    render={
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-9 w-9 shrink-0"
+                      />
+                    }
+                  >
+                    <Ellipsis className="size-4" />
+                    <span className="sr-only">Preset actions</span>
+                  </MenuTrigger>
+                  <MenuPopup align="end">
+                    <MenuItem
+                      variant="destructive"
+                      onClick={props.onRemovePreset}
                     >
                       <Trash2 className="size-4" />
                       Remove preset
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                    </MenuItem>
+                  </MenuPopup>
+                </Menu>
               ) : null}
             </div>
           </ToolbarGroup>
