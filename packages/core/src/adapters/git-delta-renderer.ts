@@ -25,9 +25,9 @@ export const renderGitDeltaConf = (
     // target to be enabled so the referenced theme exists.
     `\tsyntax-theme = ${batThemeName(theme)}`,
     `\tminus-style = syntax "${theme.ui.diffDel}"`,
-    `\tminus-emph-style = syntax "${theme.ui.error}"`,
+    `\tminus-emph-style = syntax "${theme.ui.diffDelEmph}"`,
     `\tplus-style = syntax "${theme.ui.diffAdd}"`,
-    `\tplus-emph-style = syntax "${theme.ui.success}"`,
+    `\tplus-emph-style = syntax "${theme.ui.diffAddEmph}"`,
     `\tzero-style = syntax "${theme.ui.bg}"`,
     `\tline-numbers-zero-style = "${theme.ui.lineNr}"`,
     `\tline-numbers-minus-style = "${theme.ui.error}"`,
