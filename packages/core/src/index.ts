@@ -3,6 +3,7 @@ export * from './alias-store.ts';
 export * from './command-executor.ts';
 export * from './config-store.ts';
 export * from './errors.ts';
+export * from './state-store.ts';
 export * from './target-adapter.ts';
 export * from './theme-registry.ts';
 export * from './theme-schema.ts';

@@ -9,6 +9,7 @@ import {
   loadTheme,
   type OthemeConfig,
   type PartialTargets,
+  StateStore,
   type TargetAdapter,
   type Theme,
   targetAdapters,
@@ -203,6 +204,8 @@ const setCommand = Command.make(
         return;
       }
 
+      const stateStore = yield* StateStore;
+      yield* stateStore.write({ theme: theme.id });
       yield* applyTheme(theme.id, othemeConfig);
       yield* Console.log(`applied ${theme.id}`);
     }),
@@ -273,6 +276,7 @@ const mainLayer = Layer.mergeAll(
   NodeServices.layer,
   ConfigStore.layer,
   AliasStore.layer,
+  StateStore.layer,
   commandExecutorLayer,
 );
 

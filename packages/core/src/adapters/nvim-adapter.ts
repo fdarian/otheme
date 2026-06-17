@@ -2,7 +2,7 @@ import { Config, Effect, FileSystem, Path } from 'effect';
 import { CommandExecutor, formatCommand } from '../command-executor.ts';
 import { AdapterError } from '../errors.ts';
 import type { TargetAdapter } from '../target-adapter.ts';
-import type { NvimTarget, Theme } from '../theme-schema.ts';
+import type { Theme } from '../theme-schema.ts';
 import { renderNvim } from './nvim-renderer.ts';
 import {
   getNvimTarget,
@@ -10,8 +10,23 @@ import {
   requireNvimTarget,
 } from './target-selectors.ts';
 
-const nvimColorsPathFor = (target: NvimTarget): string =>
-  `~/.local/share/nvim/site/colors/${target.colorscheme}.lua`;
+const generatedNvimLuaPath = (home: string, path: Path.Path): string =>
+  path.join(home, '.config', 'otheme', 'generated', 'nvim.lua');
+
+const nvimInitLuaPath = (home: string, path: Path.Path): string =>
+  path.join(home, '.config', 'nvim', 'init.lua');
+
+const nvimInitVimPath = (home: string, path: Path.Path): string =>
+  path.join(home, '.config', 'nvim', 'init.vim');
+
+const OTHEME_BLOCK_START_PREFIX = '-- >>> otheme:';
+const OTHEME_BLOCK_END = '-- <<< otheme <<<';
+
+const othemeInitLuaBlock = (generatedPath: string): string =>
+  `-- >>> otheme: auto-generated — do NOT edit this block. otheme locates and >>>
+-- >>> replaces it by matching these markers; manual edits are overwritten. >>>
+pcall(dofile, vim.fn.expand("${generatedPath}"))
+-- <<< otheme <<<`;
 
 /**
  * Uses writefile to /dev/stdout because nvim's :echo in --headless -es mode
@@ -24,12 +39,12 @@ const nvimDiscoverRunDirCommand = (): string =>
     '+q',
   ]);
 
-const nvimLiveApplyCommand = (target: NvimTarget): string =>
+const nvimLiveApplyCommand = (generatedPath: string): string =>
   formatCommand('nvim', [
     '--server',
     '<socket>',
     '--remote-expr',
-    `execute("colorscheme ${target.colorscheme}")`,
+    `execute("luafile ${generatedPath}")`,
   ]);
 
 const parseNvimRunDir = (output: string) =>
@@ -90,6 +105,76 @@ const discoverNvimSockets = Effect.gen(function* () {
   return sockets;
 });
 
+/**
+ * Patches ~/.config/nvim/init.lua with the otheme block idempotently.
+ * If no init.lua exists, creates it. Throws if init.vim exists but init.lua
+ * does not — we only support init.lua.
+ */
+const patchNvimInitLua = (home: string) =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem;
+    const path = yield* Path.Path;
+    const initLuaPath = nvimInitLuaPath(home, path);
+    const initVimPath = nvimInitVimPath(home, path);
+    const genPath = generatedNvimLuaPath(home, path);
+    const block = othemeInitLuaBlock(genPath);
+
+    const initLuaExists = yield* fs.exists(initLuaPath);
+    const initVimExists = yield* fs.exists(initVimPath);
+
+    if (!initLuaExists && initVimExists) {
+      return yield* Effect.fail(
+        new AdapterError({
+          adapterId: 'nvim',
+          message: [
+            `otheme only supports init.lua, but found init.vim at ${initVimPath}.`,
+            `Either migrate to init.lua or manually add the following block to your config:`,
+            ``,
+            block,
+          ].join('\n'),
+        }),
+      );
+    }
+
+    if (!initLuaExists) {
+      yield* fs.makeDirectory(path.dirname(initLuaPath), { recursive: true });
+      yield* fs.writeFileString(initLuaPath, `${block}\n`);
+      return;
+    }
+
+    const content = yield* fs.readFileString(initLuaPath);
+    const lines = content.split('\n');
+
+    const startIndex = lines.findIndex((line) =>
+      line.startsWith(OTHEME_BLOCK_START_PREFIX),
+    );
+
+    if (startIndex !== -1) {
+      const endIndex = lines.findIndex(
+        (line, i) => i >= startIndex && line === OTHEME_BLOCK_END,
+      );
+
+      if (endIndex === -1) {
+        return yield* Effect.fail(
+          new AdapterError({
+            adapterId: 'nvim',
+            message: `Found otheme block start marker in ${initLuaPath} but no end marker. Please remove the partial block manually.`,
+          }),
+        );
+      }
+
+      const before = lines.slice(0, startIndex);
+      const after = lines.slice(endIndex + 1);
+      const patched = [...before, ...block.split('\n'), ...after].join('\n');
+      yield* fs.writeFileString(initLuaPath, patched);
+      return;
+    }
+
+    // No existing block — append at end of file
+    const separator = content.endsWith('\n') ? '' : '\n';
+    yield* fs.writeFileString(initLuaPath, `${content}${separator}${block}\n`);
+  });
+
 export const nvimAdapter: TargetAdapter = {
   id: 'nvim',
   plan: (theme: Theme) => {
@@ -99,6 +184,9 @@ export const nvimAdapter: TargetAdapter = {
       return missingTargetPlan(theme, 'nvim');
     }
 
+    // Use a placeholder home for plan display
+    const genPath = '~/.config/otheme/generated/nvim.lua';
+
     return {
       commands: [
         {
@@ -106,14 +194,18 @@ export const nvimAdapter: TargetAdapter = {
           why: 'discover Neovim runtime directory for live sockets',
         },
         {
-          cmd: nvimLiveApplyCommand(target),
-          why: 'live-apply the colorscheme to each running Neovim socket',
+          cmd: nvimLiveApplyCommand(genPath),
+          why: 'live-apply the generated colorscheme to each running Neovim socket',
         },
       ],
       creates: [
         {
-          path: nvimColorsPathFor(target),
+          path: genPath,
           summary: `write generated Neovim colorscheme for ${theme.name}`,
+        },
+        {
+          path: '~/.config/nvim/init.lua',
+          summary: 'patch init.lua with otheme auto-source block (idempotent)',
         },
       ],
     };
@@ -125,19 +217,13 @@ export const nvimAdapter: TargetAdapter = {
       const path = yield* Path.Path;
       const executor = yield* CommandExecutor;
       const home = yield* Config.string('HOME');
-      const colorsPath = path.join(
-        home,
-        '.local',
-        'share',
-        'nvim',
-        'site',
-        'colors',
-        `${target.colorscheme}.lua`,
-      );
+      const genPath = generatedNvimLuaPath(home, path);
       const rendered = renderNvim(theme, target);
 
-      yield* fs.makeDirectory(path.dirname(colorsPath), { recursive: true });
-      yield* fs.writeFileString(colorsPath, rendered);
+      yield* fs.makeDirectory(path.dirname(genPath), { recursive: true });
+      yield* fs.writeFileString(genPath, rendered);
+
+      yield* patchNvimInitLua(home);
 
       const sockets = yield* discoverNvimSockets;
 
@@ -146,7 +232,7 @@ export const nvimAdapter: TargetAdapter = {
           '--server',
           socket,
           '--remote-expr',
-          `execute("colorscheme ${target.colorscheme}")`,
+          `execute("luafile ${genPath}")`,
         ]);
       }
     }),
