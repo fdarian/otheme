@@ -3,8 +3,10 @@
 import { NodeRuntime, NodeServices } from '@effect/platform-node';
 import {
   AliasStore,
+  type CommandExecutionError,
   CommandExecutor,
   ConfigStore,
+  formatCommand,
   isThemeId,
   loadTheme,
   type OthemeConfig,
@@ -14,9 +16,27 @@ import {
   type Theme,
   targetAdapters,
 } from '@otheme/core';
-import { Console, Effect, Layer } from 'effect';
+import {
+  Config,
+  Console,
+  Effect,
+  FileSystem,
+  Layer,
+  type PlatformError,
+  Result,
+} from 'effect';
 import { Argument, Command, Flag } from 'effect/unstable/cli';
 import packageJson from '../package.json';
+import {
+  collapseHomePath,
+  printSetApplyStart,
+  printSetResult,
+  printSetTargetFailure,
+  printSetTargetStart,
+  renderSetCommandLine,
+  renderSetCreateLine,
+  runSetSpinner,
+} from './set-log.ts';
 
 const themeArg = Argument.string('theme-or-alias').pipe(
   Argument.withDescription('Theme id or configured alias'),
@@ -118,73 +138,252 @@ const withOverrides = (theme: Theme, config: OthemeConfig): Theme => {
   };
 };
 
-const printAdapterPlan = (adapter: TargetAdapter, theme: Theme) =>
+type PreparedSetTheme = {
+  readonly enabledAdapters: ReadonlyArray<TargetAdapter>;
+  readonly theme: Theme;
+};
+
+const prepareSetTheme = (themeValue: string, config: OthemeConfig) =>
   Effect.gen(function* () {
-    const plan = adapter.plan(theme);
-
-    yield* Console.log(`[${adapter.id}]`);
-
-    if (plan.creates.length > 0) {
-      yield* Console.log('files:');
-
-      for (const create of plan.creates) {
-        yield* Console.log(`  - ${create.path}`);
-        yield* Console.log(`    ${create.summary}`);
-      }
-    }
-
-    if (plan.commands.length > 0) {
-      yield* Console.log('commands:');
-
-      for (const command of plan.commands) {
-        yield* Console.log(`  - ${command.cmd}`);
-        yield* Console.log(`    ${command.why}`);
-      }
-    }
-  });
-
-const printDryRun = (themeId: string, config: OthemeConfig) =>
-  Effect.gen(function* () {
-    const rawTheme = yield* loadTheme(themeId);
+    const rawTheme = yield* loadThemeOrAlias(themeValue);
     const theme = withOverrides(rawTheme, config);
     const enabledAdapters = getEnabledAdapters(config);
+
+    return {
+      enabledAdapters,
+      theme,
+    };
+  });
+
+const readHomePath = Effect.gen(function* () {
+  const homeResult = yield* Effect.result(Config.string('HOME'));
+
+  if (Result.isSuccess(homeResult)) {
+    return homeResult.success;
+  }
+
+  return undefined;
+});
+
+const operationFailureDetails = (error: unknown): string | undefined => {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    '_tag' in error &&
+    error._tag === 'CommandExecutionError' &&
+    'stderr' in error
+  ) {
+    const stderr = error.stderr;
+
+    if (typeof stderr === 'string') {
+      return stderr;
+    }
+
+    return undefined;
+  }
+
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof error.message === 'string'
+  ) {
+    return error.message;
+  }
+
+  return String(error);
+};
+
+type TargetFailureDisplay = {
+  readonly detail: string | undefined;
+  readonly reason: string;
+};
+
+const collapseHomePathText = (
+  text: string,
+  homePath: string | undefined,
+): string => {
+  if (homePath === undefined) {
+    return text;
+  }
+
+  return text.replaceAll(homePath, '~');
+};
+
+const targetFailureDisplay = (
+  error: unknown,
+  homePath: string | undefined,
+): TargetFailureDisplay => {
+  const detailText = collapseHomePathText(
+    operationFailureDetails(error) ?? String(error),
+    homePath,
+  );
+  const detailLines = detailText
+    .split(/\r?\n/)
+    .map((line) => line.trimEnd())
+    .filter((line) => line.length > 0);
+
+  if (detailLines.length === 0) {
+    return {
+      detail: undefined,
+      reason: String(error),
+    };
+  }
+
+  const reason = detailLines[0];
+
+  if (reason === undefined) {
+    return {
+      detail: undefined,
+      reason: String(error),
+    };
+  }
+
+  const detail =
+    detailLines.length > 1 ? detailLines.slice(1).join('\n') : undefined;
+
+  return {
+    detail,
+    reason,
+  };
+};
+
+const runSet = (preparedTheme: PreparedSetTheme, dryRun: boolean) =>
+  Effect.gen(function* () {
+    const enabledAdapters = preparedTheme.enabledAdapters;
 
     if (enabledAdapters.length === 0) {
       yield* noTargetsNotice;
       return;
     }
 
-    yield* Console.log(`theme: ${theme.id} (${theme.name})`);
+    const homePath = yield* readHomePath;
+    const executor = yield* CommandExecutor;
+    const fileSystem = yield* FileSystem.FileSystem;
+    const startedAt = dryRun ? undefined : Date.now();
+    const targetCount = enabledAdapters.length;
+    let errorCount = 0;
 
-    for (let index = 0; index < enabledAdapters.length; index += 1) {
-      if (index > 0) {
-        yield* Console.log('');
-      }
-
-      const adapter = enabledAdapters[index];
-
-      if (adapter === undefined) {
-        continue;
-      }
-
-      yield* printAdapterPlan(adapter, theme);
-    }
-  });
-
-const applyTheme = (themeId: string, config: OthemeConfig) =>
-  Effect.gen(function* () {
-    const rawTheme = yield* loadTheme(themeId);
-    const theme = withOverrides(rawTheme, config);
-    const enabledAdapters = getEnabledAdapters(config);
-
-    if (enabledAdapters.length === 0) {
-      yield* noTargetsNotice;
-      return;
-    }
+    yield* printSetApplyStart(preparedTheme.theme.id, targetCount, dryRun);
 
     for (const adapter of enabledAdapters) {
-      yield* adapter.apply(theme);
+      let operationFailed = false;
+
+      yield* printSetTargetStart(adapter.id);
+
+      const loggingExecutor: {
+        readonly read: (
+          command: string,
+          args: ReadonlyArray<string>,
+        ) => Effect.Effect<
+          string,
+          CommandExecutionError | PlatformError.PlatformError
+        >;
+        readonly run: (
+          command: string,
+          args: ReadonlyArray<string>,
+        ) => Effect.Effect<
+          void,
+          CommandExecutionError | PlatformError.PlatformError
+        >;
+      } = {
+        read: (command: string, args: ReadonlyArray<string>) => {
+          const formattedCommand = formatCommand(command, args);
+
+          return runSetSpinner(
+            formattedCommand,
+            renderSetCommandLine(formattedCommand),
+            executor.read(command, args),
+            {
+              detail: (error) => operationFailureDetails(error),
+              label: () => {
+                operationFailed = true;
+                return formattedCommand;
+              },
+            },
+          );
+        },
+        run: (command: string, args: ReadonlyArray<string>) => {
+          const formattedCommand = formatCommand(command, args);
+          const commandEffect: Effect.Effect<
+            void,
+            CommandExecutionError | PlatformError.PlatformError
+          > = dryRun ? Effect.void : executor.run(command, args);
+
+          return runSetSpinner(
+            formattedCommand,
+            renderSetCommandLine(formattedCommand),
+            commandEffect,
+            {
+              detail: (error) => operationFailureDetails(error),
+              label: () => {
+                operationFailed = true;
+                return formattedCommand;
+              },
+            },
+          );
+        },
+      };
+      const loggingFileSystem: typeof fileSystem = {
+        ...fileSystem,
+        makeDirectory: (path: string, options) =>
+          dryRun ? Effect.void : fileSystem.makeDirectory(path, options),
+        writeFileString: (path: string, data: string, options) => {
+          const writeEffect: Effect.Effect<void, PlatformError.PlatformError> =
+            dryRun
+              ? Effect.void
+              : fileSystem.writeFileString(path, data, options);
+
+          return runSetSpinner(
+            collapseHomePath(path, homePath),
+            renderSetCreateLine(path, homePath),
+            writeEffect,
+            {
+              detail: (error) => operationFailureDetails(error),
+              label: () => {
+                operationFailed = true;
+                return collapseHomePath(path, homePath);
+              },
+            },
+          );
+        },
+      };
+      const applyResult = yield* Effect.result(
+        adapter
+          .apply(preparedTheme.theme)
+          .pipe(
+            Effect.provideService(CommandExecutor, loggingExecutor),
+            Effect.provideService(FileSystem.FileSystem, loggingFileSystem),
+          ),
+      );
+
+      if (Result.isFailure(applyResult)) {
+        if (operationFailed) {
+          errorCount += 1;
+          continue;
+        }
+
+        const failureDisplay = targetFailureDisplay(
+          applyResult.failure,
+          homePath,
+        );
+
+        yield* printSetTargetFailure(
+          failureDisplay.reason,
+          failureDisplay.detail,
+        );
+        errorCount += 1;
+      }
     }
+
+    const elapsedMs =
+      startedAt === undefined ? undefined : Date.now() - startedAt;
+
+    yield* printSetResult(preparedTheme.theme.id, targetCount, {
+      dryRun,
+      elapsedMs,
+      errorCount,
+    });
   });
 
 const setCommand = Command.make(
@@ -193,21 +392,23 @@ const setCommand = Command.make(
     dryRun: dryRunFlag,
     theme: themeArg,
   },
-  (config) =>
+  (commandConfig) =>
     Effect.gen(function* () {
-      const theme = yield* loadThemeOrAlias(config.theme);
       const configStore = yield* ConfigStore;
       const othemeConfig = yield* configStore.read();
+      const preparedTheme = yield* prepareSetTheme(
+        commandConfig.theme,
+        othemeConfig,
+      );
 
-      if (config.dryRun) {
-        yield* printDryRun(theme.id, othemeConfig);
+      if (commandConfig.dryRun) {
+        yield* runSet(preparedTheme, true);
         return;
       }
 
       const stateStore = yield* StateStore;
-      yield* stateStore.write({ theme: theme.id });
-      yield* applyTheme(theme.id, othemeConfig);
-      yield* Console.log(`applied ${theme.id}`);
+      yield* stateStore.write({ theme: preparedTheme.theme.id });
+      yield* runSet(preparedTheme, false);
     }),
 ).pipe(Command.withDescription('Apply a theme to supported targets'));
 
