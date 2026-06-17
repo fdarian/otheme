@@ -23,7 +23,9 @@
     "hint": "#A0A0A0",
     "success": "#99FFE4",
     "diffAdd": "#233D37",
+    "diffAddEmph": "#2E5C50",
     "diffDel": "#3D2020",
+    "diffDelEmph": "#5C2E2E",
     "diffChg": "#3D3025"
   },
   "syntax": {
