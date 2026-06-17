@@ -1,0 +1,40 @@
+---
+title: bat
+description: Files and commands used by the bat target.
+---
+
+# bat
+
+The bat target authors a syntax theme (`otheme-<theme-id>.tmTheme`) from the shared palette, installs it into bat, and makes it the active bat theme. This is also the theme [git-delta](/targets/git-delta) references for diff syntax highlighting.
+
+This page is generated from the adapter plan used by `otheme set vesper --dry-run`. Paths are shown exactly as otheme prints them; `~` means your home directory.
+
+## Compatibility
+
+Author mode. otheme writes a TextMate `.tmTheme` derived from the shared palette into bat's themes directory, points bat's config at it via `--theme`, and rebuilds the bat theme cache.
+
+## Files
+
+| Order | File | What otheme writes |
+| --- | --- | --- |
+| 1 | `~/.config/bat/themes/otheme-vesper.tmTheme` | write generated bat theme otheme-vesper.tmTheme from the palette |
+| 2 | `~/.config/bat/config` | set --theme="otheme-vesper" |
+
+## Why bat and git-delta go together
+
+[git-delta](/targets/git-delta) delegates syntax highlighting to bat. The bat target is what authors the `otheme-<theme-id>` syntax theme that git-delta references via `syntax-theme`. **If you enable git-delta, enable bat too** so the referenced theme exists:
+
+```json
+{
+  "targets": {
+    "bat": true,
+    "git-delta": true
+  }
+}
+```
+
+## Commands
+
+| Order | Command | Why it runs |
+| --- | --- | --- |
+| 1 | `bat cache --build` | rebuild the bat theme cache so the generated theme becomes available |

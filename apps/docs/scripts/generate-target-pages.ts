@@ -117,12 +117,49 @@ Replace the entire status-right string. Supports \`{{placeholder}}\` substitutio
   },
   {
     compatibility:
-      'Author mode. otheme writes a dedicated git include file with a `[delta]` section, deriving diff colors from the shared palette and setting the `features` field to a named delta theme.',
+      'Author mode. otheme writes a dedicated git include file with a `[delta]` section, deriving diff colors from the shared palette, setting the `features` field to a named delta theme, and pointing `syntax-theme` at the otheme-derived bat theme.',
     id: 'git-delta',
     intro:
       'The git-delta target writes ~/.config/git/otheme-delta.conf with palette-derived diff colors and ensures ~/.gitconfig includes it.',
+    midSections: `## Enable bat alongside git-delta
+
+git-delta has no syntax engine of its own — it delegates syntax highlighting to [bat](/targets/bat). The generated \`[delta]\` config sets \`syntax-theme = otheme-<theme-id>\`, which is the bat theme the [bat target](/targets/bat) authors from the same palette.
+
+For diff token colors to match your theme, **enable both targets**:
+
+\`\`\`json
+{
+  "targets": {
+    "git-delta": true,
+    "bat": true
+  }
+}
+\`\`\`
+
+If git-delta is enabled but bat is not, the referenced \`otheme-<theme-id>\` syntax theme won't exist and delta falls back to its default highlighting (diff chrome colors still match, but the code tokens inside diffs won't).`,
     slug: 'git-delta',
     title: 'git-delta',
+  },
+  {
+    compatibility:
+      "Author mode. otheme writes a TextMate `.tmTheme` derived from the shared palette into bat's themes directory, points bat's config at it via `--theme`, and rebuilds the bat theme cache.",
+    id: 'bat',
+    intro:
+      'The bat target authors a syntax theme (`otheme-<theme-id>.tmTheme`) from the shared palette, installs it into bat, and makes it the active bat theme. This is also the theme [git-delta](/targets/git-delta) references for diff syntax highlighting.',
+    midSections: `## Why bat and git-delta go together
+
+[git-delta](/targets/git-delta) delegates syntax highlighting to bat. The bat target is what authors the \`otheme-<theme-id>\` syntax theme that git-delta references via \`syntax-theme\`. **If you enable git-delta, enable bat too** so the referenced theme exists:
+
+\`\`\`json
+{
+  "targets": {
+    "bat": true,
+    "git-delta": true
+  }
+}
+\`\`\``,
+    slug: 'bat',
+    title: 'bat',
   },
   {
     compatibility:

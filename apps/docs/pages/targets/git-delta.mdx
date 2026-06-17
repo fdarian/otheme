@@ -11,14 +11,31 @@ This page is generated from the adapter plan used by `otheme set vesper --dry-ru
 
 ## Compatibility
 
-Author mode. otheme writes a dedicated git include file with a `[delta]` section, deriving diff colors from the shared palette and setting the `features` field to a named delta theme.
+Author mode. otheme writes a dedicated git include file with a `[delta]` section, deriving diff colors from the shared palette, setting the `features` field to a named delta theme, and pointing `syntax-theme` at the otheme-derived bat theme.
 
 ## Files
 
 | Order | File | What otheme writes |
 | --- | --- | --- |
-| 1 | `~/.config/git/otheme-delta.conf` | write [delta] config with features=gruvmax-fang and palette-derived diff colors |
+| 1 | `~/.config/git/otheme-delta.conf` | write [delta] config with features=gruvmax-fang, syntax-theme=otheme-vesper, and palette-derived diff colors |
 | 2 | `~/.gitconfig` | add [include] path = ~/.config/git/otheme-delta.conf if not already present |
+
+## Enable bat alongside git-delta
+
+git-delta has no syntax engine of its own — it delegates syntax highlighting to [bat](/targets/bat). The generated `[delta]` config sets `syntax-theme = otheme-<theme-id>`, which is the bat theme the [bat target](/targets/bat) authors from the same palette.
+
+For diff token colors to match your theme, **enable both targets**:
+
+```json
+{
+  "targets": {
+    "git-delta": true,
+    "bat": true
+  }
+}
+```
+
+If git-delta is enabled but bat is not, the referenced `otheme-<theme-id>` syntax theme won't exist and delta falls back to its default highlighting (diff chrome colors still match, but the code tokens inside diffs won't).
 
 ## Commands
 
