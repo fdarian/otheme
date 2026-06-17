@@ -57,6 +57,8 @@ type ExtensionManifest = {
   };
 };
 
+type ExtensionNlsMap = Record<string, string>;
+
 /** Open VSX search response (only the fields we consume). */
 type SearchResponse = {
   extensions?: {
@@ -108,6 +110,67 @@ function normalizeThemePath(path: string) {
   return path.startsWith('./') ? path.slice(2) : path;
 }
 
+function packageNlsUrl(manifestUrl: string) {
+  return manifestUrl.replace(/package\.json$/, 'package.nls.json');
+}
+
+function isNlsPlaceholder(value: string) {
+  return /^%(.+)%$/.test(value);
+}
+
+function resolveNlsString(value: string | undefined, nlsMap: ExtensionNlsMap) {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const match = value.match(/^%(.+)%$/);
+  if (match === null) {
+    return value;
+  }
+
+  const key = match[1];
+  if (key === undefined) {
+    return value;
+  }
+
+  return nlsMap[key] ?? value;
+}
+
+async function fetchPackageNls(manifestUrl: string) {
+  const response = await fetch(packageNlsUrl(manifestUrl));
+
+  if (response.status === 404) {
+    return {} as ExtensionNlsMap;
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch extension localization: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  return (await response.json()) as ExtensionNlsMap;
+}
+
+function pickThemeLabel(
+  nlsMap: ExtensionNlsMap,
+  ...candidates: Array<string | undefined>
+) {
+  for (const candidate of candidates) {
+    const resolved = resolveNlsString(candidate, nlsMap)?.trim();
+
+    if (
+      resolved !== undefined &&
+      resolved !== '' &&
+      !isNlsPlaceholder(resolved)
+    ) {
+      return resolved;
+    }
+  }
+
+  return undefined;
+}
+
 const textDecoder = new TextDecoder('utf-8');
 
 /**
@@ -124,6 +187,7 @@ export async function importTheme(
     );
   }
   const manifest = (await manifestResponse.json()) as ExtensionManifest;
+  const nlsMap = await fetchPackageNls(result.manifestUrl);
   const contributedThemes = manifest.contributes?.themes ?? [];
   if (contributedThemes.length === 0) {
     throw new Error('This extension does not contribute any themes.');
@@ -146,7 +210,13 @@ export async function importTheme(
     }
     const vscodeTheme = JSON.parse(textDecoder.decode(entry)) as VscodeTheme;
     return {
-      label: contributed.label ?? vscodeTheme.name ?? `Theme ${index + 1}`,
+      label:
+        pickThemeLabel(
+          nlsMap,
+          contributed.label,
+          vscodeTheme.name,
+          result.displayName,
+        ) ?? `Theme ${index + 1}`,
       vscodeTheme,
     };
   });
