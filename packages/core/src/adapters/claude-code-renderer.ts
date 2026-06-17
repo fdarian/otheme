@@ -1,12 +1,15 @@
 import type { Appearance, Theme } from '../theme-schema.ts';
+import type { ClaudeCodeThemeToken } from './claude-code-tokens.ts';
 
 interface ClaudeCodeThemeDocument {
   readonly base: Appearance;
   readonly name: string;
-  readonly overrides: Record<string, string>;
+  readonly overrides: Partial<Record<ClaudeCodeThemeToken, string>>;
 }
 
-const claudeCodeThemeOverrides = (theme: Theme): Record<string, string> => ({
+const claudeCodeThemeOverrides = (
+  theme: Theme,
+): Partial<Record<ClaudeCodeThemeToken, string>> => ({
   claude: theme.ui.accent,
   professionalBlue: theme.ui.info,
   chromeYellow: theme.ui.warning,
@@ -35,7 +38,6 @@ const claudeCodeThemeOverrides = (theme: Theme): Record<string, string> => ({
   selectionBg: theme.ui.bgVisual,
   userMessageBackground: theme.ui.bgFloat,
   userMessageBackgroundHover: theme.ui.bgHover,
-  messageActionsBackground: theme.ui.bgFloat,
   bashMessageBackgroundColor: theme.ui.bgFloat,
   memoryBackgroundColor: theme.ui.bgFloat,
   red_FOR_SUBAGENTS_ONLY: theme.ui.error,
