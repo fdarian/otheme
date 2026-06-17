@@ -22,9 +22,9 @@
     "info": "#7E7E7E",
     "hint": "#A0A0A0",
     "success": "#99FFE4",
-    "diffAdd": "#233D37",
+    "diffAdd": "#202D29",
     "diffAddEmph": "#2E5C50",
-    "diffDel": "#3D2020",
+    "diffDel": "#2D1D1D",
     "diffDelEmph": "#5C2E2E",
     "diffChg": "#3D3025"
   },
