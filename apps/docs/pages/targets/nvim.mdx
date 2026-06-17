@@ -5,23 +5,41 @@ description: Files and commands used by the nvim target.
 
 # nvim
 
-The nvim target writes a generated Lua colorscheme and live-applies it to running Neovim instances when possible.
+The nvim target generates a Lua colorscheme file and auto-manages the `~/.config/nvim/init.lua` block that sources it. New Neovim instances pick up the theme immediately; already-running instances are live-updated via their socket.
 
 This page is generated from the adapter plan used by `otheme set vesper --dry-run`. Paths are shown exactly as otheme prints them; `~` means your home directory.
 
+## Setup
+
+Enable the nvim target in your config and run `otheme set <theme>` — that's it. otheme writes the generated colorscheme and patches your `init.lua` automatically. No manual colorscheme line is needed.
+
 ## Compatibility
 
-Author mode. otheme generates a Neovim colorscheme file from the shared theme palette, then asks running Neovim instances to switch to it.
+Requires `init.lua`. If otheme finds `~/.config/nvim/init.vim` but no `init.lua`, it will print an error and tell you either to migrate to `init.lua` or to add the block manually.
 
 ## Files
 
 | Order | File | What otheme writes |
 | --- | --- | --- |
-| 1 | `~/.local/share/nvim/site/colors/vesper.lua` | write generated Neovim colorscheme for Vesper |
+| 1 | `~/.config/otheme/generated/nvim.lua` | write generated Neovim colorscheme (overwritten in place on every `set`) |
+| 2 | `~/.config/nvim/init.lua` | patch init.lua with otheme auto-source block (idempotent) |
+
+## init.lua block
+
+otheme appends (or replaces) the following block in your `init.lua`. The markers let otheme locate and replace the block on subsequent runs — do not edit the lines inside it:
+
+```lua
+-- >>> otheme: auto-generated — do NOT edit this block. otheme locates and >>>
+-- >>> replaces it by matching these markers; manual edits are overwritten. >>>
+pcall(dofile, vim.fn.expand("~/.config/otheme/generated/nvim.lua"))
+-- <<< otheme <<<
+```
+
+The block is appended at end-of-file on first run so it executes after your plugin/colorscheme setup (last-colorscheme-wins, avoiding lazy.nvim load-order issues).
 
 ## Commands
 
 | Order | Command | Why it runs |
 | --- | --- | --- |
 | 1 | `nvim --headless '+call writefile([stdpath('\''run'\'')], '\''/dev/stdout'\'')' +q` | discover Neovim runtime directory for live sockets |
-| 2 | `nvim --server '<socket>' --remote-expr 'execute("colorscheme vesper")'` | live-apply the colorscheme to each running Neovim socket |
+| 2 | `nvim --server '<socket>' --remote-expr 'luafile("~/.config/otheme/generated/nvim.lua")'` | live-apply the generated colorscheme to each running Neovim socket |
