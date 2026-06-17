@@ -26,7 +26,6 @@ const claudeCodeThemeOverrides = (
   diffRemoved: theme.ui.diffDel,
   diffAddedWord: theme.ui.success,
   diffRemovedWord: theme.ui.error,
-  selectionBg: theme.ui.bgVisual,
   userMessageBackground: theme.ui.bgFloat,
   userMessageBackgroundHover: theme.ui.bgHover,
   bashMessageBackgroundColor: theme.ui.bgFloat,
