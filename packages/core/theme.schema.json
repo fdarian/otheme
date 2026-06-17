@@ -197,30 +197,66 @@
     "targets": {
       "type": "object",
       "properties": {
+        "bat": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "object"
+                },
+                {
+                  "type": "array"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "claude-code": {
           "anyOf": [
             {
-              "type": "object",
-              "properties": {
-                "mapTo": {
-                  "type": "string",
-                  "enum": [
-                    "dark",
-                    "light"
-                  ]
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "mode": {
+                      "type": "string",
+                      "enum": [
+                        "author"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "mode"
+                  ],
+                  "additionalProperties": false
                 },
-                "mode": {
-                  "type": "string",
-                  "enum": [
-                    "map"
-                  ]
+                {
+                  "type": "object",
+                  "properties": {
+                    "mapTo": {
+                      "type": "string",
+                      "enum": [
+                        "dark",
+                        "light"
+                      ]
+                    },
+                    "mode": {
+                      "type": "string",
+                      "enum": [
+                        "map"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "mapTo",
+                    "mode"
+                  ],
+                  "additionalProperties": false
                 }
-              },
-              "required": [
-                "mapTo",
-                "mode"
-              ],
-              "additionalProperties": false
+              ]
             },
             {
               "type": "null"

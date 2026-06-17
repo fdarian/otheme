@@ -25,6 +25,23 @@
           "additionalProperties": {
             "type": "object",
             "properties": {
+              "bat": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "array"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "claude-code": {
                 "anyOf": [
                   {
@@ -49,6 +66,7 @@
                           {
                             "type": "string",
                             "enum": [
+                              "author",
                               "map"
                             ]
                           },
@@ -394,6 +412,16 @@
         {
           "type": "object",
           "properties": {
+            "bat": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
             "claude-code": {
               "anyOf": [
                 {
