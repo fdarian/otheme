@@ -620,6 +620,14 @@
             }
           ]
         },
+        "diffAddEmph": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
         "diffChg": {
           "type": "string",
           "allOf": [
@@ -629,6 +637,14 @@
           ]
         },
         "diffDel": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            }
+          ]
+        },
+        "diffDelEmph": {
           "type": "string",
           "allOf": [
             {
@@ -727,8 +743,10 @@
         "border",
         "comment",
         "diffAdd",
+        "diffAddEmph",
         "diffChg",
         "diffDel",
+        "diffDelEmph",
         "error",
         "fg",
         "fgDim",

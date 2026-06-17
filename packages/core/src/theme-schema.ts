@@ -16,8 +16,12 @@ export const UiColors = Schema.Struct({
   border: HexColor,
   comment: HexColor,
   diffAdd: HexColor,
+  /** Within-line change emphasis background for added text (git-delta plus-emph). */
+  diffAddEmph: HexColor,
   diffChg: HexColor,
   diffDel: HexColor,
+  /** Within-line change emphasis background for removed text (git-delta minus-emph). */
+  diffDelEmph: HexColor,
   error: HexColor,
   fg: HexColor,
   fgDim: HexColor,
