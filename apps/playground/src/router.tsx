@@ -5,7 +5,6 @@ import { routeTree } from './routeTree.gen';
 export const getRouter = () =>
   createRouter({
     routeTree,
-    basepath: '/playground',
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
   });

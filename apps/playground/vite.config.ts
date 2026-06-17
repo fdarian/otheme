@@ -5,14 +5,8 @@ import { nitro } from 'nitro/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/playground/',
   resolve: {
     tsconfigPaths: true,
   },
-  plugins: [
-    tailwindcss(),
-    tanstackStart(),
-    nitro({ baseURL: '/playground/' }),
-    viteReact(),
-  ],
+  plugins: [tailwindcss(), tanstackStart(), nitro(), viteReact()],
 });
