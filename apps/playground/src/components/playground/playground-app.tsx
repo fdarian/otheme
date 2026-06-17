@@ -180,7 +180,7 @@ export function PlaygroundApp() {
 
       <div className="min-h-0 flex-1">
         <ResizablePanelGroup orientation="horizontal">
-          <ResizablePanel defaultSize={50} minSize={28}>
+          <ResizablePanel defaultSize="20%" minSize="15%">
             <EditorPane
               activePreset={activePreset}
               canRemovePreset={selectedPreset.builtIn === false}
@@ -197,7 +197,7 @@ export function PlaygroundApp() {
             />
           </ResizablePanel>
           <ResizableHandle className="bg-border/80 after:w-[3px] hover:after:bg-muted-foreground/40" />
-          <ResizablePanel defaultSize={50} minSize={28}>
+          <ResizablePanel defaultSize="80%" minSize="30%">
             <PreviewPane
               inspectMode={inspectMode}
               onInspect={setFocusField}
