@@ -40,12 +40,10 @@ const claudeCodeThemeOverrides = (
   userMessageBackgroundHover: theme.ui.bgHover,
   bashMessageBackgroundColor: theme.ui.bgFloat,
   memoryBackgroundColor: theme.ui.bgFloat,
+  // Only error/success map cleanly to named subagent hues. The other
+  // subagent colors inherit from Claude Code's base palette to stay distinct.
   red_FOR_SUBAGENTS_ONLY: theme.ui.error,
   green_FOR_SUBAGENTS_ONLY: theme.ui.success,
-  yellow_FOR_SUBAGENTS_ONLY: theme.ui.warning,
-  blue_FOR_SUBAGENTS_ONLY: theme.ui.info,
-  purple_FOR_SUBAGENTS_ONLY: theme.ui.hint,
-  orange_FOR_SUBAGENTS_ONLY: theme.ui.accent,
 });
 
 export const renderClaudeCodeTheme = (theme: Theme): string => {
