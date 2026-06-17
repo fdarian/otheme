@@ -4,8 +4,8 @@
   "name": "Claude",
   "appearance": "light",
   "ui": {
-    "bg": "#FAF9F5",
-    "bgFloat": "#F0EEE6",
+    "bg": "#F8F8F6",
+    "bgFloat": "#EFEEEB",
     "bgHover": "#E8E6DC",
     "bgVisual": "#E8E6DC",
     "fg": "#141413",
