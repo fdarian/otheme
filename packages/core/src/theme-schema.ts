@@ -106,9 +106,12 @@ export const GitDeltaTarget = Schema.Struct({
   features: Schema.String,
 });
 
+export const BatTarget = Schema.Struct({});
+
 export const MacosTarget = Schema.Struct({});
 
 export const Targets = Schema.Struct({
+  bat: Schema.optional(BatTarget),
   'claude-code': Schema.optional(ClaudeCodeTarget),
   'git-delta': Schema.optional(GitDeltaTarget),
   ghostty: Schema.optional(GhosttyTarget),
@@ -127,6 +130,7 @@ export const Theme = Schema.Struct({
 });
 
 export type Appearance = Theme['appearance'];
+export type BatTarget = typeof BatTarget.Type;
 export type ClaudeCodeAuthorTarget = typeof ClaudeCodeAuthorTarget.Type;
 export type ClaudeCodeMapTarget = typeof ClaudeCodeMapTarget.Type;
 export type ClaudeCodeTarget = typeof ClaudeCodeTarget.Type;
