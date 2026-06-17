@@ -1,3 +1,4 @@
+import { batAdapter } from './bat-adapter.ts';
 import { claudeCodeAdapter } from './claude-code-adapter.ts';
 import { ghosttyAdapter } from './ghostty-adapter.ts';
 import { gitDeltaAdapter } from './git-delta-adapter.ts';
@@ -11,10 +12,12 @@ export const targetAdapters = [
   ghosttyAdapter,
   claudeCodeAdapter,
   gitDeltaAdapter,
+  batAdapter,
   macosAdapter,
 ] as const;
 
 export {
+  batAdapter,
   claudeCodeAdapter,
   ghosttyAdapter,
   gitDeltaAdapter,

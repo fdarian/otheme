@@ -24,6 +24,7 @@ export default defineConfig({
         { text: 'claude-code', link: '/targets/claude-code' },
         { text: 'macos', link: '/targets/macos' },
         { text: 'git-delta', link: '/targets/git-delta' },
+        { text: 'bat', link: '/targets/bat' },
       ],
     },
   ],

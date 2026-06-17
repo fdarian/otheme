@@ -2,6 +2,7 @@ import { Effect } from 'effect';
 import { TargetNotFoundError } from '../errors.ts';
 import type { AdapterPlan } from '../target-adapter.ts';
 import type {
+  BatTarget,
   ClaudeCodeTarget,
   GhosttyTarget,
   GitDeltaTarget,
@@ -26,6 +27,9 @@ export const getClaudeCodeTarget = (
 
 export const getGitDeltaTarget = (theme: Theme): GitDeltaTarget | undefined =>
   theme.targets['git-delta'];
+
+export const getBatTarget = (theme: Theme): BatTarget | undefined =>
+  theme.targets.bat;
 
 export const getMacosTarget = (theme: Theme): MacosTarget | undefined =>
   theme.targets.macos;
@@ -84,6 +88,18 @@ export const requireGitDeltaTarget = (theme: Theme) => {
   if (target === undefined) {
     return Effect.fail(
       new TargetNotFoundError({ targetId: 'git-delta', themeId: theme.id }),
+    );
+  }
+
+  return Effect.succeed(target);
+};
+
+export const requireBatTarget = (theme: Theme) => {
+  const target = getBatTarget(theme);
+
+  if (target === undefined) {
+    return Effect.fail(
+      new TargetNotFoundError({ targetId: 'bat', themeId: theme.id }),
     );
   }
 

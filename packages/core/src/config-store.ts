@@ -34,6 +34,7 @@ const PartialTmuxTarget = Schema.Struct({
 });
 
 const PartialTargets = Schema.Struct({
+  bat: Schema.optional(Schema.Struct({})),
   'claude-code': Schema.optional(PartialClaudeCodeTarget),
   'git-delta': Schema.optional(PartialGitDeltaTarget),
   ghostty: Schema.optional(GhosttyTarget),
@@ -45,6 +46,7 @@ const PartialTargets = Schema.Struct({
 export type PartialTargets = typeof PartialTargets.Type;
 
 const TargetsConfig = Schema.Struct({
+  bat: Schema.optional(Schema.Boolean),
   'claude-code': Schema.optional(Schema.Boolean),
   'git-delta': Schema.optional(Schema.Boolean),
   ghostty: Schema.optional(Schema.Boolean),

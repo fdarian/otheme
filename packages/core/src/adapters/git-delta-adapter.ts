@@ -2,6 +2,7 @@ import { Config, Effect, FileSystem, Path } from 'effect';
 import { formatCommand } from '../command-executor.ts';
 import type { TargetAdapter } from '../target-adapter.ts';
 import type { Theme } from '../theme-schema.ts';
+import { batThemeName } from './bat-renderer.ts';
 import {
   addOthemeInclude,
   gitDeltaConfRelPath,
@@ -36,7 +37,7 @@ export const gitDeltaAdapter: TargetAdapter = {
       creates: [
         {
           path: `~/${gitDeltaConfRelPath}`,
-          summary: `write [delta] config with features=${target.features} and palette-derived diff colors`,
+          summary: `write [delta] config with features=${target.features}, syntax-theme=${batThemeName(theme)}, and palette-derived diff colors`,
         },
         {
           path: `~/${gitconfigRelPath}`,

@@ -16,8 +16,12 @@ export const UiColors = Schema.Struct({
   border: HexColor,
   comment: HexColor,
   diffAdd: HexColor,
+  /** Within-line change emphasis background for added text (git-delta plus-emph). */
+  diffAddEmph: HexColor,
   diffChg: HexColor,
   diffDel: HexColor,
+  /** Within-line change emphasis background for removed text (git-delta minus-emph). */
+  diffDelEmph: HexColor,
   error: HexColor,
   fg: HexColor,
   fgDim: HexColor,
@@ -106,9 +110,12 @@ export const GitDeltaTarget = Schema.Struct({
   features: Schema.String,
 });
 
+export const BatTarget = Schema.Struct({});
+
 export const MacosTarget = Schema.Struct({});
 
 export const Targets = Schema.Struct({
+  bat: Schema.optional(BatTarget),
   'claude-code': Schema.optional(ClaudeCodeTarget),
   'git-delta': Schema.optional(GitDeltaTarget),
   ghostty: Schema.optional(GhosttyTarget),
@@ -127,6 +134,7 @@ export const Theme = Schema.Struct({
 });
 
 export type Appearance = Theme['appearance'];
+export type BatTarget = typeof BatTarget.Type;
 export type ClaudeCodeAuthorTarget = typeof ClaudeCodeAuthorTarget.Type;
 export type ClaudeCodeMapTarget = typeof ClaudeCodeMapTarget.Type;
 export type ClaudeCodeTarget = typeof ClaudeCodeTarget.Type;

@@ -23,7 +23,9 @@
     "hint": "#7274A7",
     "success": "#669F59",
     "diffAdd": "#DFEADB",
+    "diffAddEmph": "#BBD5B1",
     "diffDel": "#FBDFD9",
+    "diffDelEmph": "#F5B8AA",
     "diffChg": "#FAF2E6"
   },
   "syntax": {
@@ -68,6 +70,7 @@
     "git-delta": {
       "features": "hoopoe"
     },
+    "bat": {},
     "macos": {}
   }
 }

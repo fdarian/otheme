@@ -131,6 +131,10 @@ const mergeTargetOverride = (
   }
 
   return {
+    bat:
+      targets.bat !== undefined && override.bat !== undefined
+        ? { ...targets.bat, ...override.bat }
+        : targets.bat,
     'claude-code': mergeClaudeCodeTarget(
       targets['claude-code'],
       override['claude-code'],
