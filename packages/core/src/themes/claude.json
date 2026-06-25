@@ -61,8 +61,7 @@
       "searchCurrent": "#8B6CB0"
     },
     "ghostty": {
-      "mode": "map",
-      "mapTo": "Claude"
+      "mode": "author"
     },
     "claude-code": {
       "mode": "author"
