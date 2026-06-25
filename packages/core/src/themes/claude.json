@@ -71,7 +71,11 @@
     },
     "bat": {},
     "yazi": {},
-    "opencode": {},
+    "opencode": {
+      "overrides": {
+        "backgroundElement": "#FFFFFF"
+      }
+    },
     "macos": {}
   }
 }

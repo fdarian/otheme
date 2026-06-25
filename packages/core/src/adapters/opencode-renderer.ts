@@ -1,57 +1,9 @@
 import type { Theme } from '../theme-schema.ts';
+import type { OpencodeThemeToken } from './opencode-tokens.ts';
+import { getOpencodeTarget } from './target-selectors.ts';
 
-interface OpencodeThemeTokens {
-  readonly primary: string;
-  readonly secondary: string;
-  readonly accent: string;
-  readonly error: string;
-  readonly warning: string;
-  readonly success: string;
-  readonly info: string;
-  readonly text: string;
-  readonly textMuted: string;
-  readonly background: string;
-  readonly backgroundPanel: string;
-  readonly backgroundElement: string;
-  readonly border: string;
-  readonly borderActive: string;
-  readonly borderSubtle: string;
-  readonly diffAdded: string;
-  readonly diffRemoved: string;
-  readonly diffContext: string;
-  readonly diffHunkHeader: string;
-  readonly diffHighlightAdded: string;
-  readonly diffHighlightRemoved: string;
-  readonly diffLineNumber: string;
-  readonly diffAddedBg: string;
-  readonly diffRemovedBg: string;
-  readonly diffContextBg: string;
-  readonly diffAddedLineNumberBg: string;
-  readonly diffRemovedLineNumberBg: string;
-  readonly markdownText: string;
-  readonly markdownHeading: string;
-  readonly markdownLink: string;
-  readonly markdownLinkText: string;
-  readonly markdownCode: string;
-  readonly markdownBlockQuote: string;
-  readonly markdownEmph: string;
-  readonly markdownStrong: string;
-  readonly markdownHorizontalRule: string;
-  readonly markdownListItem: string;
-  readonly markdownListEnumeration: string;
-  readonly markdownImage: string;
-  readonly markdownImageText: string;
-  readonly markdownCodeBlock: string;
-  readonly syntaxComment: string;
-  readonly syntaxKeyword: string;
-  readonly syntaxFunction: string;
-  readonly syntaxVariable: string;
-  readonly syntaxString: string;
-  readonly syntaxNumber: string;
-  readonly syntaxType: string;
-  readonly syntaxOperator: string;
-  readonly syntaxPunctuation: string;
-}
+export interface OpencodeThemeTokens
+  extends Readonly<Record<OpencodeThemeToken, string>> {}
 
 export interface OpencodeThemeDocument {
   readonly $schema: 'https://opencode.ai/theme.json';
@@ -85,9 +37,20 @@ const requireSyntaxColor = (theme: Theme, token: SyntaxColorToken): string => {
   return value;
 };
 
-export const renderOpencodeTheme = (theme: Theme): OpencodeThemeDocument => ({
-  $schema: 'https://opencode.ai/theme.json',
-  theme: {
+const opencodeThemeOverrides = (
+  theme: Theme,
+): Partial<Record<OpencodeThemeToken, string>> => {
+  const target = getOpencodeTarget(theme);
+
+  if (target === undefined || target.overrides === undefined) {
+    return {};
+  }
+
+  return target.overrides;
+};
+
+export const renderOpencodeTheme = (theme: Theme): OpencodeThemeDocument => {
+  const baseTheme: OpencodeThemeTokens = {
     primary: requireUiColor(theme, 'accent'),
     secondary: requireSyntaxColor(theme, 'func'),
     accent: requireUiColor(theme, 'hint'),
@@ -138,5 +101,15 @@ export const renderOpencodeTheme = (theme: Theme): OpencodeThemeDocument => ({
     syntaxType: requireSyntaxColor(theme, 'type'),
     syntaxOperator: requireSyntaxColor(theme, 'operator'),
     syntaxPunctuation: requireSyntaxColor(theme, 'punctuation'),
-  },
-});
+  };
+  const mergedTheme: OpencodeThemeTokens = Object.assign(
+    {},
+    baseTheme,
+    opencodeThemeOverrides(theme),
+  );
+
+  return {
+    $schema: 'https://opencode.ai/theme.json',
+    theme: mergedTheme,
+  };
+};

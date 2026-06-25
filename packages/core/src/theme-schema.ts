@@ -1,4 +1,8 @@
 import { Schema } from 'effect';
+import {
+  type OpencodeThemeToken,
+  opencodeThemeTokens,
+} from './adapters/opencode-tokens.ts';
 
 export const HexColor = Schema.String.check(
   Schema.isPattern(/^#[0-9A-Fa-f]{6}$/, {
@@ -113,8 +117,21 @@ export const GitDeltaTarget = Schema.Struct({
 export const BatTarget = Schema.Struct({});
 
 export const YaziTarget = Schema.Struct({});
+const opencodeThemeOverrideFields: {
+  readonly [K in OpencodeThemeToken]: Schema.optionalKey<typeof HexColor>;
+} = Object.fromEntries(
+  opencodeThemeTokens.map((token) => [token, Schema.optionalKey(HexColor)]),
+) as {
+  readonly [K in OpencodeThemeToken]: Schema.optionalKey<typeof HexColor>;
+};
 
-export const OpencodeTarget = Schema.Struct({});
+export const OpencodeThemeOverrides = Schema.Struct(
+  opencodeThemeOverrideFields,
+);
+
+export const OpencodeTarget = Schema.Struct({
+  overrides: Schema.optional(OpencodeThemeOverrides),
+});
 
 export const MacosTarget = Schema.Struct({});
 
