@@ -15,6 +15,7 @@ type Page =
   | { path: '/targets/macos'; render: 'static' }
   | { path: '/targets/nvim'; render: 'static' }
   | { path: '/targets/tmux'; render: 'static' }
+  | { path: '/targets/yazi'; render: 'static' }
 
 // prettier-ignore
 declare module 'waku/router' {

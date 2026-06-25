@@ -162,6 +162,14 @@ If git-delta is enabled but bat is not, the referenced \`otheme-<theme-id>\` syn
     title: 'bat',
   },
   {
+    compatibility: 'otheme owns `~/.config/yazi/theme.toml`.',
+    id: 'yazi',
+    intro:
+      'The yazi target writes a palette-derived `theme.toml` for yazi and leaves the rest of your yazi config alone.',
+    slug: 'yazi',
+    title: 'yazi',
+  },
+  {
     compatibility:
       "Command mode. otheme runs an osascript one-liner to set the macOS system appearance to match the theme's top-level `appearance` field.",
     id: 'macos',
