@@ -11,8 +11,9 @@ const claudeCodeThemeOverrides = (
   theme: Theme,
 ): Partial<Record<ClaudeCodeThemeToken, string>> => ({
   // Override only identity (bg/fg/brand), semantic status, diffs, message and
-  // selection backgrounds, the prompt border, autocomplete selection, and the
-  // two faithful subagent hues. Secondary text, mode indicators, and
+  // selection backgrounds, the prompt and permission borders, autocomplete
+  // selection, and the two faithful subagent hues. Secondary text, mode
+  // indicators, and
   // decorative tokens inherit from Claude Code's base preset to stay balanced
   // and neutral.
   background: theme.ui.bg,
@@ -31,6 +32,7 @@ const claudeCodeThemeOverrides = (
   bashMessageBackgroundColor: theme.ui.bgFloat,
   memoryBackgroundColor: theme.ui.bgFloat,
   suggestion: theme.ui.accent,
+  permission: theme.ui.accent,
   promptBorder: theme.ui.border,
   red_FOR_SUBAGENTS_ONLY: theme.ui.error,
   green_FOR_SUBAGENTS_ONLY: theme.ui.success,
