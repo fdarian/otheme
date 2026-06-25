@@ -5,6 +5,7 @@ import { gitDeltaAdapter } from './git-delta-adapter.ts';
 import { macosAdapter } from './macos-adapter.ts';
 import { nvimAdapter } from './nvim-adapter.ts';
 import { tmuxAdapter } from './tmux-adapter.ts';
+import { yaziAdapter } from './yazi-adapter.ts';
 
 export const m1Adapters = [nvimAdapter, tmuxAdapter] as const;
 export const targetAdapters = [
@@ -13,6 +14,7 @@ export const targetAdapters = [
   claudeCodeAdapter,
   gitDeltaAdapter,
   batAdapter,
+  yaziAdapter,
   macosAdapter,
 ] as const;
 
@@ -24,4 +26,5 @@ export {
   macosAdapter,
   nvimAdapter,
   tmuxAdapter,
+  yaziAdapter,
 };

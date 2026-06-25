@@ -10,6 +10,7 @@ import type {
   NvimTarget,
   Theme,
   TmuxTarget,
+  YaziTarget,
 } from '../theme-schema.ts';
 
 export const getNvimTarget = (theme: Theme): NvimTarget | undefined =>
@@ -33,6 +34,9 @@ export const getBatTarget = (theme: Theme): BatTarget | undefined =>
 
 export const getMacosTarget = (theme: Theme): MacosTarget | undefined =>
   theme.targets.macos;
+
+export const getYaziTarget = (theme: Theme): YaziTarget | undefined =>
+  theme.targets.yazi;
 
 export const requireNvimTarget = (theme: Theme) => {
   const target = getNvimTarget(theme);
@@ -112,6 +116,18 @@ export const requireMacosTarget = (theme: Theme) => {
   if (target === undefined) {
     return Effect.fail(
       new TargetNotFoundError({ targetId: 'macos', themeId: theme.id }),
+    );
+  }
+
+  return Effect.succeed(target);
+};
+
+export const requireYaziTarget = (theme: Theme) => {
+  const target = getYaziTarget(theme);
+
+  if (target === undefined) {
+    return Effect.fail(
+      new TargetNotFoundError({ targetId: 'yazi', themeId: theme.id }),
     );
   }
 
