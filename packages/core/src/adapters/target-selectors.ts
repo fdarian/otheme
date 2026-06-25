@@ -8,6 +8,7 @@ import type {
   GitDeltaTarget,
   MacosTarget,
   NvimTarget,
+  OpencodeTarget,
   Theme,
   TmuxTarget,
   YaziTarget,
@@ -37,6 +38,9 @@ export const getMacosTarget = (theme: Theme): MacosTarget | undefined =>
 
 export const getYaziTarget = (theme: Theme): YaziTarget | undefined =>
   theme.targets.yazi;
+
+export const getOpencodeTarget = (theme: Theme): OpencodeTarget | undefined =>
+  theme.targets.opencode;
 
 export const requireNvimTarget = (theme: Theme) => {
   const target = getNvimTarget(theme);
@@ -128,6 +132,18 @@ export const requireYaziTarget = (theme: Theme) => {
   if (target === undefined) {
     return Effect.fail(
       new TargetNotFoundError({ targetId: 'yazi', themeId: theme.id }),
+    );
+  }
+
+  return Effect.succeed(target);
+};
+
+export const requireOpencodeTarget = (theme: Theme) => {
+  const target = getOpencodeTarget(theme);
+
+  if (target === undefined) {
+    return Effect.fail(
+      new TargetNotFoundError({ targetId: 'opencode', themeId: theme.id }),
     );
   }
 

@@ -114,6 +114,8 @@ export const BatTarget = Schema.Struct({});
 
 export const YaziTarget = Schema.Struct({});
 
+export const OpencodeTarget = Schema.Struct({});
+
 export const MacosTarget = Schema.Struct({});
 
 export const Targets = Schema.Struct({
@@ -123,6 +125,7 @@ export const Targets = Schema.Struct({
   ghostty: Schema.optional(GhosttyTarget),
   macos: Schema.optional(MacosTarget),
   nvim: Schema.optional(NvimTarget),
+  opencode: Schema.optional(OpencodeTarget),
   tmux: Schema.optional(TmuxTarget),
   yazi: Schema.optional(YaziTarget),
 });
@@ -147,6 +150,7 @@ export type GhosttyMapTarget = typeof GhosttyMapTarget.Type;
 export type GhosttyTarget = typeof GhosttyTarget.Type;
 export type MacosTarget = typeof MacosTarget.Type;
 export type NvimTarget = typeof NvimTarget.Type;
+export type OpencodeTarget = typeof OpencodeTarget.Type;
 export type SyntaxColors = typeof SyntaxColors.Type;
 export type TargetId = keyof typeof Targets.Type;
 export type Theme = typeof Theme.Type;

@@ -305,6 +305,23 @@
                   }
                 ]
               },
+              "opencode": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "array"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "tmux": {
                 "anyOf": [
                   {
@@ -480,6 +497,16 @@
               ]
             },
             "nvim": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "opencode": {
               "anyOf": [
                 {
                   "type": "boolean"

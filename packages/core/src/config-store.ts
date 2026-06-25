@@ -40,6 +40,7 @@ const PartialTargets = Schema.Struct({
   ghostty: Schema.optional(GhosttyTarget),
   macos: Schema.optional(Schema.Struct({})),
   nvim: Schema.optional(PartialNvimTarget),
+  opencode: Schema.optional(Schema.Struct({})),
   tmux: Schema.optional(PartialTmuxTarget),
   yazi: Schema.optional(Schema.Struct({})),
 });
@@ -53,6 +54,7 @@ const TargetsConfig = Schema.Struct({
   ghostty: Schema.optional(Schema.Boolean),
   macos: Schema.optional(Schema.Boolean),
   nvim: Schema.optional(Schema.Boolean),
+  opencode: Schema.optional(Schema.Boolean),
   tmux: Schema.optional(Schema.Boolean),
   yazi: Schema.optional(Schema.Boolean),
 });

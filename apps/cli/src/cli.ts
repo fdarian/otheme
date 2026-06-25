@@ -153,6 +153,10 @@ const mergeTargetOverride = (
       targets.nvim !== undefined && override.nvim !== undefined
         ? { ...targets.nvim, ...override.nvim }
         : targets.nvim,
+    opencode:
+      targets.opencode !== undefined && override.opencode !== undefined
+        ? { ...targets.opencode, ...override.opencode }
+        : targets.opencode,
     tmux:
       targets.tmux !== undefined && override.tmux !== undefined
         ? { ...targets.tmux, ...override.tmux }

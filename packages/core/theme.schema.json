@@ -471,6 +471,23 @@
             }
           ]
         },
+        "opencode": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "object"
+                },
+                {
+                  "type": "array"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "tmux": {
           "anyOf": [
             {
