@@ -20,6 +20,16 @@ Author and map modes. In author mode, otheme writes `~/.claude/themes/<theme-id>
 | 1 | `~/.claude/themes/vesper.json` | write generated Claude Code theme vesper |
 | 2 | `~/.claude/settings.json` | set JSON key theme = custom:vesper |
 
+## Running inside tmux
+
+When `$TMUX` is set, Claude Code caps its output to 256 colors, so your authored theme renders with washed-out, approximated colors instead of the exact palette. Set `CLAUDE_CODE_TMUX_TRUECOLOR=1` to opt back into truecolor inside tmux:
+
+```sh
+export CLAUDE_CODE_TMUX_TRUECOLOR=1
+```
+
+See [this issue comment](https://github.com/anthropics/claude-code/issues/36785#issuecomment-4169173830) for details.
+
 ## Commands
 
 No shell commands are run for this target.

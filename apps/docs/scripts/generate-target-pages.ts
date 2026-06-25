@@ -112,6 +112,15 @@ Replace the entire status-right string. Supports \`{{placeholder}}\` substitutio
     id: 'claude-code',
     intro:
       'The claude-code target writes a generated Claude Code theme JSON when needed and updates Claude Code settings while preserving other settings.',
+    midSections: `## Running inside tmux
+
+When \`$TMUX\` is set, Claude Code caps its output to 256 colors, so your authored theme renders with washed-out, approximated colors instead of the exact palette. Set \`CLAUDE_CODE_TMUX_TRUECOLOR=1\` to opt back into truecolor inside tmux:
+
+\`\`\`sh
+export CLAUDE_CODE_TMUX_TRUECOLOR=1
+\`\`\`
+
+See [this issue comment](https://github.com/anthropics/claude-code/issues/36785#issuecomment-4169173830) for details.`,
     slug: 'claude-code',
     title: 'claude-code',
   },
