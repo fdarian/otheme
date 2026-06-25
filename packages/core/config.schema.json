@@ -397,6 +397,23 @@
                     "type": "null"
                   }
                 ]
+              },
+              "yazi": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "array"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             },
             "additionalProperties": false
@@ -473,6 +490,16 @@
               ]
             },
             "tmux": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "yazi": {
               "anyOf": [
                 {
                   "type": "boolean"

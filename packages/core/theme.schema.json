@@ -541,6 +541,23 @@
               "type": "null"
             }
           ]
+        },
+        "yazi": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "object"
+                },
+                {
+                  "type": "array"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "additionalProperties": false

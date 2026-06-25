@@ -112,6 +112,8 @@ export const GitDeltaTarget = Schema.Struct({
 
 export const BatTarget = Schema.Struct({});
 
+export const YaziTarget = Schema.Struct({});
+
 export const MacosTarget = Schema.Struct({});
 
 export const Targets = Schema.Struct({
@@ -122,6 +124,7 @@ export const Targets = Schema.Struct({
   macos: Schema.optional(MacosTarget),
   nvim: Schema.optional(NvimTarget),
   tmux: Schema.optional(TmuxTarget),
+  yazi: Schema.optional(YaziTarget),
 });
 
 export const Theme = Schema.Struct({
@@ -149,3 +152,4 @@ export type TargetId = keyof typeof Targets.Type;
 export type Theme = typeof Theme.Type;
 export type TmuxTarget = typeof TmuxTarget.Type;
 export type UiColors = typeof UiColors.Type;
+export type YaziTarget = typeof YaziTarget.Type;

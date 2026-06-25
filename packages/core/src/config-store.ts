@@ -41,6 +41,7 @@ const PartialTargets = Schema.Struct({
   macos: Schema.optional(Schema.Struct({})),
   nvim: Schema.optional(PartialNvimTarget),
   tmux: Schema.optional(PartialTmuxTarget),
+  yazi: Schema.optional(Schema.Struct({})),
 });
 
 export type PartialTargets = typeof PartialTargets.Type;
@@ -53,6 +54,7 @@ const TargetsConfig = Schema.Struct({
   macos: Schema.optional(Schema.Boolean),
   nvim: Schema.optional(Schema.Boolean),
   tmux: Schema.optional(Schema.Boolean),
+  yazi: Schema.optional(Schema.Boolean),
 });
 
 export const OthemeConfig = Schema.Struct({

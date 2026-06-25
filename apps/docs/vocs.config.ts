@@ -25,6 +25,7 @@ export default defineConfig({
         { text: 'macos', link: '/targets/macos' },
         { text: 'git-delta', link: '/targets/git-delta' },
         { text: 'bat', link: '/targets/bat' },
+        { text: 'yazi', link: '/targets/yazi' },
       ],
     },
   ],

@@ -157,6 +157,10 @@ const mergeTargetOverride = (
       targets.tmux !== undefined && override.tmux !== undefined
         ? { ...targets.tmux, ...override.tmux }
         : targets.tmux,
+    yazi:
+      targets.yazi !== undefined && override.yazi !== undefined
+        ? { ...targets.yazi, ...override.yazi }
+        : targets.yazi,
   };
 };
 
