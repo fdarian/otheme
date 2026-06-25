@@ -305,6 +305,432 @@
                   }
                 ]
               },
+              "opencode": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "overrides": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "primary": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "secondary": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "accent": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "error": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "warning": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "success": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "info": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "text": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "textMuted": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "background": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "backgroundPanel": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "backgroundElement": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "border": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "borderActive": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "borderSubtle": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffAdded": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffRemoved": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffContext": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffHunkHeader": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffHighlightAdded": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffHighlightRemoved": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffLineNumber": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffAddedBg": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffRemovedBg": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffContextBg": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffAddedLineNumberBg": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "diffRemovedLineNumberBg": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownText": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownHeading": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownLink": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownLinkText": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownCode": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownBlockQuote": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownEmph": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownStrong": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownHorizontalRule": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownListItem": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownListEnumeration": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownImage": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownImageText": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "markdownCodeBlock": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "syntaxComment": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "syntaxKeyword": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "syntaxFunction": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "syntaxVariable": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "syntaxString": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "syntaxNumber": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "syntaxType": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "syntaxOperator": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              },
+                              "syntaxPunctuation": {
+                                "type": "string",
+                                "allOf": [
+                                  {
+                                    "pattern": "^#[0-9A-Fa-f]{6}$"
+                                  }
+                                ]
+                              }
+                            },
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "tmux": {
                 "anyOf": [
                   {
@@ -480,6 +906,16 @@
               ]
             },
             "nvim": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "opencode": {
               "anyOf": [
                 {
                   "type": "boolean"

@@ -8,7 +8,11 @@ import {
   Schema,
 } from 'effect';
 import { ConfigInvalidError } from './errors.ts';
-import { GhosttyTarget, HexColor } from './theme-schema.ts';
+import {
+  GhosttyTarget,
+  HexColor,
+  OpencodeThemeOverrides,
+} from './theme-schema.ts';
 
 const PartialClaudeCodeTarget = Schema.Struct({
   mapTo: Schema.optional(Schema.Literals(['dark', 'light'])),
@@ -33,6 +37,10 @@ const PartialTmuxTarget = Schema.Struct({
   statusRight: Schema.optional(Schema.String),
 });
 
+const PartialOpencodeTarget = Schema.Struct({
+  overrides: Schema.optional(OpencodeThemeOverrides),
+});
+
 const PartialTargets = Schema.Struct({
   bat: Schema.optional(Schema.Struct({})),
   'claude-code': Schema.optional(PartialClaudeCodeTarget),
@@ -40,6 +48,7 @@ const PartialTargets = Schema.Struct({
   ghostty: Schema.optional(GhosttyTarget),
   macos: Schema.optional(Schema.Struct({})),
   nvim: Schema.optional(PartialNvimTarget),
+  opencode: Schema.optional(PartialOpencodeTarget),
   tmux: Schema.optional(PartialTmuxTarget),
   yazi: Schema.optional(Schema.Struct({})),
 });
@@ -53,6 +62,7 @@ const TargetsConfig = Schema.Struct({
   ghostty: Schema.optional(Schema.Boolean),
   macos: Schema.optional(Schema.Boolean),
   nvim: Schema.optional(Schema.Boolean),
+  opencode: Schema.optional(Schema.Boolean),
   tmux: Schema.optional(Schema.Boolean),
   yazi: Schema.optional(Schema.Boolean),
 });

@@ -1,4 +1,8 @@
 import { Schema } from 'effect';
+import {
+  type OpencodeThemeToken,
+  opencodeThemeTokens,
+} from './adapters/opencode-tokens.ts';
 
 export const HexColor = Schema.String.check(
   Schema.isPattern(/^#[0-9A-Fa-f]{6}$/, {
@@ -113,6 +117,21 @@ export const GitDeltaTarget = Schema.Struct({
 export const BatTarget = Schema.Struct({});
 
 export const YaziTarget = Schema.Struct({});
+const opencodeThemeOverrideFields: {
+  readonly [K in OpencodeThemeToken]: Schema.optionalKey<typeof HexColor>;
+} = Object.fromEntries(
+  opencodeThemeTokens.map((token) => [token, Schema.optionalKey(HexColor)]),
+) as {
+  readonly [K in OpencodeThemeToken]: Schema.optionalKey<typeof HexColor>;
+};
+
+export const OpencodeThemeOverrides = Schema.Struct(
+  opencodeThemeOverrideFields,
+);
+
+export const OpencodeTarget = Schema.Struct({
+  overrides: Schema.optional(OpencodeThemeOverrides),
+});
 
 export const MacosTarget = Schema.Struct({});
 
@@ -123,6 +142,7 @@ export const Targets = Schema.Struct({
   ghostty: Schema.optional(GhosttyTarget),
   macos: Schema.optional(MacosTarget),
   nvim: Schema.optional(NvimTarget),
+  opencode: Schema.optional(OpencodeTarget),
   tmux: Schema.optional(TmuxTarget),
   yazi: Schema.optional(YaziTarget),
 });
@@ -147,6 +167,7 @@ export type GhosttyMapTarget = typeof GhosttyMapTarget.Type;
 export type GhosttyTarget = typeof GhosttyTarget.Type;
 export type MacosTarget = typeof MacosTarget.Type;
 export type NvimTarget = typeof NvimTarget.Type;
+export type OpencodeTarget = typeof OpencodeTarget.Type;
 export type SyntaxColors = typeof SyntaxColors.Type;
 export type TargetId = keyof typeof Targets.Type;
 export type Theme = typeof Theme.Type;

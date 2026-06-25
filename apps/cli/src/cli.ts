@@ -122,6 +122,28 @@ const mergeClaudeCodeTarget = (
   return { mapTo, mode: 'map' };
 };
 
+const mergeOpencodeTarget = (
+  target: Theme['targets']['opencode'],
+  override: PartialTargets['opencode'],
+): Theme['targets']['opencode'] => {
+  if (target === undefined || override === undefined) {
+    return target;
+  }
+
+  const overrides =
+    target.overrides !== undefined && override.overrides !== undefined
+      ? Object.assign({}, target.overrides, override.overrides)
+      : override.overrides !== undefined
+        ? override.overrides
+        : target.overrides;
+
+  if (overrides === undefined) {
+    return {};
+  }
+
+  return { overrides };
+};
+
 const mergeTargetOverride = (
   targets: Theme['targets'],
   override: PartialTargets | undefined,
@@ -153,6 +175,7 @@ const mergeTargetOverride = (
       targets.nvim !== undefined && override.nvim !== undefined
         ? { ...targets.nvim, ...override.nvim }
         : targets.nvim,
+    opencode: mergeOpencodeTarget(targets.opencode, override.opencode),
     tmux:
       targets.tmux !== undefined && override.tmux !== undefined
         ? { ...targets.tmux, ...override.tmux }
