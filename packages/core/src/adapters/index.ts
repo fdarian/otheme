@@ -1,3 +1,4 @@
+import { agentDashAdapter } from './agent-dash-adapter.ts';
 import { batAdapter } from './bat-adapter.ts';
 import { claudeCodeAdapter } from './claude-code-adapter.ts';
 import { ghosttyAdapter } from './ghostty-adapter.ts';
@@ -18,9 +19,11 @@ export const targetAdapters = [
   yaziAdapter,
   opencodeAdapter,
   macosAdapter,
+  agentDashAdapter,
 ] as const;
 
 export {
+  agentDashAdapter,
   batAdapter,
   claudeCodeAdapter,
   ghosttyAdapter,

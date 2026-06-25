@@ -76,6 +76,7 @@
         "backgroundElement": "#FFFFFF"
       }
     },
-    "macos": {}
+    "macos": {},
+    "agent-dash": {}
   }
 }
