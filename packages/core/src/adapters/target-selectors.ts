@@ -2,6 +2,7 @@ import { Effect } from 'effect';
 import { TargetNotFoundError } from '../errors.ts';
 import type { AdapterPlan } from '../target-adapter.ts';
 import type {
+  AgentDashTarget,
   BatTarget,
   ClaudeCodeTarget,
   GhosttyTarget,
@@ -13,6 +14,9 @@ import type {
   TmuxTarget,
   YaziTarget,
 } from '../theme-schema.ts';
+
+export const getAgentDashTarget = (theme: Theme): AgentDashTarget | undefined =>
+  theme.targets['agent-dash'];
 
 export const getNvimTarget = (theme: Theme): NvimTarget | undefined =>
   theme.targets.nvim;
@@ -41,6 +45,18 @@ export const getYaziTarget = (theme: Theme): YaziTarget | undefined =>
 
 export const getOpencodeTarget = (theme: Theme): OpencodeTarget | undefined =>
   theme.targets.opencode;
+
+export const requireAgentDashTarget = (theme: Theme) => {
+  const target = getAgentDashTarget(theme);
+
+  if (target === undefined) {
+    return Effect.fail(
+      new TargetNotFoundError({ targetId: 'agent-dash', themeId: theme.id }),
+    );
+  }
+
+  return Effect.succeed(target);
+};
 
 export const requireNvimTarget = (theme: Theme) => {
   const target = getNvimTarget(theme);

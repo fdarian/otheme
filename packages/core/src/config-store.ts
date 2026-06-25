@@ -42,6 +42,7 @@ const PartialOpencodeTarget = Schema.Struct({
 });
 
 const PartialTargets = Schema.Struct({
+  'agent-dash': Schema.optional(Schema.Struct({})),
   bat: Schema.optional(Schema.Struct({})),
   'claude-code': Schema.optional(PartialClaudeCodeTarget),
   'git-delta': Schema.optional(PartialGitDeltaTarget),
@@ -56,6 +57,7 @@ const PartialTargets = Schema.Struct({
 export type PartialTargets = typeof PartialTargets.Type;
 
 const TargetsConfig = Schema.Struct({
+  'agent-dash': Schema.optional(Schema.Boolean),
   bat: Schema.optional(Schema.Boolean),
   'claude-code': Schema.optional(Schema.Boolean),
   'git-delta': Schema.optional(Schema.Boolean),

@@ -135,7 +135,10 @@ export const OpencodeTarget = Schema.Struct({
 
 export const MacosTarget = Schema.Struct({});
 
+export const AgentDashTarget = Schema.Struct({});
+
 export const Targets = Schema.Struct({
+  'agent-dash': Schema.optional(AgentDashTarget),
   bat: Schema.optional(BatTarget),
   'claude-code': Schema.optional(ClaudeCodeTarget),
   'git-delta': Schema.optional(GitDeltaTarget),
@@ -156,6 +159,7 @@ export const Theme = Schema.Struct({
   ui: UiColors,
 });
 
+export type AgentDashTarget = typeof AgentDashTarget.Type;
 export type Appearance = Theme['appearance'];
 export type BatTarget = typeof BatTarget.Type;
 export type ClaudeCodeAuthorTarget = typeof ClaudeCodeAuthorTarget.Type;
