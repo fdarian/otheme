@@ -153,6 +153,12 @@ const mergeTargetOverride = (
   }
 
   return {
+    ...targets,
+    'agent-dash':
+      targets['agent-dash'] !== undefined &&
+      override['agent-dash'] !== undefined
+        ? { ...targets['agent-dash'], ...override['agent-dash'] }
+        : targets['agent-dash'],
     bat:
       targets.bat !== undefined && override.bat !== undefined
         ? { ...targets.bat, ...override.bat }
