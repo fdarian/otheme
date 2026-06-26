@@ -13,6 +13,8 @@ import {
   type PartialTargets,
   StateStore,
   type TargetAdapter,
+  type TargetId,
+  Targets,
   type Theme,
   targetAdapters,
 } from '@otheme/core';
@@ -46,6 +48,15 @@ const dryRunFlag = Flag.boolean('dry-run').pipe(
   Flag.withDefault(false),
   Flag.withDescription(
     'Print planned file writes and commands without applying',
+  ),
+);
+
+const targetIds = Object.keys(Targets.fields) as ReadonlyArray<TargetId>;
+
+const onlyFlag = Flag.choice('only', targetIds).pipe(
+  Flag.atLeast(0),
+  Flag.withDescription(
+    'Apply only to the listed enabled target ids; repeat to target multiple adapters',
   ),
 );
 
@@ -83,6 +94,33 @@ const getEnabledAdapters = (config: OthemeConfig) => {
   }
 
   return targetAdapters.filter((adapter) => targets[adapter.id] === true);
+};
+
+const getSelectedAdapters = (
+  config: OthemeConfig,
+  onlyTargets: ReadonlyArray<TargetId>,
+) => {
+  const enabledAdapters = getEnabledAdapters(config);
+
+  if (onlyTargets.length === 0) {
+    return enabledAdapters;
+  }
+
+  for (const targetId of onlyTargets) {
+    const isEnabled = enabledAdapters.some(
+      (adapter) => adapter.id === targetId,
+    );
+
+    if (!isEnabled) {
+      throw new Error(
+        `Target \`${targetId}\` was requested with --only but is not enabled in config`,
+      );
+    }
+  }
+
+  return enabledAdapters.filter((adapter) =>
+    onlyTargets.some((targetId) => targetId === adapter.id),
+  );
 };
 
 const noTargetsNotice = Effect.gen(function* () {
@@ -217,6 +255,20 @@ const prepareSetTheme = (themeValue: string, config: OthemeConfig) =>
       enabledAdapters,
       theme,
     };
+  });
+
+const prepareSelectedSetTheme = (
+  themeValue: string,
+  config: OthemeConfig,
+  onlyTargets: ReadonlyArray<TargetId>,
+) =>
+  Effect.gen(function* () {
+    const preparedTheme = yield* prepareSetTheme(themeValue, config);
+
+    return {
+      enabledAdapters: getSelectedAdapters(config, onlyTargets),
+      theme: preparedTheme.theme,
+    } satisfies PreparedSetTheme;
   });
 
 const readHomePath = Effect.gen(function* () {
@@ -454,15 +506,17 @@ const setCommand = Command.make(
   'set',
   {
     dryRun: dryRunFlag,
+    only: onlyFlag,
     theme: themeArg,
   },
   (commandConfig) =>
     Effect.gen(function* () {
       const configStore = yield* ConfigStore;
       const othemeConfig = yield* configStore.read();
-      const preparedTheme = yield* prepareSetTheme(
+      const preparedTheme = yield* prepareSelectedSetTheme(
         commandConfig.theme,
         othemeConfig,
+        commandConfig.only,
       );
 
       if (commandConfig.dryRun) {
