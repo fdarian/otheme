@@ -7,6 +7,7 @@ import type {
   ClaudeCodeTarget,
   GhosttyTarget,
   GitDeltaTarget,
+  HunkTarget,
   MacosTarget,
   NvimTarget,
   OpencodeTarget,
@@ -42,6 +43,9 @@ export const getMacosTarget = (theme: Theme): MacosTarget | undefined =>
 
 export const getYaziTarget = (theme: Theme): YaziTarget | undefined =>
   theme.targets.yazi;
+
+export const getHunkTarget = (theme: Theme): HunkTarget | undefined =>
+  theme.targets.hunk;
 
 export const getOpencodeTarget = (theme: Theme): OpencodeTarget | undefined =>
   theme.targets.opencode;
@@ -148,6 +152,18 @@ export const requireYaziTarget = (theme: Theme) => {
   if (target === undefined) {
     return Effect.fail(
       new TargetNotFoundError({ targetId: 'yazi', themeId: theme.id }),
+    );
+  }
+
+  return Effect.succeed(target);
+};
+
+export const requireHunkTarget = (theme: Theme) => {
+  const target = getHunkTarget(theme);
+
+  if (target === undefined) {
+    return Effect.fail(
+      new TargetNotFoundError({ targetId: 'hunk', themeId: theme.id }),
     );
   }
 

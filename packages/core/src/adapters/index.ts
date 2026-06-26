@@ -3,6 +3,7 @@ import { batAdapter } from './bat-adapter.ts';
 import { claudeCodeAdapter } from './claude-code-adapter.ts';
 import { ghosttyAdapter } from './ghostty-adapter.ts';
 import { gitDeltaAdapter } from './git-delta-adapter.ts';
+import { hunkAdapter } from './hunk-adapter.ts';
 import { macosAdapter } from './macos-adapter.ts';
 import { nvimAdapter } from './nvim-adapter.ts';
 import { opencodeAdapter } from './opencode-adapter.ts';
@@ -15,6 +16,7 @@ export const targetAdapters = [
   ghosttyAdapter,
   claudeCodeAdapter,
   gitDeltaAdapter,
+  hunkAdapter,
   batAdapter,
   yaziAdapter,
   opencodeAdapter,
@@ -28,6 +30,7 @@ export {
   claudeCodeAdapter,
   ghosttyAdapter,
   gitDeltaAdapter,
+  hunkAdapter,
   macosAdapter,
   nvimAdapter,
   opencodeAdapter,

@@ -180,6 +180,18 @@ If git-delta is enabled but bat is not, the referenced \`otheme-<theme-id>\` syn
   },
   {
     compatibility:
+      'Author mode. otheme writes a managed region at the top of `~/.config/hunk/config.toml`, setting `theme = "custom"` and rendering `[custom_theme]` plus `[custom_theme.syntax]` while preserving your other keys, tables, and comments.',
+    id: 'hunk',
+    intro:
+      'The hunk target renders a palette-derived custom theme TOML and surgically replaces only the otheme-managed region.',
+    setupSection: `## Setup
+
+Enable the hunk target in your config and run \`otheme set <theme>\`. otheme creates \`~/.config/hunk/config.toml\` if it does not exist, or updates only the managed custom-theme block if it does.`,
+    slug: 'hunk',
+    title: 'hunk',
+  },
+  {
+    compatibility:
       "Command mode. otheme runs an osascript one-liner to set the macOS system appearance to match the theme's top-level `appearance` field.",
     id: 'macos',
     intro:

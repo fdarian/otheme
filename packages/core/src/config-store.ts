@@ -11,6 +11,7 @@ import { ConfigInvalidError } from './errors.ts';
 import {
   GhosttyTarget,
   HexColor,
+  HunkThemeOverrides,
   OpencodeThemeOverrides,
 } from './theme-schema.ts';
 
@@ -41,12 +42,17 @@ const PartialOpencodeTarget = Schema.Struct({
   overrides: Schema.optional(OpencodeThemeOverrides),
 });
 
+const PartialHunkTarget = Schema.Struct({
+  overrides: Schema.optional(HunkThemeOverrides),
+});
+
 const PartialTargets = Schema.Struct({
   'agent-dash': Schema.optional(Schema.Struct({})),
   bat: Schema.optional(Schema.Struct({})),
   'claude-code': Schema.optional(PartialClaudeCodeTarget),
   'git-delta': Schema.optional(PartialGitDeltaTarget),
   ghostty: Schema.optional(GhosttyTarget),
+  hunk: Schema.optional(PartialHunkTarget),
   macos: Schema.optional(Schema.Struct({})),
   nvim: Schema.optional(PartialNvimTarget),
   opencode: Schema.optional(PartialOpencodeTarget),
@@ -62,6 +68,7 @@ const TargetsConfig = Schema.Struct({
   'claude-code': Schema.optional(Schema.Boolean),
   'git-delta': Schema.optional(Schema.Boolean),
   ghostty: Schema.optional(Schema.Boolean),
+  hunk: Schema.optional(Schema.Boolean),
   macos: Schema.optional(Schema.Boolean),
   nvim: Schema.optional(Schema.Boolean),
   opencode: Schema.optional(Schema.Boolean),

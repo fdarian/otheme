@@ -70,6 +70,7 @@
     "git-delta": {
       "features": "gruvmax-fang"
     },
+    "hunk": {},
     "bat": {},
     "yazi": {},
     "opencode": {},

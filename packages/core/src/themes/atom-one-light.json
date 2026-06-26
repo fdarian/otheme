@@ -70,6 +70,7 @@
     "git-delta": {
       "features": "hoopoe"
     },
+    "hunk": {},
     "bat": {},
     "yazi": {},
     "opencode": {},
