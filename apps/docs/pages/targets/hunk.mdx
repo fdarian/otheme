@@ -1,0 +1,28 @@
+---
+title: hunk
+description: Files and commands used by the hunk target.
+---
+
+# hunk
+
+The hunk target renders a palette-derived custom theme TOML and surgically replaces only the otheme-managed region.
+
+This page is generated from the adapter plan used by `otheme set vesper --dry-run`. Paths are shown exactly as otheme prints them; `~` means your home directory.
+
+## Setup
+
+Enable the hunk target in your config and run `otheme set <theme>`. otheme creates `~/.config/hunk/config.toml` if it does not exist, or updates only the managed custom-theme block if it does.
+
+## Compatibility
+
+Author mode. otheme writes a managed region at the top of `~/.config/hunk/config.toml`, setting `theme = "custom"` and rendering `[custom_theme]` plus `[custom_theme.syntax]` while preserving your other keys, tables, and comments.
+
+## Files
+
+| Order | File | What otheme writes |
+| --- | --- | --- |
+| 1 | `~/.config/hunk/config.toml` | set top-level theme = "custom" and write [custom_theme] plus [custom_theme.syntax] |
+
+## Commands
+
+No shell commands are run for this target.

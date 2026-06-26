@@ -182,6 +182,28 @@ const mergeOpencodeTarget = (
   return { overrides };
 };
 
+const mergeHunkTarget = (
+  target: Theme['targets']['hunk'],
+  override: PartialTargets['hunk'],
+): Theme['targets']['hunk'] => {
+  if (target === undefined || override === undefined) {
+    return target;
+  }
+
+  const overrides =
+    target.overrides !== undefined && override.overrides !== undefined
+      ? Object.assign({}, target.overrides, override.overrides)
+      : override.overrides !== undefined
+        ? override.overrides
+        : target.overrides;
+
+  if (overrides === undefined) {
+    return {};
+  }
+
+  return { overrides };
+};
+
 const mergeTargetOverride = (
   targets: Theme['targets'],
   override: PartialTargets | undefined,
@@ -211,6 +233,7 @@ const mergeTargetOverride = (
         : targets['git-delta'],
     ghostty:
       override.ghostty !== undefined ? override.ghostty : targets.ghostty,
+    hunk: mergeHunkTarget(targets.hunk, override.hunk),
     macos:
       targets.macos !== undefined && override.macos !== undefined
         ? { ...targets.macos, ...override.macos }

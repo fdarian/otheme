@@ -1,5 +1,9 @@
 import { Schema } from 'effect';
 import {
+  type HunkThemeToken,
+  hunkThemeTokens,
+} from './adapters/hunk-tokens.ts';
+import {
   type OpencodeThemeToken,
   opencodeThemeTokens,
 } from './adapters/opencode-tokens.ts';
@@ -117,6 +121,20 @@ export const GitDeltaTarget = Schema.Struct({
 export const BatTarget = Schema.Struct({});
 
 export const YaziTarget = Schema.Struct({});
+const hunkThemeOverrideFields: {
+  readonly [K in HunkThemeToken]: Schema.optionalKey<typeof HexColor>;
+} = Object.fromEntries(
+  hunkThemeTokens.map((token) => [token, Schema.optionalKey(HexColor)]),
+) as {
+  readonly [K in HunkThemeToken]: Schema.optionalKey<typeof HexColor>;
+};
+
+export const HunkThemeOverrides = Schema.Struct(hunkThemeOverrideFields);
+
+export const HunkTarget = Schema.Struct({
+  overrides: Schema.optional(HunkThemeOverrides),
+});
+
 const opencodeThemeOverrideFields: {
   readonly [K in OpencodeThemeToken]: Schema.optionalKey<typeof HexColor>;
 } = Object.fromEntries(
@@ -143,6 +161,7 @@ export const Targets = Schema.Struct({
   'claude-code': Schema.optional(ClaudeCodeTarget),
   'git-delta': Schema.optional(GitDeltaTarget),
   ghostty: Schema.optional(GhosttyTarget),
+  hunk: Schema.optional(HunkTarget),
   macos: Schema.optional(MacosTarget),
   nvim: Schema.optional(NvimTarget),
   opencode: Schema.optional(OpencodeTarget),
@@ -169,6 +188,7 @@ export type GitDeltaTarget = typeof GitDeltaTarget.Type;
 export type GhosttyAuthorTarget = typeof GhosttyAuthorTarget.Type;
 export type GhosttyMapTarget = typeof GhosttyMapTarget.Type;
 export type GhosttyTarget = typeof GhosttyTarget.Type;
+export type HunkTarget = typeof HunkTarget.Type;
 export type MacosTarget = typeof MacosTarget.Type;
 export type NvimTarget = typeof NvimTarget.Type;
 export type OpencodeTarget = typeof OpencodeTarget.Type;
