@@ -26,6 +26,7 @@ export default defineConfig({
         { text: 'git-delta', link: '/targets/git-delta' },
         { text: 'bat', link: '/targets/bat' },
         { text: 'yazi', link: '/targets/yazi' },
+        { text: 'hunk', link: '/targets/hunk' },
       ],
     },
   ],
