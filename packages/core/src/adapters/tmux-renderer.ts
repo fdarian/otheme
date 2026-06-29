@@ -41,7 +41,11 @@ set -g window-status-bell-style 'fg={{red}} bg=default bold'
 setw -g window-status-activity-style 'fg={{accent}} bg=default bold'
 
 # Command prompt styling
-set -g message-command-style 'bg=default fg={{accent}}'
+set -g message-command-style 'fg={{bg}} bg={{accent}} bold'
+# Inline the style + fill in one directive: tmux 3.7 only spans full width
+# when fill is combined with bg in a single #[...] block. Referencing the
+# styles via #{E:...} drops the bg on the message text.
+set -g message-format "#[fg={{bg}} bg={{accent}} fill={{accent}} bold]#{message}"
 
 # Pane number display
 set -g display-panes-active-colour '{{accent}}'
