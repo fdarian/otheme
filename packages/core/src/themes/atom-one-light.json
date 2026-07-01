@@ -61,8 +61,7 @@
       "searchCurrent": "#A626A4"
     },
     "ghostty": {
-      "mode": "map",
-      "mapTo": "Atom One Light"
+      "mode": "author"
     },
     "claude-code": {
       "mode": "author"
