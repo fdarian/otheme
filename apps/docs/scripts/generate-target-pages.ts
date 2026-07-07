@@ -108,6 +108,15 @@ Replace the entire status-right string. Supports \`{{placeholder}}\` substitutio
   },
   {
     compatibility:
+      'Author and map modes. In author mode, otheme writes `~/.config/tmux-palette/themes/otheme-<theme-id>.json` and sets `~/.config/tmux-palette/theme.json` to `{ "name": "otheme-<theme-id>" }`. In map mode, it sets `name` to `<mapTo>` in that same JSON file.',
+    id: 'tmux-palette',
+    intro:
+      "The tmux-palette target writes a generated theme JSON from the shared palette and updates tmux-palette's active-theme selector JSON.",
+    slug: 'tmux-palette',
+    title: 'tmux-palette',
+  },
+  {
+    compatibility:
       'Author and map modes. In author mode, otheme writes `~/.claude/themes/<theme-id>.json` and sets `theme = custom:<theme-id>`. In map mode, it sets `theme` to the built-in `light` or `dark` preset.',
     id: 'claude-code',
     intro:

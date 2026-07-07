@@ -63,6 +63,9 @@
     "ghostty": {
       "mode": "author"
     },
+    "tmux-palette": {
+      "mode": "author"
+    },
     "claude-code": {
       "mode": "author"
     },

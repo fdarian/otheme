@@ -12,6 +12,7 @@ import type {
   NvimTarget,
   OpencodeTarget,
   Theme,
+  TmuxPaletteTarget,
   TmuxTarget,
   YaziTarget,
 } from '../theme-schema.ts';
@@ -27,6 +28,10 @@ export const getTmuxTarget = (theme: Theme): TmuxTarget | undefined =>
 
 export const getGhosttyTarget = (theme: Theme): GhosttyTarget | undefined =>
   theme.targets.ghostty;
+
+export const getTmuxPaletteTarget = (
+  theme: Theme,
+): TmuxPaletteTarget | undefined => theme.targets['tmux-palette'];
 
 export const getClaudeCodeTarget = (
   theme: Theme,
@@ -92,6 +97,18 @@ export const requireGhosttyTarget = (theme: Theme) => {
   if (target === undefined) {
     return Effect.fail(
       new TargetNotFoundError({ targetId: 'ghostty', themeId: theme.id }),
+    );
+  }
+
+  return Effect.succeed(target);
+};
+
+export const requireTmuxPaletteTarget = (theme: Theme) => {
+  const target = getTmuxPaletteTarget(theme);
+
+  if (target === undefined) {
+    return Effect.fail(
+      new TargetNotFoundError({ targetId: 'tmux-palette', themeId: theme.id }),
     );
   }
 
