@@ -160,6 +160,34 @@ const mergeClaudeCodeTarget = (
   return { mapTo, mode: 'map' };
 };
 
+const mergeTmuxPaletteTarget = (
+  target: Theme['targets']['tmux-palette'],
+  override: PartialTargets['tmux-palette'],
+): Theme['targets']['tmux-palette'] => {
+  if (target === undefined || override === undefined) {
+    return target;
+  }
+
+  const mode = override.mode !== undefined ? override.mode : target.mode;
+
+  if (mode === 'author') {
+    return { mode: 'author' };
+  }
+
+  const mapTo =
+    override.mapTo !== undefined
+      ? override.mapTo
+      : target.mode === 'map'
+        ? target.mapTo
+        : undefined;
+
+  if (mapTo === undefined) {
+    throw new Error('tmux-palette target override requires mapTo in map mode');
+  }
+
+  return { mapTo, mode: 'map' };
+};
+
 const mergeOpencodeTarget = (
   target: Theme['targets']['opencode'],
   override: PartialTargets['opencode'],
@@ -247,6 +275,10 @@ const mergeTargetOverride = (
       targets.tmux !== undefined && override.tmux !== undefined
         ? { ...targets.tmux, ...override.tmux }
         : targets.tmux,
+    'tmux-palette': mergeTmuxPaletteTarget(
+      targets['tmux-palette'],
+      override['tmux-palette'],
+    ),
     yazi:
       targets.yazi !== undefined && override.yazi !== undefined
         ? { ...targets.yazi, ...override.yazi }

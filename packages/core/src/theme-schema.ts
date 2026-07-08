@@ -100,6 +100,20 @@ export const GhosttyTarget = Schema.Union([
   GhosttyMapTarget,
 ]);
 
+export const TmuxPaletteAuthorTarget = Schema.Struct({
+  mode: Schema.Literal('author'),
+});
+
+export const TmuxPaletteMapTarget = Schema.Struct({
+  mapTo: Schema.String,
+  mode: Schema.Literal('map'),
+});
+
+export const TmuxPaletteTarget = Schema.Union([
+  TmuxPaletteAuthorTarget,
+  TmuxPaletteMapTarget,
+]);
+
 export const ClaudeCodeAuthorTarget = Schema.Struct({
   mode: Schema.Literal('author'),
 });
@@ -166,6 +180,7 @@ export const Targets = Schema.Struct({
   nvim: Schema.optional(NvimTarget),
   opencode: Schema.optional(OpencodeTarget),
   tmux: Schema.optional(TmuxTarget),
+  'tmux-palette': Schema.optional(TmuxPaletteTarget),
   yazi: Schema.optional(YaziTarget),
 });
 
@@ -196,5 +211,8 @@ export type SyntaxColors = typeof SyntaxColors.Type;
 export type TargetId = keyof typeof Targets.Type;
 export type Theme = typeof Theme.Type;
 export type TmuxTarget = typeof TmuxTarget.Type;
+export type TmuxPaletteAuthorTarget = typeof TmuxPaletteAuthorTarget.Type;
+export type TmuxPaletteMapTarget = typeof TmuxPaletteMapTarget.Type;
+export type TmuxPaletteTarget = typeof TmuxPaletteTarget.Type;
 export type UiColors = typeof UiColors.Type;
 export type YaziTarget = typeof YaziTarget.Type;

@@ -1,0 +1,25 @@
+---
+title: tmux-palette
+description: Files and commands used by the tmux-palette target.
+---
+
+# tmux-palette
+
+The tmux-palette target writes a generated theme JSON from the shared palette and updates tmux-palette's active-theme selector JSON.
+
+This page is generated from the adapter plan used by `otheme set vesper --dry-run`. Paths are shown exactly as otheme prints them; `~` means your home directory.
+
+## Compatibility
+
+Author and map modes. In author mode, otheme writes `~/.config/tmux-palette/themes/otheme-<theme-id>.json` and sets `~/.config/tmux-palette/theme.json` to `{ "name": "otheme-<theme-id>" }`. In map mode, it sets `name` to `<mapTo>` in that same JSON file.
+
+## Files
+
+| Order | File | What otheme writes |
+| --- | --- | --- |
+| 1 | `~/.config/tmux-palette/themes/otheme-vesper.json` | write generated tmux-palette theme otheme-vesper |
+| 2 | `~/.config/tmux-palette/theme.json` | set JSON key name = otheme-vesper |
+
+## Commands
+
+No shell commands are run for this target.

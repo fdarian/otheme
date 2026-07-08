@@ -8,11 +8,13 @@ import { macosAdapter } from './macos-adapter.ts';
 import { nvimAdapter } from './nvim-adapter.ts';
 import { opencodeAdapter } from './opencode-adapter.ts';
 import { tmuxAdapter } from './tmux-adapter.ts';
+import { tmuxPaletteAdapter } from './tmux-palette-adapter.ts';
 import { yaziAdapter } from './yazi-adapter.ts';
 
 export const m1Adapters = [nvimAdapter, tmuxAdapter] as const;
 export const targetAdapters = [
   ...m1Adapters,
+  tmuxPaletteAdapter,
   ghosttyAdapter,
   claudeCodeAdapter,
   gitDeltaAdapter,
@@ -35,5 +37,6 @@ export {
   nvimAdapter,
   opencodeAdapter,
   tmuxAdapter,
+  tmuxPaletteAdapter,
   yaziAdapter,
 };
