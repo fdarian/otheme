@@ -20,6 +20,11 @@ const PartialClaudeCodeTarget = Schema.Struct({
   mode: Schema.optional(Schema.Literals(['author', 'map'])),
 });
 
+const PartialPiTarget = Schema.Struct({
+  mapTo: Schema.optional(Schema.Literals(['dark', 'light'])),
+  mode: Schema.optional(Schema.Literals(['author', 'map'])),
+});
+
 const PartialTmuxPaletteTarget = Schema.Struct({
   mapTo: Schema.optional(Schema.String),
   mode: Schema.optional(Schema.Literals(['author', 'map'])),
@@ -61,6 +66,7 @@ const PartialTargets = Schema.Struct({
   macos: Schema.optional(Schema.Struct({})),
   nvim: Schema.optional(PartialNvimTarget),
   opencode: Schema.optional(PartialOpencodeTarget),
+  pi: Schema.optional(PartialPiTarget),
   tmux: Schema.optional(PartialTmuxTarget),
   'tmux-palette': Schema.optional(PartialTmuxPaletteTarget),
   yazi: Schema.optional(Schema.Struct({})),
@@ -78,6 +84,7 @@ const TargetsConfig = Schema.Struct({
   macos: Schema.optional(Schema.Boolean),
   nvim: Schema.optional(Schema.Boolean),
   opencode: Schema.optional(Schema.Boolean),
+  pi: Schema.optional(Schema.Boolean),
   tmux: Schema.optional(Schema.Boolean),
   'tmux-palette': Schema.optional(Schema.Boolean),
   yazi: Schema.optional(Schema.Boolean),

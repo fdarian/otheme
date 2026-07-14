@@ -1126,6 +1126,47 @@
                   }
                 ]
               },
+              "pi": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mapTo": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "dark",
+                              "light"
+                            ]
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "mode": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "author",
+                              "map"
+                            ]
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "tmux": {
                 "anyOf": [
                   {
@@ -1368,6 +1409,16 @@
               ]
             },
             "opencode": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "pi": {
               "anyOf": [
                 {
                   "type": "boolean"

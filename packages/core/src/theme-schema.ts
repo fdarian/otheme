@@ -128,6 +128,17 @@ export const ClaudeCodeTarget = Schema.Union([
   ClaudeCodeMapTarget,
 ]);
 
+export const PiAuthorTarget = Schema.Struct({
+  mode: Schema.Literal('author'),
+});
+
+export const PiMapTarget = Schema.Struct({
+  mapTo: Schema.Literals(['dark', 'light']),
+  mode: Schema.Literal('map'),
+});
+
+export const PiTarget = Schema.Union([PiAuthorTarget, PiMapTarget]);
+
 export const GitDeltaTarget = Schema.Struct({
   features: Schema.String,
 });
@@ -179,6 +190,7 @@ export const Targets = Schema.Struct({
   macos: Schema.optional(MacosTarget),
   nvim: Schema.optional(NvimTarget),
   opencode: Schema.optional(OpencodeTarget),
+  pi: Schema.optional(PiTarget),
   tmux: Schema.optional(TmuxTarget),
   'tmux-palette': Schema.optional(TmuxPaletteTarget),
   yazi: Schema.optional(YaziTarget),
@@ -207,6 +219,9 @@ export type HunkTarget = typeof HunkTarget.Type;
 export type MacosTarget = typeof MacosTarget.Type;
 export type NvimTarget = typeof NvimTarget.Type;
 export type OpencodeTarget = typeof OpencodeTarget.Type;
+export type PiAuthorTarget = typeof PiAuthorTarget.Type;
+export type PiMapTarget = typeof PiMapTarget.Type;
+export type PiTarget = typeof PiTarget.Type;
 export type SyntaxColors = typeof SyntaxColors.Type;
 export type TargetId = keyof typeof Targets.Type;
 export type Theme = typeof Theme.Type;

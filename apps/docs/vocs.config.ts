@@ -23,6 +23,7 @@ export default defineConfig({
         { text: 'ghostty', link: '/targets/ghostty' },
         { text: 'tmux-palette', link: '/targets/tmux-palette' },
         { text: 'claude-code', link: '/targets/claude-code' },
+        { text: 'pi', link: '/targets/pi' },
         { text: 'macos', link: '/targets/macos' },
         { text: 'git-delta', link: '/targets/git-delta' },
         { text: 'bat', link: '/targets/bat' },

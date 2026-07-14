@@ -160,6 +160,34 @@ const mergeClaudeCodeTarget = (
   return { mapTo, mode: 'map' };
 };
 
+const mergePiTarget = (
+  target: Theme['targets']['pi'],
+  override: PartialTargets['pi'],
+): Theme['targets']['pi'] => {
+  if (target === undefined || override === undefined) {
+    return target;
+  }
+
+  const mode = override.mode !== undefined ? override.mode : target.mode;
+
+  if (mode === 'author') {
+    return { mode: 'author' };
+  }
+
+  const mapTo =
+    override.mapTo !== undefined
+      ? override.mapTo
+      : target.mode === 'map'
+        ? target.mapTo
+        : undefined;
+
+  if (mapTo === undefined) {
+    throw new Error('pi target override requires mapTo in map mode');
+  }
+
+  return { mapTo, mode: 'map' };
+};
+
 const mergeTmuxPaletteTarget = (
   target: Theme['targets']['tmux-palette'],
   override: PartialTargets['tmux-palette'],
@@ -271,6 +299,7 @@ const mergeTargetOverride = (
         ? { ...targets.nvim, ...override.nvim }
         : targets.nvim,
     opencode: mergeOpencodeTarget(targets.opencode, override.opencode),
+    pi: mergePiTarget(targets.pi, override.pi),
     tmux:
       targets.tmux !== undefined && override.tmux !== undefined
         ? { ...targets.tmux, ...override.tmux }
