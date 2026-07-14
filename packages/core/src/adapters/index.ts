@@ -7,6 +7,7 @@ import { hunkAdapter } from './hunk-adapter.ts';
 import { macosAdapter } from './macos-adapter.ts';
 import { nvimAdapter } from './nvim-adapter.ts';
 import { opencodeAdapter } from './opencode-adapter.ts';
+import { piAdapter } from './pi-adapter.ts';
 import { tmuxAdapter } from './tmux-adapter.ts';
 import { tmuxPaletteAdapter } from './tmux-palette-adapter.ts';
 import { yaziAdapter } from './yazi-adapter.ts';
@@ -22,6 +23,7 @@ export const targetAdapters = [
   batAdapter,
   yaziAdapter,
   opencodeAdapter,
+  piAdapter,
   macosAdapter,
   agentDashAdapter,
 ] as const;
@@ -36,6 +38,7 @@ export {
   macosAdapter,
   nvimAdapter,
   opencodeAdapter,
+  piAdapter,
   tmuxAdapter,
   tmuxPaletteAdapter,
   yaziAdapter,

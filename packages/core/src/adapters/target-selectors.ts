@@ -11,6 +11,7 @@ import type {
   MacosTarget,
   NvimTarget,
   OpencodeTarget,
+  PiTarget,
   Theme,
   TmuxPaletteTarget,
   TmuxTarget,
@@ -54,6 +55,9 @@ export const getHunkTarget = (theme: Theme): HunkTarget | undefined =>
 
 export const getOpencodeTarget = (theme: Theme): OpencodeTarget | undefined =>
   theme.targets.opencode;
+
+export const getPiTarget = (theme: Theme): PiTarget | undefined =>
+  theme.targets.pi;
 
 export const requireAgentDashTarget = (theme: Theme) => {
   const target = getAgentDashTarget(theme);
@@ -193,6 +197,18 @@ export const requireOpencodeTarget = (theme: Theme) => {
   if (target === undefined) {
     return Effect.fail(
       new TargetNotFoundError({ targetId: 'opencode', themeId: theme.id }),
+    );
+  }
+
+  return Effect.succeed(target);
+};
+
+export const requirePiTarget = (theme: Theme) => {
+  const target = getPiTarget(theme);
+
+  if (target === undefined) {
+    return Effect.fail(
+      new TargetNotFoundError({ targetId: 'pi', themeId: theme.id }),
     );
   }
 

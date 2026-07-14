@@ -135,6 +135,15 @@ See [this issue comment](https://github.com/anthropics/claude-code/issues/36785#
   },
   {
     compatibility:
+      'Author and map modes. In author mode, otheme writes `~/.pi/agent/themes/<theme-id>.json` and sets `theme = <theme-id>`. In map mode, it sets `theme` to the built-in `light` or `dark` preset.',
+    id: 'pi',
+    intro:
+      'The pi target writes a generated pi theme JSON when needed and updates pi settings while preserving other settings.',
+    slug: 'pi',
+    title: 'pi',
+  },
+  {
+    compatibility:
       'Author mode. otheme writes a dedicated git include file with a `[delta]` section, deriving diff colors from the shared palette, setting the `features` field to a named delta theme, and pointing `syntax-theme` at the otheme-derived bat theme.',
     id: 'git-delta',
     intro:

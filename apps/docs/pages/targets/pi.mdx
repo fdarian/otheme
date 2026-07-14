@@ -1,0 +1,25 @@
+---
+title: pi
+description: Files and commands used by the pi target.
+---
+
+# pi
+
+The pi target writes a generated pi theme JSON when needed and updates pi settings while preserving other settings.
+
+This page is generated from the adapter plan used by `otheme set vesper --dry-run`. Paths are shown exactly as otheme prints them; `~` means your home directory.
+
+## Compatibility
+
+Author and map modes. In author mode, otheme writes `~/.pi/agent/themes/<theme-id>.json` and sets `theme = <theme-id>`. In map mode, it sets `theme` to the built-in `light` or `dark` preset.
+
+## Files
+
+| Order | File | What otheme writes |
+| --- | --- | --- |
+| 1 | `~/.pi/agent/themes/vesper.json` | write generated pi theme vesper |
+| 2 | `~/.pi/agent/settings.json` | set JSON key theme = vesper |
+
+## Commands
+
+No shell commands are run for this target.
