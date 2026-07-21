@@ -201,6 +201,7 @@ function groups(theme: Theme, target: NvimTarget): Group[] {
     ['NoiceCmdlinePopupBorderSearch', { fg: ui.border, bg: 'NONE' }],
     ['NoiceCmdlinePopupTitleSearch', { fg: ui.fgMuted, bg: 'NONE' }],
 
+    ['SnacksPicker', { fg: ui.fg, bg }],
     ['SnacksInputBorder', { fg: ui.border, bg: 'NONE' }],
     ['SnacksInputTitle', { fg: ui.fgMuted, bg: 'NONE' }],
     ['SnacksPickerBorder', { fg: ui.border, bg: 'NONE' }],
