@@ -457,6 +457,15 @@ export function mapVscodeTheme(vscodeTheme: VscodeTheme, name: string) {
     ['diffEditor.removedTextBackground', 'diffEditor.removedLineBackground'],
     toHex(mix(parseHex('#e06c75') ?? fg, background, 0.4)),
   );
+  // VS Code has no dedicated within-line emphasis key beyond the two diffAdd
+  // already tries, so push the resolved diffAdd/diffDel further toward the
+  // seed hue to get a distinct, more saturated emphasis background.
+  const diffAddEmph = toHex(
+    mix(parseHex('#98c379') ?? fg, parseHex(diffAdd) ?? fg, 0.5),
+  );
+  const diffDelEmph = toHex(
+    mix(parseHex('#e06c75') ?? fg, parseHex(diffDel) ?? fg, 0.5),
+  );
   const success = pick(
     ['gitDecoration.addedResourceForeground', 'terminal.ansiGreen'],
     '#98c379',
@@ -498,8 +507,10 @@ export function mapVscodeTheme(vscodeTheme: VscodeTheme, name: string) {
     ),
     comment,
     diffAdd,
+    diffAddEmph,
     diffChg,
     diffDel,
+    diffDelEmph,
     error,
     fg: fgHex,
     fgDim,
