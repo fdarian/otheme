@@ -28,7 +28,10 @@ export const renderGitDeltaConf = (
     `\tminus-emph-style = syntax "${theme.ui.diffDelEmph}"`,
     `\tplus-style = syntax "${theme.ui.diffAdd}"`,
     `\tplus-emph-style = syntax "${theme.ui.diffAddEmph}"`,
-    `\tzero-style = syntax "${theme.ui.bg}"`,
+    // Explicit "normal" background (delta's own default) rather than the
+    // theme bg color, so unchanged lines stay transparent against the
+    // terminal instead of painting an opaque block behind every diff line.
+    '\tzero-style = syntax normal',
     `\tline-numbers-zero-style = "${theme.ui.lineNr}"`,
     `\tline-numbers-minus-style = "${theme.ui.error}"`,
     `\tline-numbers-plus-style = "${theme.ui.success}"`,
