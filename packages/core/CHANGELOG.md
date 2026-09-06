@@ -1,5 +1,11 @@
 # @otheme/core
 
+## 0.1.1
+
+### Patch Changes
+
+- 688890e: Stop painting opaque backgrounds behind unchanged diff lines in the `git-delta` and `hunk` targets
+
 ## 0.1.0
 
 ### Minor Changes
