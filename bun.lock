@@ -12,7 +12,7 @@
     },
     "apps/cli": {
       "name": "otheme",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "bin": {
         "otheme": "./dist/cli.js",
       },
@@ -29,7 +29,7 @@
     },
     "apps/docs": {
       "name": "@otheme/docs",
-      "version": "0.0.0",
+      "version": "0.0.1",
       "dependencies": {
         "@otheme/core": "workspace:*",
         "effect": "4.0.0-beta.83",
@@ -51,7 +51,7 @@
     },
     "apps/playground": {
       "name": "@otheme/playground",
-      "version": "0.0.0",
+      "version": "0.0.1",
       "dependencies": {
         "@base-ui/react": "^1.5.0",
         "@fontsource-variable/inter": "^5.2.8",
@@ -95,7 +95,7 @@
     },
     "packages/core": {
       "name": "@otheme/core",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "dependencies": {
         "effect": "4.0.0-beta.83",
       },
