@@ -115,6 +115,12 @@ export const renderHunkManagedRegion = (theme: Theme): string => {
 
   lines.push(managedRegionStart);
   lines.push('theme = "custom"');
+  // Config-level equivalent of hunk's --transparent-bg flag. Blanks the
+  // neutral chrome surfaces (background, panel, panelAlt, contextBg,
+  // contextContentBg, lineNumberBg) so they inherit the terminal's own
+  // background instead of the opaque colors below, which stay in the
+  // config as fallbacks for anyone who turns transparency off.
+  lines.push('transparent_background = true');
   lines.push('');
   lines.push('[custom_theme]');
   lines.push(
