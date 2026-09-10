@@ -1,5 +1,12 @@
 # otheme
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [fd603be]
+  - @otheme/core@0.1.2
+
 ## 0.2.1
 
 ### Patch Changes

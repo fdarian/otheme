@@ -1,5 +1,11 @@
 # @otheme/core
 
+## 0.1.2
+
+### Patch Changes
+
+- fd603be: Emit Neovim colorscheme lifecycle events around generated highlight updates.
+
 ## 0.1.1
 
 ### Patch Changes
