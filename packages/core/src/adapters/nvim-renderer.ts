@@ -249,7 +249,12 @@ export function renderNvim(theme: Theme, target: NvimTarget): string {
     lines.push(`hl("${group[0]}", ${renderOpts(group[1])})`);
   }
 
-  return `vim.cmd("hi clear")
+  return `vim.api.nvim_exec_autocmds("ColorSchemePre", {
+  pattern = "${target.colorscheme}",
+  modeline = false,
+})
+
+vim.cmd("hi clear")
 if vim.fn.exists("syntax_on") then
   vim.cmd("syntax reset")
 end
@@ -262,5 +267,10 @@ local function hl(group, opts)
 end
 
 ${lines.join('\n')}
+
+vim.api.nvim_exec_autocmds("ColorScheme", {
+  pattern = vim.g.colors_name,
+  modeline = false,
+})
 `;
 }
