@@ -202,6 +202,10 @@ function groups(theme: Theme, target: NvimTarget): Group[] {
     ['NoiceCmdlinePopupTitleSearch', { fg: ui.fgMuted, bg: 'NONE' }],
 
     ['SnacksPicker', { fg: ui.fg, bg }],
+    ['SnacksPickerTitle', { fg: s.markupHeading, bg: 'NONE', bold: true }],
+    ['SnacksPickerMatch', { fg: ui.bg, bg: ui.accent }],
+    ['SnacksPickerDirectory', { fg: ui.fg, bg: 'NONE' }],
+    ['SnacksPickerDir', { fg: ui.comment, bg: 'NONE' }],
     ['SnacksInputBorder', { fg: ui.border, bg: 'NONE' }],
     ['SnacksInputTitle', { fg: ui.fgMuted, bg: 'NONE' }],
     ['SnacksPickerBorder', { fg: ui.border, bg: 'NONE' }],
