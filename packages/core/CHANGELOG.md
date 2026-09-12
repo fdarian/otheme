@@ -1,5 +1,11 @@
 # @otheme/core
 
+## 0.1.3
+
+### Patch Changes
+
+- a4d5d32: Add theme-aware highlight groups for Snacks picker matches and directory entries in generated Neovim themes.
+
 ## 0.1.2
 
 ### Patch Changes

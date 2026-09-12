@@ -1,5 +1,12 @@
 # otheme
 
+## 0.2.3
+
+### Patch Changes
+
+- Updated dependencies [a4d5d32]
+  - @otheme/core@0.1.3
+
 ## 0.2.2
 
 ### Patch Changes
