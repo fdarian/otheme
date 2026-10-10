@@ -117,7 +117,7 @@ Replace the entire status-right string. Supports \`{{placeholder}}\` substitutio
   },
   {
     compatibility:
-      'Author and map modes. In author mode, otheme writes `~/.claude/themes/<theme-id>.json` and sets `theme = custom:<theme-id>`. In map mode, it sets `theme` to the built-in `light` or `dark` preset.',
+      'Author and map modes. In author mode, otheme writes every theme to `~/.claude/themes/otheme.json` and sets `theme = custom:otheme`, so a running Claude Code repaints live. In map mode, it sets `theme` to the built-in `light` or `dark` preset.',
     id: 'claude-code',
     intro:
       'The claude-code target writes a generated Claude Code theme JSON when needed and updates Claude Code settings while preserving other settings.',
