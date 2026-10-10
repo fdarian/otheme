@@ -89,7 +89,7 @@ export const opencodeAdapter: TargetAdapter = {
       yield* requireOpencodeTarget(theme);
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* Config.string('HOME');
+      const home = yield* Config.String('HOME');
       const tuiPath = path.join(home, '.config', 'opencode', 'tui.json');
       const tuiExists = yield* fs.exists(tuiPath);
       const tuiContent = tuiExists ? yield* fs.readFileString(tuiPath) : '';

@@ -67,7 +67,7 @@ export const tmuxAdapter: TargetAdapter = {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const executor = yield* CommandExecutor;
-      const home = yield* Config.string('HOME');
+      const home = yield* Config.String('HOME');
       const themePath = path.join(
         home,
         '.config',

@@ -18,7 +18,7 @@ const OthemeStateJson = Schema.fromJsonString(OthemeState);
 const decodeOthemeState = Schema.decodeUnknownEffect(OthemeStateJson);
 
 const getStatePath = Effect.gen(function* () {
-  const home = yield* Config.string('HOME');
+  const home = yield* Config.String('HOME');
   const path = yield* Path.Path;
   return path.join(home, '.config', 'otheme', 'state.json');
 });

@@ -118,7 +118,7 @@ const makeDefaultConfig = (): OthemeConfig => {
 };
 
 const getConfigPath = Effect.gen(function* () {
-  const home = yield* Config.string('HOME');
+  const home = yield* Config.String('HOME');
   const path = yield* Path.Path;
   return path.join(home, '.config', 'otheme', 'config.json');
 });

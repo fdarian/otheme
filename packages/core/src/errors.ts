@@ -1,6 +1,6 @@
 import { Schema } from 'effect';
 
-export class ThemeNotFoundError extends Schema.TaggedErrorClass<ThemeNotFoundError>()(
+export class ThemeNotFoundError extends Schema.TaggedError<ThemeNotFoundError>()(
   'ThemeNotFoundError',
   {
     available: Schema.Array(Schema.String),
@@ -8,14 +8,14 @@ export class ThemeNotFoundError extends Schema.TaggedErrorClass<ThemeNotFoundErr
   },
 ) {}
 
-export class AliasNotFoundError extends Schema.TaggedErrorClass<AliasNotFoundError>()(
+export class AliasNotFoundError extends Schema.TaggedError<AliasNotFoundError>()(
   'AliasNotFoundError',
   {
     alias: Schema.String,
   },
 ) {}
 
-export class TargetNotFoundError extends Schema.TaggedErrorClass<TargetNotFoundError>()(
+export class TargetNotFoundError extends Schema.TaggedError<TargetNotFoundError>()(
   'TargetNotFoundError',
   {
     targetId: Schema.String,
@@ -23,7 +23,7 @@ export class TargetNotFoundError extends Schema.TaggedErrorClass<TargetNotFoundE
   },
 ) {}
 
-export class AdapterError extends Schema.TaggedErrorClass<AdapterError>()(
+export class AdapterError extends Schema.TaggedError<AdapterError>()(
   'AdapterError',
   {
     adapterId: Schema.String,
@@ -31,7 +31,7 @@ export class AdapterError extends Schema.TaggedErrorClass<AdapterError>()(
   },
 ) {}
 
-export class CommandExecutionError extends Schema.TaggedErrorClass<CommandExecutionError>()(
+export class CommandExecutionError extends Schema.TaggedError<CommandExecutionError>()(
   'CommandExecutionError',
   {
     command: Schema.String,
@@ -40,7 +40,7 @@ export class CommandExecutionError extends Schema.TaggedErrorClass<CommandExecut
   },
 ) {}
 
-export class ConfigInvalidError extends Schema.TaggedErrorClass<ConfigInvalidError>()(
+export class ConfigInvalidError extends Schema.TaggedError<ConfigInvalidError>()(
   'ConfigInvalidError',
   {
     configPath: Schema.String,
