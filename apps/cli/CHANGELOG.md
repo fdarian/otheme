@@ -1,5 +1,11 @@
 # otheme
 
+## 0.3.0
+
+### Minor Changes
+
+- 5982455: Apply `otheme set` targets in parallel. Each target's output prints as one block when it finishes, under a single spinner listing the targets still running.
+
 ## 0.2.3
 
 ### Patch Changes
