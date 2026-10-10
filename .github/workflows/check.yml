@@ -14,9 +14,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: pnpm
       - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
-      - run: bun run format
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run format
       - uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "style: apply formatting"
@@ -29,13 +34,18 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: pnpm
       - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
       - uses: actions/cache@v4
         with:
           path: .turbo
           key: turbo-${{ github.sha }}
           restore-keys: turbo-
-      - run: bun turbo run check --affected
+      - run: pnpm exec turbo run check --affected
         env:
           TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}

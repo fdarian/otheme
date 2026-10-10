@@ -12,7 +12,8 @@
     "effect": "4.0.0-beta.83"
   },
   "devDependencies": {
-    "@repo/config": "workspace:*"
+    "@repo/config": "workspace:*",
+    "typescript": "^5.8.3"
   },
   "scripts": {
     "check": "bun run check:type && bun run check:lint",

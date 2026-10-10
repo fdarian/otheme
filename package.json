@@ -2,10 +2,6 @@
   "name": "otheme-workspace",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
   "packageManager": "pnpm@12.9.0",
   "scripts": {
     "check": "turbo run check",

@@ -5,3 +5,10 @@ allowBuilds:
   es5-ext: false
   esbuild: false
   msgpackr-extract: false
+packageExtensions:
+  next-themes:
+    peerDependencies:
+      '@types/react': '*'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true

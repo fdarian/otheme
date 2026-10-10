@@ -17,19 +17,20 @@ jobs:
         with:
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
       - run: npm install -g npm@latest
-      - run: bun install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
       - run: bun run --cwd apps/cli build
       - id: changesets
         uses: changesets/action@v1
         with:
-          version: bun run ci:version
-          publish: bun run ci:release
+          version: pnpm run ci:version
+          publish: pnpm run ci:release
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

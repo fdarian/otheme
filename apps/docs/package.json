@@ -19,7 +19,8 @@
     "@types/bun": "^1.2.17",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "agentation": "^3.0.2"
+    "agentation": "^3.0.2",
+    "typescript": "^5.8.3"
   },
   "scripts": {
     "build": "bun run generate && vocs build",
