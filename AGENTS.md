@@ -8,7 +8,6 @@ Monorepo for the otheme CLI and theme adapter packages.
 - `apps/cli` - user-facing `otheme` command.
 - `apps/docs` - end-user Vocs documentation site.
 
-## Commands
-- `bun install`
-- `bun run check`
-- `bun run format`
+## Stack
+- pnpm for package manager (use `pnpm install`)
+- bun for runtime (use `bun run path-to-script`)

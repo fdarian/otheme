@@ -1,0 +1,7 @@
+packages:
+  - packages/*
+  - apps/*
+allowBuilds:
+  es5-ext: false
+  esbuild: false
+  msgpackr-extract: false

@@ -6,7 +6,7 @@
     "packages/*",
     "apps/*"
   ],
-  "packageManager": "bun@1.3.14",
+  "packageManager": "pnpm@12.9.0",
   "scripts": {
     "check": "turbo run check",
     "ci:release": "changeset publish",
