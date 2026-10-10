@@ -9,6 +9,7 @@ import {
 } from 'effect';
 import { ConfigInvalidError } from './errors.ts';
 import {
+  EmptyObject,
   GhosttyTarget,
   HexColor,
   HunkThemeOverrides,
@@ -57,19 +58,19 @@ const PartialHunkTarget = Schema.Struct({
 });
 
 const PartialTargets = Schema.Struct({
-  'agent-dash': Schema.optional(Schema.Struct({})),
-  bat: Schema.optional(Schema.Struct({})),
+  'agent-dash': Schema.optional(EmptyObject),
+  bat: Schema.optional(EmptyObject),
   'claude-code': Schema.optional(PartialClaudeCodeTarget),
   'git-delta': Schema.optional(PartialGitDeltaTarget),
   ghostty: Schema.optional(GhosttyTarget),
   hunk: Schema.optional(PartialHunkTarget),
-  macos: Schema.optional(Schema.Struct({})),
+  macos: Schema.optional(EmptyObject),
   nvim: Schema.optional(PartialNvimTarget),
   opencode: Schema.optional(PartialOpencodeTarget),
   pi: Schema.optional(PartialPiTarget),
   tmux: Schema.optional(PartialTmuxTarget),
   'tmux-palette': Schema.optional(PartialTmuxPaletteTarget),
-  yazi: Schema.optional(Schema.Struct({})),
+  yazi: Schema.optional(EmptyObject),
 });
 
 export type PartialTargets = typeof PartialTargets.Type;

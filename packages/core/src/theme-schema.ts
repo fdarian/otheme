@@ -1,4 +1,4 @@
-import { Schema } from 'effect';
+import { Predicate, Schema } from 'effect';
 import {
   type HunkThemeToken,
   hunkThemeTokens,
@@ -143,9 +143,18 @@ export const GitDeltaTarget = Schema.Struct({
   features: Schema.String,
 });
 
-export const BatTarget = Schema.Struct({});
+// `Schema.Struct({})` alone accepts every non-null value and emits `not null` in JSON Schema. The filter rejects
+// non-objects, and the annotation closes the JSON Schema.
+export const EmptyObject = Schema.Struct({}).check(
+  Schema.makeFilter(
+    (input) => (Predicate.isObject(input) ? undefined : 'Expected an object'),
+    { toJsonSchema: () => ({ type: 'object', additionalProperties: false }) },
+  ),
+);
 
-export const YaziTarget = Schema.Struct({});
+export const BatTarget = EmptyObject;
+
+export const YaziTarget = EmptyObject;
 const hunkThemeOverrideFields: {
   readonly [K in HunkThemeToken]: Schema.optionalKey<typeof HexColor>;
 } = Object.fromEntries(
@@ -176,9 +185,9 @@ export const OpencodeTarget = Schema.Struct({
   overrides: Schema.optional(OpencodeThemeOverrides),
 });
 
-export const MacosTarget = Schema.Struct({});
+export const MacosTarget = EmptyObject;
 
-export const AgentDashTarget = Schema.Struct({});
+export const AgentDashTarget = EmptyObject;
 
 export const Targets = Schema.Struct({
   'agent-dash': Schema.optional(AgentDashTarget),
