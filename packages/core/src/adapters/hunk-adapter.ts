@@ -33,7 +33,7 @@ export const hunkAdapter: TargetAdapter = {
       yield* requireHunkTarget(theme);
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* Config.string('HOME');
+      const home = yield* Config.String('HOME');
       const configPath = path.join(home, '.config', 'hunk', 'config.toml');
       const exists = yield* fs.exists(configPath);
       const content = exists ? yield* fs.readFileString(configPath) : '';

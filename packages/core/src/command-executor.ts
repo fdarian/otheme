@@ -1,5 +1,5 @@
 import { Context, Effect, Layer, type PlatformError, Stream } from 'effect';
-import { ChildProcess, ChildProcessSpawner } from 'effect/unstable/process';
+import { ChildProcess, ChildProcessSpawner } from 'effect/process';
 import { CommandExecutionError } from './errors.ts';
 
 const quoteCommandArg = (arg: string): string => {

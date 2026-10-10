@@ -32,7 +32,7 @@ export const yaziAdapter: TargetAdapter = {
       yield* requireYaziTarget(theme);
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* Config.string('HOME');
+      const home = yield* Config.String('HOME');
       const themePath = path.join(home, yaziThemeRelPath);
 
       yield* fs.makeDirectory(path.dirname(themePath), { recursive: true });

@@ -73,7 +73,7 @@ export const agentDashAdapter: TargetAdapter = {
       yield* requireAgentDashTarget(theme);
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* Config.string('HOME');
+      const home = yield* Config.String('HOME');
 
       const configPath = path.join(home, configRelPath);
       const exists = yield* fs.exists(configPath);

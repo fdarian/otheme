@@ -51,7 +51,7 @@ export const gitDeltaAdapter: TargetAdapter = {
       const target = yield* requireGitDeltaTarget(theme);
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* Config.string('HOME');
+      const home = yield* Config.String('HOME');
 
       const confPath = path.join(home, gitDeltaConfRelPath);
       const gitconfigPath = path.join(home, gitconfigRelPath);

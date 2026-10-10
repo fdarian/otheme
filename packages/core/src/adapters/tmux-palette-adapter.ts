@@ -52,7 +52,7 @@ export const tmuxPaletteAdapter: TargetAdapter = {
       const target = yield* requireTmuxPaletteTarget(theme);
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const home = yield* Config.string('HOME');
+      const home = yield* Config.String('HOME');
       const activeThemePath = path.join(
         home,
         '.config',

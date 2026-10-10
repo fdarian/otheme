@@ -23,11 +23,11 @@
     "provenance": true
   },
   "devDependencies": {
-    "@effect/platform-node": "4.0.0-beta.83",
+    "@effect/platform-node": "4.0.2",
     "@otheme/core": "workspace:*",
     "@repo/config": "workspace:*",
     "@types/bun": "^1.2.17",
-    "effect": "4.0.0-beta.83",
+    "effect": "4.0.2",
     "picocolors": "^1.1.1",
     "typescript": "^5.8.3"
   },

@@ -20,155 +20,79 @@
       "properties": {
         "attribute": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "constant": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "func": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "keyword": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "markupHeading": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "markupLink": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "markupList": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "number": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "operator": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "punctuation": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "punctuationSpecial": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "string": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "stringEscape": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "stringSpecial": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "tag": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "type": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "variable": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "variableBuiltin": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "variableMember": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         }
       },
       "required": [
@@ -200,12 +124,13 @@
         "agent-dash": {
           "anyOf": [
             {
-              "anyOf": [
+              "not": {
+                "type": "null"
+              },
+              "allOf": [
                 {
-                  "type": "object"
-                },
-                {
-                  "type": "array"
+                  "type": "object",
+                  "additionalProperties": false
                 }
               ]
             },
@@ -217,12 +142,13 @@
         "bat": {
           "anyOf": [
             {
-              "anyOf": [
+              "not": {
+                "type": "null"
+              },
+              "allOf": [
                 {
-                  "type": "object"
-                },
-                {
-                  "type": "array"
+                  "type": "object",
+                  "additionalProperties": false
                 }
               ]
             },
@@ -342,19 +268,9 @@
                             {
                               "type": "string",
                               "enum": [
+                                "Infinity",
+                                "-Infinity",
                                 "NaN"
-                              ]
-                            },
-                            {
-                              "type": "string",
-                              "enum": [
-                                "Infinity"
-                              ]
-                            },
-                            {
-                              "type": "string",
-                              "enum": [
-                                "-Infinity"
                               ]
                             }
                           ]
@@ -412,19 +328,9 @@
                             {
                               "type": "string",
                               "enum": [
+                                "Infinity",
+                                "-Infinity",
                                 "NaN"
-                              ]
-                            },
-                            {
-                              "type": "string",
-                              "enum": [
-                                "Infinity"
-                              ]
-                            },
-                            {
-                              "type": "string",
-                              "enum": [
-                                "-Infinity"
                               ]
                             }
                           ]
@@ -460,355 +366,179 @@
                       "properties": {
                         "background": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "panel": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "panelAlt": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "border": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "accent": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "accentMuted": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "text": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "muted": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "addedBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "removedBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "movedAddedBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "movedRemovedBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "contextBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "addedContentBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "removedContentBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "contextContentBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "addedSignColor": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "removedSignColor": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "lineNumberBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "lineNumberFg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "selectedHunk": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "badgeAdded": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "badgeRemoved": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "badgeNeutral": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "fileNew": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "fileDeleted": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "fileRenamed": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "fileModified": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "fileUntracked": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "noteBorder": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "noteBackground": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "noteTitleBackground": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "noteTitleText": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxDefault": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxKeyword": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxString": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxComment": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxNumber": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxFunction": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxProperty": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxType": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxVariable": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxOperator": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxPunctuation": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         }
                       },
                       "additionalProperties": false
@@ -829,12 +559,13 @@
         "macos": {
           "anyOf": [
             {
-              "anyOf": [
+              "not": {
+                "type": "null"
+              },
+              "allOf": [
                 {
-                  "type": "object"
-                },
-                {
-                  "type": "array"
+                  "type": "object",
+                  "additionalProperties": false
                 }
               ]
             },
@@ -878,403 +609,203 @@
                       "properties": {
                         "primary": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "secondary": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "accent": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "error": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "warning": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "success": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "info": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "text": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "textMuted": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "background": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "backgroundPanel": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "backgroundElement": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "border": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "borderActive": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "borderSubtle": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffAdded": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffRemoved": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffContext": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffHunkHeader": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffHighlightAdded": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffHighlightRemoved": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffLineNumber": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffAddedBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffRemovedBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffContextBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffAddedLineNumberBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "diffRemovedLineNumberBg": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownText": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownHeading": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownLink": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownLinkText": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownCode": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownBlockQuote": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownEmph": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownStrong": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownHorizontalRule": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownListItem": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownListEnumeration": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownImage": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownImageText": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "markdownCodeBlock": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxComment": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxKeyword": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxFunction": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxVariable": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxString": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxNumber": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxType": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxOperator": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         },
                         "syntaxPunctuation": {
                           "type": "string",
-                          "allOf": [
-                            {
-                              "pattern": "^#[0-9A-Fa-f]{6}$"
-                            }
-                          ]
+                          "pattern": "^#[0-9A-Fa-f]{6}$"
                         }
                       },
                       "additionalProperties": false
@@ -1348,35 +879,19 @@
               "properties": {
                 "inactiveFg": {
                   "type": "string",
-                  "allOf": [
-                    {
-                      "pattern": "^#[0-9A-Fa-f]{6}$"
-                    }
-                  ]
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
                 },
                 "muted": {
                   "type": "string",
-                  "allOf": [
-                    {
-                      "pattern": "^#[0-9A-Fa-f]{6}$"
-                    }
-                  ]
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
                 },
                 "searchCurrent": {
                   "type": "string",
-                  "allOf": [
-                    {
-                      "pattern": "^#[0-9A-Fa-f]{6}$"
-                    }
-                  ]
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
                 },
                 "searchMatch": {
                   "type": "string",
-                  "allOf": [
-                    {
-                      "pattern": "^#[0-9A-Fa-f]{6}$"
-                    }
-                  ]
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
                 },
                 "sessionFormatter": {
                   "anyOf": [
@@ -1460,12 +975,13 @@
         "yazi": {
           "anyOf": [
             {
-              "anyOf": [
+              "not": {
+                "type": "null"
+              },
+              "allOf": [
                 {
-                  "type": "object"
-                },
-                {
-                  "type": "array"
+                  "type": "object",
+                  "additionalProperties": false
                 }
               ]
             },
@@ -1482,187 +998,95 @@
       "properties": {
         "accent": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "accentFg": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "bg": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "bgFloat": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "bgHover": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "bgVisual": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "border": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "comment": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "diffAdd": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "diffAddEmph": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "diffChg": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "diffDel": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "diffDelEmph": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "error": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "fg": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "fgDim": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "fgMuted": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "hint": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "info": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "lineNr": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "search": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "success": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         },
         "warning": {
           "type": "string",
-          "allOf": [
-            {
-              "pattern": "^#[0-9A-Fa-f]{6}$"
-            }
-          ]
+          "pattern": "^#[0-9A-Fa-f]{6}$"
         }
       },
       "required": [

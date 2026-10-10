@@ -27,7 +27,7 @@ import {
   type PlatformError,
   Result,
 } from 'effect';
-import { Argument, Command, Flag } from 'effect/unstable/cli';
+import { Argument, Command, Flag } from 'effect/cli';
 import packageJson from '../package.json';
 import {
   collapseHomePath,
@@ -41,11 +41,11 @@ import {
   withSetProgress,
 } from './set-log.ts';
 
-const themeArg = Argument.string('theme-or-alias').pipe(
+const themeArg = Argument.String('theme-or-alias').pipe(
   Argument.withDescription('Theme id or configured alias'),
 );
 
-const dryRunFlag = Flag.boolean('dry-run').pipe(
+const dryRunFlag = Flag.Boolean('dry-run').pipe(
   Flag.withDefault(false),
   Flag.withDescription(
     'Print planned file writes and commands without applying',
@@ -54,18 +54,18 @@ const dryRunFlag = Flag.boolean('dry-run').pipe(
 
 const targetIds = Object.keys(Targets.fields) as ReadonlyArray<TargetId>;
 
-const onlyFlag = Flag.choice('only', targetIds).pipe(
+const onlyFlag = Flag.Literals('only', targetIds).pipe(
   Flag.atLeast(0),
   Flag.withDescription(
     'Apply only to the listed enabled target ids; repeat to target multiple adapters',
   ),
 );
 
-const aliasArg = Argument.choice('alias', ['dark', 'light']).pipe(
+const aliasArg = Argument.Literals('alias', ['dark', 'light']).pipe(
   Argument.withDescription('Alias to update'),
 );
 
-const aliasThemeArg = Argument.string('theme').pipe(
+const aliasThemeArg = Argument.String('theme').pipe(
   Argument.withDescription('Theme id to assign to the alias'),
 );
 
@@ -357,7 +357,7 @@ const prepareSelectedSetTheme = (
   });
 
 const readHomePath = Effect.gen(function* () {
-  const homeResult = yield* Effect.result(Config.string('HOME'));
+  const homeResult = yield* Effect.result(Config.String('HOME'));
 
   if (Result.isSuccess(homeResult)) {
     return homeResult.success;
