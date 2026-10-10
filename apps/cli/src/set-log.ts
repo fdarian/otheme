@@ -7,7 +7,7 @@ export type SetLogResultOptions = {
   readonly errorCount: number;
 };
 
-type SetSpinnerFailure<Error> = {
+type SetOperationFailure<Error> = {
   readonly detail: (error: Error) => string | undefined;
   readonly label: (error: Error) => string;
 };
@@ -148,36 +148,75 @@ const writeStdout = (text: string) =>
     process.stdout.write(text);
   });
 
-const writeStdoutLine = (text: string) => writeStdout(`${text}\n`);
+const clearSpinnerLine = '\r\x1b[2K';
 
-const clearSpinnerLine = writeStdout('\r\x1b[2K');
+const renderFailureLines = (
+  label: string,
+  detail: string | undefined,
+): ReadonlyArray<string> => [
+  renderFailureLine(label),
+  ...stderrExcerptLines(detail).map((line) => `      ${pc.dim(line)}`),
+];
 
-const printSetFailure = (label: string, detail: string | undefined) =>
-  Effect.gen(function* () {
-    yield* writeStdoutLine(renderFailureLine(label));
+/** Buffers one target's lines so concurrent targets print as whole blocks instead of interleaving */
+export type SetTargetLog = {
+  readonly lines: Array<string>;
+};
 
-    for (const line of stderrExcerptLines(detail)) {
-      yield* writeStdoutLine(`      ${pc.dim(line)}`);
-    }
-  });
+export const makeSetTargetLog = (): SetTargetLog => ({ lines: [] });
 
-export const printSetTargetFailure = (
+export const recordSetTargetFailure = (
+  log: SetTargetLog,
   reason: string,
   detail: string | undefined,
-) => printSetFailure(reason, detail);
+) =>
+  Effect.sync(() => {
+    log.lines.push(...renderFailureLines(reason, detail));
+  });
 
-const spinnerLoop = (pendingLabel: string) => {
+export const recordSetOperation = <Value, Error, Requirements>(
+  log: SetTargetLog,
+  successLine: string,
+  effect: Effect.Effect<Value, Error, Requirements>,
+  failure: SetOperationFailure<Error>,
+): Effect.Effect<Value, Error, Requirements> =>
+  Effect.gen(function* () {
+    const result = yield* Effect.result(effect);
+
+    if (Result.isFailure(result)) {
+      log.lines.push(
+        ...renderFailureLines(
+          failure.label(result.failure),
+          failure.detail(result.failure),
+        ),
+      );
+      return yield* Effect.fail(result.failure);
+    }
+
+    log.lines.push(successLine);
+
+    return result.success;
+  });
+
+const renderTargetBlock = (targetId: string, log: SetTargetLog): string =>
+  ['', renderTargetLine(targetId), ...log.lines]
+    .map((line) => `${line}\n`)
+    .join('');
+
+const spinnerLoop = (pendingTargetIds: ReadonlySet<string>) => {
   let frameIndex = 0;
 
   return Effect.sync(() => {
     const frame = spinnerFrames[frameIndex];
 
-    if (frame === undefined) {
+    if (frame === undefined || pendingTargetIds.size === 0) {
       return;
     }
 
     frameIndex = (frameIndex + 1) % spinnerFrames.length;
-    process.stdout.write(renderPendingLine(frame, pendingLabel));
+    process.stdout.write(
+      renderPendingLine(frame, Array.from(pendingTargetIds).join(', ')),
+    );
   }).pipe(Effect.repeat(Schedule.spaced(80)));
 };
 
@@ -192,42 +231,35 @@ export const printSetApplyStart = (
     yield* Console.log(renderHeaderLine(themeId, targetCount));
   });
 
-export const printSetTargetStart = (targetId: string) =>
-  Effect.gen(function* () {
-    yield* Console.log('');
-    yield* Console.log(renderTargetLine(targetId));
-  });
-
-export const runSetSpinner = <Value, Error, Requirements>(
-  pendingLabel: string,
-  successLine: string,
-  effect: Effect.Effect<Value, Error, Requirements>,
-  failure: SetSpinnerFailure<Error>,
-): Effect.Effect<Value, Error, Requirements> =>
-  Effect.gen(function* () {
-    const result = interactiveOutput
-      ? yield* Effect.acquireUseRelease(
-          spinnerLoop(pendingLabel).pipe(Effect.forkChild),
-          () => Effect.result(effect),
-          (spinnerFiber) =>
-            Fiber.interrupt(spinnerFiber).pipe(
-              Effect.andThen(clearSpinnerLine),
-            ),
-        )
-      : yield* Effect.result(effect);
-
-    if (Result.isFailure(result)) {
-      yield* printSetFailure(
-        failure.label(result.failure),
-        failure.detail(result.failure),
+/** Shows one spinner naming the still-running targets; `complete` prints a finished target's block above it */
+export const withSetProgress = <Value, Error, Requirements>(
+  targetIds: ReadonlyArray<string>,
+  use: (
+    complete: (targetId: string, log: SetTargetLog) => Effect.Effect<void>,
+  ) => Effect.Effect<Value, Error, Requirements>,
+): Effect.Effect<Value, Error, Requirements> => {
+  const pendingTargetIds = new Set(targetIds);
+  const complete = (targetId: string, log: SetTargetLog) =>
+    Effect.sync(() => {
+      pendingTargetIds.delete(targetId);
+      process.stdout.write(
+        `${interactiveOutput ? clearSpinnerLine : ''}${renderTargetBlock(targetId, log)}`,
       );
-      return yield* Effect.fail(result.failure);
-    }
+    });
 
-    yield* writeStdoutLine(successLine);
+  if (!interactiveOutput) {
+    return use(complete);
+  }
 
-    return result.success;
-  });
+  return Effect.acquireUseRelease(
+    spinnerLoop(pendingTargetIds).pipe(Effect.forkChild),
+    () => use(complete),
+    (spinnerFiber) =>
+      Fiber.interrupt(spinnerFiber).pipe(
+        Effect.andThen(writeStdout(clearSpinnerLine)),
+      ),
+  );
+};
 
 export const printSetResult = (
   themeId: string,

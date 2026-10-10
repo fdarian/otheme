@@ -31,13 +31,14 @@ import { Argument, Command, Flag } from 'effect/unstable/cli';
 import packageJson from '../package.json';
 import {
   collapseHomePath,
+  makeSetTargetLog,
   printSetApplyStart,
   printSetResult,
-  printSetTargetFailure,
-  printSetTargetStart,
+  recordSetOperation,
+  recordSetTargetFailure,
   renderSetCommandLine,
   renderSetCreateLine,
-  runSetSpinner,
+  withSetProgress,
 } from './set-log.ts';
 
 const themeArg = Argument.string('theme-or-alias').pipe(
@@ -462,119 +463,135 @@ const runSet = (preparedTheme: PreparedSetTheme, dryRun: boolean) =>
     const fileSystem = yield* FileSystem.FileSystem;
     const startedAt = dryRun ? undefined : Date.now();
     const targetCount = enabledAdapters.length;
-    let errorCount = 0;
 
     yield* printSetApplyStart(preparedTheme.theme.id, targetCount, dryRun);
 
-    for (const adapter of enabledAdapters) {
-      let operationFailed = false;
+    const applyTarget = (adapter: TargetAdapter) =>
+      Effect.gen(function* () {
+        const log = makeSetTargetLog();
+        let operationFailed = false;
 
-      yield* printSetTargetStart(adapter.id);
-
-      const loggingExecutor: {
-        readonly read: (
-          command: string,
-          args: ReadonlyArray<string>,
-        ) => Effect.Effect<
-          string,
-          CommandExecutionError | PlatformError.PlatformError
-        >;
-        readonly run: (
-          command: string,
-          args: ReadonlyArray<string>,
-        ) => Effect.Effect<
-          void,
-          CommandExecutionError | PlatformError.PlatformError
-        >;
-      } = {
-        read: (command: string, args: ReadonlyArray<string>) => {
-          const formattedCommand = formatCommand(command, args);
-
-          return runSetSpinner(
-            formattedCommand,
-            renderSetCommandLine(formattedCommand),
-            executor.read(command, args),
-            {
-              detail: (error) => operationFailureDetails(error),
-              label: () => {
-                operationFailed = true;
-                return formattedCommand;
-              },
-            },
-          );
-        },
-        run: (command: string, args: ReadonlyArray<string>) => {
-          const formattedCommand = formatCommand(command, args);
-          const commandEffect: Effect.Effect<
+        const loggingExecutor: {
+          readonly read: (
+            command: string,
+            args: ReadonlyArray<string>,
+          ) => Effect.Effect<
+            string,
+            CommandExecutionError | PlatformError.PlatformError
+          >;
+          readonly run: (
+            command: string,
+            args: ReadonlyArray<string>,
+          ) => Effect.Effect<
             void,
             CommandExecutionError | PlatformError.PlatformError
-          > = dryRun ? Effect.void : executor.run(command, args);
+          >;
+        } = {
+          read: (command: string, args: ReadonlyArray<string>) => {
+            const formattedCommand = formatCommand(command, args);
 
-          return runSetSpinner(
-            formattedCommand,
-            renderSetCommandLine(formattedCommand),
-            commandEffect,
-            {
-              detail: (error) => operationFailureDetails(error),
-              label: () => {
-                operationFailed = true;
-                return formattedCommand;
+            return recordSetOperation(
+              log,
+              renderSetCommandLine(formattedCommand),
+              executor.read(command, args),
+              {
+                detail: (error) => operationFailureDetails(error),
+                label: () => {
+                  operationFailed = true;
+                  return formattedCommand;
+                },
               },
-            },
-          );
-        },
-      };
-      const loggingFileSystem: typeof fileSystem = {
-        ...fileSystem,
-        makeDirectory: (path: string, options) =>
-          dryRun ? Effect.void : fileSystem.makeDirectory(path, options),
-        writeFileString: (path: string, data: string, options) => {
-          const writeEffect: Effect.Effect<void, PlatformError.PlatformError> =
-            dryRun
+            );
+          },
+          run: (command: string, args: ReadonlyArray<string>) => {
+            const formattedCommand = formatCommand(command, args);
+            const commandEffect: Effect.Effect<
+              void,
+              CommandExecutionError | PlatformError.PlatformError
+            > = dryRun ? Effect.void : executor.run(command, args);
+
+            return recordSetOperation(
+              log,
+              renderSetCommandLine(formattedCommand),
+              commandEffect,
+              {
+                detail: (error) => operationFailureDetails(error),
+                label: () => {
+                  operationFailed = true;
+                  return formattedCommand;
+                },
+              },
+            );
+          },
+        };
+        const loggingFileSystem: typeof fileSystem = {
+          ...fileSystem,
+          makeDirectory: (path: string, options) =>
+            dryRun ? Effect.void : fileSystem.makeDirectory(path, options),
+          writeFileString: (path: string, data: string, options) => {
+            const writeEffect: Effect.Effect<
+              void,
+              PlatformError.PlatformError
+            > = dryRun
               ? Effect.void
               : fileSystem.writeFileString(path, data, options);
 
-          return runSetSpinner(
-            collapseHomePath(path, homePath),
-            renderSetCreateLine(path, homePath),
-            writeEffect,
-            {
-              detail: (error) => operationFailureDetails(error),
-              label: () => {
-                operationFailed = true;
-                return collapseHomePath(path, homePath);
+            return recordSetOperation(
+              log,
+              renderSetCreateLine(path, homePath),
+              writeEffect,
+              {
+                detail: (error) => operationFailureDetails(error),
+                label: () => {
+                  operationFailed = true;
+                  return collapseHomePath(path, homePath);
+                },
               },
-            },
-          );
-        },
-      };
-      const applyResult = yield* Effect.result(
-        adapter
-          .apply(preparedTheme.theme)
-          .pipe(
-            Effect.provideService(CommandExecutor, loggingExecutor),
-            Effect.provideService(FileSystem.FileSystem, loggingFileSystem),
-          ),
-      );
+            );
+          },
+        };
+        const applyResult = yield* Effect.result(
+          adapter
+            .apply(preparedTheme.theme)
+            .pipe(
+              Effect.provideService(CommandExecutor, loggingExecutor),
+              Effect.provideService(FileSystem.FileSystem, loggingFileSystem),
+            ),
+        );
 
-      if (Result.isFailure(applyResult)) {
-        if (operationFailed) {
-          errorCount += 1;
-          continue;
+        if (Result.isFailure(applyResult) && !operationFailed) {
+          const failureDisplay = targetFailureDisplay(
+            applyResult.failure,
+            homePath,
+          );
+
+          yield* recordSetTargetFailure(
+            log,
+            failureDisplay.reason,
+            failureDisplay.detail,
+          );
         }
 
-        const failureDisplay = targetFailureDisplay(
-          applyResult.failure,
-          homePath,
-        );
+        return { failed: Result.isFailure(applyResult), log };
+      });
 
-        yield* printSetTargetFailure(
-          failureDisplay.reason,
-          failureDisplay.detail,
-        );
-        errorCount += 1;
-      }
-    }
+    const targetResults = yield* withSetProgress(
+      enabledAdapters.map((adapter) => adapter.id),
+      (complete) =>
+        Effect.forEach(
+          enabledAdapters,
+          (adapter) =>
+            applyTarget(adapter).pipe(
+              Effect.tap((targetResult) =>
+                complete(adapter.id, targetResult.log),
+              ),
+            ),
+          { concurrency: 'unbounded' },
+        ),
+    );
+    const errorCount = targetResults.filter(
+      (targetResult) => targetResult.failed,
+    ).length;
 
     const elapsedMs =
       startedAt === undefined ? undefined : Date.now() - startedAt;
