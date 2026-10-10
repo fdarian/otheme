@@ -9,7 +9,7 @@ import {
 } from './adapters/opencode-tokens.ts';
 
 export const HexColor = Schema.String.check(
-  Schema.isPattern(/^#[0-9A-Fa-f]{6}$/, {
+  Schema.isPattern(/^#[0-9A-Fa-f]{6}$/u, {
     message: 'Expected a six-digit hex color like #A1B2C3',
   }),
 );

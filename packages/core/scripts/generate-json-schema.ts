@@ -5,7 +5,9 @@ import { OthemeConfig } from '../src/config-store.ts';
 import { Theme } from '../src/theme-schema.ts';
 
 const toJsonSchemaOutput = (schema: Schema.Schema.Any) => {
-  const doc = Schema.toJsonSchemaDocument(schema);
+  const doc = Schema.toJsonSchemaDocument(schema, {
+    onExcessProperty: 'error',
+  });
   return {
     $schema: 'https://json-schema.org/draft/2020-12/schema',
     ...(Object.keys(doc.definitions).length > 0
