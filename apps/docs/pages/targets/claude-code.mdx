@@ -11,14 +11,14 @@ This page is generated from the adapter plan used by `otheme set vesper --dry-ru
 
 ## Compatibility
 
-Author and map modes. In author mode, otheme writes `~/.claude/themes/<theme-id>.json` and sets `theme = custom:<theme-id>`. In map mode, it sets `theme` to the built-in `light` or `dark` preset.
+Author and map modes. In author mode, otheme writes every theme to `~/.claude/themes/otheme.json` and sets `theme = custom:otheme`, so a running Claude Code repaints live. In map mode, it sets `theme` to the built-in `light` or `dark` preset.
 
 ## Files
 
 | Order | File | What otheme writes |
 | --- | --- | --- |
-| 1 | `~/.claude/themes/vesper.json` | write generated Claude Code theme vesper |
-| 2 | `~/.claude/settings.json` | set JSON key theme = custom:vesper |
+| 1 | `~/.claude/themes/otheme.json` | write generated Claude Code theme vesper |
+| 2 | `~/.claude/settings.json` | set JSON key theme = custom:otheme |
 
 ## Running inside tmux
 

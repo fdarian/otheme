@@ -10,8 +10,11 @@ import {
 } from './target-selectors.ts';
 
 const claudeSettingsPath = '~/.claude/settings.json';
-const claudeThemePathFor = (theme: Theme): string =>
-  `~/.claude/themes/${theme.id}.json`;
+// Claude Code live-reloads the active custom theme file but can't switch theme
+// names at runtime, so every authored theme is written to this one file.
+const claudeThemeName = 'otheme';
+const claudeThemePath = `~/.claude/themes/${claudeThemeName}.json`;
+const claudeThemeValue = `custom:${claudeThemeName}`;
 const SettingsJson = Schema.fromJsonString(
   Schema.Record(Schema.String, Schema.Unknown),
 );
@@ -74,12 +77,12 @@ export const claudeCodeAdapter: TargetAdapter = {
         commands: [],
         creates: [
           {
-            path: claudeThemePathFor(theme),
+            path: claudeThemePath,
             summary: `write generated Claude Code theme ${theme.id}`,
           },
           {
             path: claudeSettingsPath,
-            summary: `set JSON key theme = custom:${theme.id}`,
+            summary: `set JSON key theme = ${claudeThemeValue}`,
           },
         ],
       };
@@ -105,7 +108,7 @@ export const claudeCodeAdapter: TargetAdapter = {
       const exists = yield* fs.exists(settingsPath);
       const content = exists ? yield* fs.readFileString(settingsPath) : '';
       const themeValue =
-        target.mode === 'author' ? `custom:${theme.id}` : target.mapTo;
+        target.mode === 'author' ? claudeThemeValue : target.mapTo;
       const nextContent = yield* updateClaudeCodeSettings(content, themeValue);
 
       if (target.mode === 'author') {
@@ -113,7 +116,7 @@ export const claudeCodeAdapter: TargetAdapter = {
           home,
           '.claude',
           'themes',
-          `${theme.id}.json`,
+          `${claudeThemeName}.json`,
         );
 
         yield* fs.makeDirectory(path.dirname(themePath), { recursive: true });
