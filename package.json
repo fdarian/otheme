@@ -2,7 +2,7 @@
   "name": "otheme-workspace",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@12.9.0",
+  "packageManager": "pnpm@12.16.1",
   "scripts": {
     "check": "turbo run check",
     "ci:release": "changeset publish",
