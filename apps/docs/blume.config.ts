@@ -1,9 +1,13 @@
 import { withPreset } from '@fdarian/blume-preset';
 import { defineConfig } from 'blume';
+import { posthog } from 'blume/analytics';
+
+const ph = process.env.POSTHOG_KEY;
 
 export default defineConfig(
   withPreset({
     title: 'otheme',
+    ...(ph ? { analytics: [posthog({ key: ph })] } : {}),
     description:
       'End-user guide for applying one theme consistently across supported tools.',
     github: {
