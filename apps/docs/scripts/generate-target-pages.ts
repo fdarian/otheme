@@ -275,8 +275,6 @@ title: ${config.title}
 description: Files and commands used by the ${config.title} target.
 ---
 
-# ${config.title}
-
 ${config.intro}
 
 ${generatedNotice}
@@ -298,7 +296,7 @@ ${config.extraSections !== undefined ? `\n${config.extraSections}\n` : ''}`;
 const writeTargetPage = (config: TargetPageConfig) =>
   Effect.gen(function* () {
     const content = yield* renderTargetPage(config);
-    const targetPath = join('pages', 'targets', `${config.slug}.mdx`);
+    const targetPath = join('docs', 'targets', `${config.slug}.mdx`);
 
     yield* Effect.promise(() =>
       mkdir(dirname(targetPath), { recursive: true }),

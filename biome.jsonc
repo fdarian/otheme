@@ -28,9 +28,14 @@
   },
   "overrides": [
     {
-      "includes": ["apps/docs/pages.gen.ts"],
-      "formatter": {
-        "enabled": false
+      // Biome can't see template usage in .astro files and would delete component imports.
+      "includes": ["**/*.astro"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedImports": "off"
+          }
+        }
       }
     },
     {
